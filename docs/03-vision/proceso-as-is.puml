@@ -1,0 +1,88 @@
+@startuml proceso-as-is
+' Figura 3.1. Proceso actual (as-is) de atención del taller, con los problemas
+' identificados en cada etapa. Documento de Ingeniería v0.1, sección 3.5.
+title Proceso actual (antes de la solución tecnológica)
+
+skinparam activity {
+  BackgroundColor #FFFFFF
+  BorderColor #1F4E9A
+}
+skinparam note {
+  BackgroundColor #FDE2E2
+  BorderColor #D62828
+}
+
+|Cliente|
+start
+:Solicita cita por llamada,\nWhatsApp o presencialmente;
+|Recepcionista|
+:Revisa la agenda y\nconfirma fecha/hora;
+|Registro manual|
+:Anota la cita en\ncuaderno / agenda;
+note right
+  **Problema:** riesgo de errores,
+  omisiones o citas mal registradas
+end note
+|Cliente|
+:Llega al taller con su vehículo;
+|Recepcionista|
+:Recibe el vehículo y llena una\norden en papel con datos básicos;
+note right
+  **Problema:** datos incompletos
+  y sin checklist/fotos
+end note
+|Registro manual|
+:Abre una orden de servicio física;
+|Recepcionista|
+:Entrega la orden al mecánico y\nasigna verbalmente una bahía;
+note right
+  **Problema:** poca visibilidad de
+  carga de trabajos y bahías
+end note
+|Mecánico|
+:Revisa el vehículo;
+:Anota o comunica el diagnóstico\ny las reparaciones requeridas;
+note right
+  **Problema:** información
+  ilegible o dispersa
+end note
+|Registro manual|
+:La información queda dispersa en\npapeles, mensajes y llamadas;
+:Consulta precios de refacciones\npor teléfono o notas;
+|Recepcionista|
+:Prepara la cotización manualmente;
+note right
+  **Problema:** demoras y
+  posibles errores en costos
+end note
+|Cliente|
+:Recibe la cotización por\nllamada o mensaje;
+if (¿Autoriza?) then (Sí)
+  :Autoriza verbalmente\no por mensaje;
+  |Mecánico|
+  :Inicia la reparación;
+  :Solicita refacciones adicionales\no reporta avances;
+  note right
+    **Problema:** exceso de llamadas
+    y seguimiento poco claro
+  end note
+  :Finaliza los trabajos;
+  |Recepcionista|
+  :Llama al cliente para avisar\nque el vehículo está listo;
+  |Cliente|
+  :Acude al taller por su vehículo;
+  |Recepcionista|
+  :Cobra y entrega el vehículo;
+  |Registro manual|
+  :Archiva la orden y el historial\nen carpetas físicas;
+  note right
+    **Problema:** historial difícil
+    de consultar y sin trazabilidad
+  end note
+  stop
+else (No)
+  |Recepcionista|
+  :Registra el rechazo\ny coordina la entrega;
+  stop
+endif
+@enduml
