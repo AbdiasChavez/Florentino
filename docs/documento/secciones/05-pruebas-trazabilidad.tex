@@ -3,118 +3,135 @@ trazabilidad}\label{plan-de-pruebas-y-trazabilidad}
 
 \subsection{5.1 Plan de pruebas}\label{plan-de-pruebas}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Estructura adaptada de ISO/IEC/IEEE
-29119-3:2021.}
-\end{quote}
+Estructura adaptada de ISO/IEC/IEEE 29119-3:2021. Responsable: QA Lead.
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Apartado}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Contenido}
-\end{minipage} \\
-\midrule\noalign{}
+{\small
+\begin{longtable}{@{}L{0.22\linewidth}L{0.74\linewidth}@{}}
+\toprule
+\textbf{Apartado} & \textbf{Contenido} \\
+\midrule
 \endhead
-\bottomrule\noalign{}
+\bottomrule
 \endlastfoot
-Alcance & {[}Qué se prueba y qué no en la Fase 1{]} \\
-Niveles de prueba & {[}Unitarias, integración, sistema, aceptación{]} \\
-Enfoque & {[}Manual / automatizado; herramientas{]} \\
-Entornos & {[}Local, CI, staging; datos ficticios{]} \\
-Criterios de entrada & \\
-Criterios de salida & {[}Por ejemplo: 0 defectos S1/S2 abiertos{]} \\
-Roles & {[}QA Lead, developers, equipo contrario, cliente{]} \\
-Riesgos de las pruebas & \\
-Calendario & {[}Por sprint{]} \\
+Alcance & \textbf{Se prueba en la Fase 1:} el flujo núcleo del release v0.1.0 --- recepción con checklist y
+fotografías, asignación de bahía y mecánico, diagnóstico, cotización con vigencia, autorización con código
+2FA (remota y presencial), re-cotización por sobrecosto, pago, entrega, crédito a flotillas, citas en línea,
+lista de órdenes abiertas, panel del gerente y control de acceso por rol.
+\textbf{No se prueba en la Fase 1:} almacén y compras (RF-08.x), operación sin conexión y sincronización
+(RNF-08, RNF-09; dependen de la PWA), reportes mensuales (HU-29) y envío real de correo o SMS (R-05). \\
+Niveles de prueba & \textbf{Unitarias y de integración:} pruebas automatizadas con pytest sobre la API completa
+(servicio + base de datos), en \texttt{backend/tests/}. \textbf{Sistema:} recorrido del flujo núcleo en el
+ambiente de pruebas (desde el Sprint 4). \textbf{Aceptación:} los casos CPA de 5.2, ejecutados con el
+Product Owner y validados con el cliente en las Reviews. \\
+Enfoque & Automatizado primero: cada regla de negocio (RN) y cada requisito de acceso tiene al menos una
+prueba automatizada; se incluyen valores límite (5 vs.\ 6 días, 10\,\% vs.\ 10.06\,\%, 5 min vs.\ 5 min 1 s).
+Manual para usabilidad y dispositivos (RNF-01 a RNF-03). Herramientas: pytest, httpx/TestClient,
+GitHub Actions; Lighthouse/axe para accesibilidad (Sprint 5). \\
+Entornos & \textbf{Local:} SQLite en memoria, reloj controlable para probar vigencias.
+\textbf{CI:} GitHub Actions ejecuta las pruebas, carga \texttt{db/schema.sql} en PostgreSQL 16 y compila este
+documento. \textbf{Staging:} \pendiente{definir hospedaje (ADR-004) y URL}. Siempre datos ficticios (RNF-05). \\
+Criterios de entrada & La historia cumple la DoR; existe su caso CPA en 5.2; el código está en un Pull
+Request hacia \texttt{main}. \\
+Criterios de salida & 100\,\% de las pruebas automatizadas pasan en CI; 0 defectos S1/S2 abiertos; todos
+los requisitos Must tienen al menos un caso que pasa (matriz 5.3); el PO aceptó las historias. \\
+Roles & \textbf{QA Lead:} diseña los casos, mantiene la matriz y la CI. \textbf{Developers:} escriben pruebas
+junto con el código. \textbf{PO:} ejecuta las pruebas de aceptación. \textbf{Equipo A:} QA cruzado.
+\textbf{Cliente:} valida en las Reviews. \\
+Riesgos de las pruebas & Las pruebas con SQLite podrían ocultar diferencias con PostgreSQL (mitigación:
+la CI carga el esquema real; pendiente agregar pruebas de integración contra PostgreSQL). El envío de
+códigos se simula con una bandeja en memoria. Sin dispositivos reales todavía para RNF-01/02. \\
+Calendario & S2: casos CPA del flujo núcleo y CI. S3: pruebas de citas y panel. S4: pruebas en staging y
+de rendimiento (RNF-06). S5: usabilidad, accesibilidad y SUS. S6: ejecución final, QA cruzado y reporte
+(sección 10). \\
 \end{longtable}
 }
 
 \subsection{5.2 Casos de prueba de
 aceptación}\label{casos-de-prueba-de-aceptaciuxf3n}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Mínimo \textbf{25 casos (Equipo A)} o
-\textbf{20 (Equipo B)}, cada uno vinculado a una historia o caso de uso.
-Incluyan casos de flujos alternos, valores límite y control de acceso
-por rol. La columna de resultado se llena al ejecutarlos (sección 10).}
-\end{quote}
+Cada caso está automatizado en \texttt{backend/tests/} con el prefijo de su ID (por ejemplo,
+\texttt{test\_cpa14\_codigo\_expira\_a\_los\_cinco\_minutos}). Resultado de la ejecución del 29/10/2026:
+35 de 35 pasan. Los datos son ficticios.
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0963}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1282}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1816}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2308}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2136}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1496}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\textbf{ID}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Historia / CU}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Precondiciones}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Pasos}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Resultado esperado}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Resultado (Pasa / Falla / Bloqueado)}
-\end{minipage} \\
-\midrule\noalign{}
+{\footnotesize
+\begin{longtable}{@{}L{0.07\linewidth}L{0.13\linewidth}L{0.17\linewidth}L{0.27\linewidth}L{0.24\linewidth}L{0.07\linewidth}@{}}
+\toprule
+\textbf{ID} & \textbf{HU / CU (regla)} & \textbf{Precondiciones} & \textbf{Pasos} & \textbf{Resultado esperado} & \textbf{Res.} \\
+\midrule
 \endhead
-\bottomrule\noalign{}
+\bottomrule
 \endlastfoot
-CPA-01 & HU-\ldots{} & & 1. \ldots{}
-
-2. \ldots{} & & \\
-& & & & & \\
-& & & & & \\
+CPA-01 & HU-01, CU-02 & Sesión de Recepcionista; vehículo registrado & 1. Registrar recepción con kilometraje, combustible y checklist. & Se crea la orden con folio OS-AAAA-NNNN en estado Abierta y su primer registro en el historial. & Pasa \\
+CPA-02 & HU-01, HU-09 (RN-12) & Orden con 3 fotografías & 1. Asignar bahía. 2. Registrar diagnóstico. 3. Subir la 4.ª foto y repetir. & Sin las 4 fotos se rechaza (RN-12); con ellas la orden pasa a Diagnosticada. & Pasa \\
+CPA-03 & HU-01 (RN-12) & Orden con checklist incompleto & 1. Intentar diagnóstico. 2. Completar checklist. 3. Repetir. & Primero se rechaza; tras completar el checklist se acepta. & Pasa \\
+CPA-04 & HU-01 & Orden abierta con foto Frente & 1. Subir otra foto Frente. 2. Subir un archivo que no es imagen. & Foto repetida rechazada (409); archivo no imagen rechazado (415). & Pasa \\
+CPA-05 & HU-07 (RN-05) & Las 4 bahías ocupadas & 1. Registrar una nueva recepción. & La orden queda EnEsperaDeBahia y la respuesta trae la alerta «sin bahías». & Pasa \\
+CPA-06 & HU-07 (RN-05) & 4 bahías ocupadas y 5 vehículos en espera & 1. Registrar otra recepción. & Se rechaza: estacionamiento lleno. & Pasa \\
+CPA-07 & HU-08 (RN-05) & Bahía 2 ocupada & 1. Asignar la bahía 2 a otra orden. 2. Cancelar la primera orden. 3. Repetir. & Primero se rechaza; al cancelar se libera y la asignación procede. & Pasa \\
+CPA-08 & HU-08 (RN-09) & Orden abierta & 1. Asignar como responsable a una recepcionista. & Se rechaza: el responsable debe ser mecánico activo. & Pasa \\
+CPA-09 & CU-02 & Vehículo con orden abierta & 1. Abrir otra orden para el mismo vehículo. & Se rechaza. & Pasa \\
+CPA-10 & HU-12, HU-02 & Orden Diagnosticada & 1. Generar cotización con mano de obra, refacción y un concepto opcional. & Total \$1,750.00; vence a los 5 días; el cliente recibe su enlace seguro. & Pasa \\
+CPA-11 & HU-14 (RN-11) & Cotización emitida el día 0 & 1. Día 5: pedir código. 2. Día 6: confirmar. & Día 5 vigente; día 6 se rechaza por vencida. & Pasa \\
+CPA-12 & HU-13 (RN-03) & Cotización pendiente & 1. Deseleccionar el concepto opcional. 2. Deseleccionar uno obligatorio. & Total baja a \$1,500.00; el obligatorio no se puede quitar. & Pasa \\
+CPA-13 & HU-14, CU-11 (RN-02, RNF-04) & Cotización pendiente & 1. El cliente pide código desde su enlace. 2. Lo confirma. & Autorización Confirmada con IP, token y huella SHA-256 válida; orden Autorizada; el cambio no tiene usuario interno. & Pasa \\
+CPA-14 & HU-14 (RN-02) & Código emitido & 1. Esperar 5 min 1 s. 2. Confirmar. & Se rechaza: código expirado. & Pasa \\
+CPA-15 & HU-14 (RN-02) & Código emitido & 1. Confirmar con código incorrecto. 2. Con el correcto. 3. Repetir el correcto. & Incorrecto rechazado; correcto aceptado; segundo uso rechazado. & Pasa \\
+CPA-16 & CU-03 & Cotización pendiente; cliente en mostrador & 1. Recepcionista pide el código. 2. Captura el que dicta el cliente. & Autorización Presencial confirmada. & Pasa \\
+CPA-17 & HU-15 & Cotización inicial pendiente & 1. El cliente rechaza desde su enlace. & Cotización Rechazada y orden Cancelada. & Pasa \\
+CPA-18 & HU-16 (RN-04) & Orden Autorizada por \$1,750.00 & 1. Re-cotizar a \$1,926.00 (+10.06\,\%). 2. Terminar trabajo. 3. Autorizar y repetir. & Queda Pendiente y bloquea el avance; tras autorizar se termina. & Pasa \\
+CPA-19 & HU-16 (RN-04) & Orden Autorizada por \$1,750.00 & 1. Re-cotizar a \$1,925.00 (+10\,\% exacto). & Se autoriza sin detener el trabajo; total autorizado \$1,925.00. & Pasa \\
+CPA-20 & RNF-04 & Autorización confirmada & 1. Modificar el monto directamente en la base. 2. Verificar la huella. & La verificación detecta la alteración. & Pasa \\
+CPA-21 & HU-21 (RN-10) & Orden lista; pago parcial & 1. Registrar la entrega. & Se rechaza por saldo pendiente. & Pasa \\
+CPA-22 & HU-23, CU-04 (RN-01, RN-13) & Orden lista & 1. Pagar el total. 2. Entregar. 3. Abrir el enlace del cliente. & Orden Cerrada, garantía de 30 días, bahía libre, enlace expirado. & Pasa \\
+CPA-23 & HU-23 & Orden lista & 1. Pagar un centavo más que el saldo. & Se rechaza. & Pasa \\
+CPA-24 & HU-22, CU-13 (RN-10) & Orden lista de un cliente particular & 1. Recepcionista autoriza crédito. 2. Gerente lo intenta. & Recepcionista: 403. Gerente: rechazado porque no es flotilla. & Pasa \\
+CPA-25 & HU-22, CU-13 (RN-10) & Orden lista de flotilla con crédito & 1. Gerente autoriza crédito. 2. Entregar con saldo. & Entrega permitida; el enlace sigue activo mientras haya saldo. & Pasa \\
+CPA-26 & RF-01 & Sin sesión & 1. Consultar órdenes sin token y con token falso. & 401 en ambos casos. & Pasa \\
+CPA-27 & RF-01 & Usuarios registrados & 1. Entrar con contraseña incorrecta. 2. Entrar como mecánico de bahía. & 401 en ambos casos. & Pasa \\
+CPA-28 & RF-01, HU-27 & Sesiones de cada rol & 1. Recepcionista asigna bahía. 2. Jefe cancela orden. 3. Recepcionista abre el panel. 4. Almacén lista órdenes. 5. Recepcionista crea un gerente. & 403 en todos los casos. & Pasa \\
+CPA-29 & HU-27 & Sesión de Gerente & 1. Dar de alta a una recepcionista. 2. Iniciar sesión con ella. & Alta correcta (correo normalizado) y sesión con rol Recepcionista. & Pasa \\
+CPA-30 & RF-02.1, CU-10 (OWASP A01) & Cliente con enlace & 1. Abrir su enlace. 2. Alterar un carácter. 3. Usar un folio como enlace. & Solo su orden es visible; 2 y 3 dan 404. & Pasa \\
+CPA-31 & HU-03, HU-30 (RN-08) & Público & 1. Solicitar cita sin aceptar el aviso. 2. Aceptándolo. & Sin aviso se rechaza; con aviso queda Pendiente y sin bahía. & Pasa \\
+CPA-32 & HU-04, CU-01 & Dos citas pendientes a la misma hora & 1. Confirmar ambas en la bahía 3. 2. La segunda en la bahía 4. & La segunda en bahía 3 se rechaza; en bahía 4 se confirma. & Pasa \\
+CPA-33 & CU-02 (RN-08) & Cita pendiente & 1. Abrir orden desde la cita. 2. Confirmarla y repetir. & Primero se rechaza; confirmada sí abre la orden. & Pasa \\
+CPA-34 & HU-03 & Placas registradas a otro cliente & 1. Solicitar cita con esas placas y otro contacto. & Se rechaza. & Pasa \\
+CPA-35 & RF-11, flujo núcleo & Una orden diagnosticada y una cancelada & 1. Consultar órdenes abiertas. 2. Consultar el panel. & Solo aparece la diagnosticada, con bahía y responsable; panel con 1 bahía ocupada. & Pasa \\
 \end{longtable}
 }
 
 \subsection{5.3 Matriz de trazabilidad}\label{matriz-de-trazabilidad}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Ningún requisito Must puede quedar sin
-historia ni caso de prueba. Se actualiza en cada versión y en el Sprint
-6 incluye el resultado de las pruebas.}
-\end{quote}
+Los módulos se refieren a \texttt{backend/app/servicios/} (lógica) y \texttt{backend/app/rutas/} (API).
+Resultado de la ejecución automatizada del 29/10/2026.
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1390}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1708}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1389}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1923}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2094}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1496}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Requisito}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Historias}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Caso de uso}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Casos de prueba}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Componente / módulo}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Resultado}
-\end{minipage} \\
-\midrule\noalign{}
+{\footnotesize
+\begin{longtable}{@{}L{0.09\linewidth}L{0.17\linewidth}L{0.12\linewidth}L{0.2\linewidth}L{0.24\linewidth}L{0.1\linewidth}@{}}
+\toprule
+\textbf{Requisito} & \textbf{Historias} & \textbf{Caso de uso} & \textbf{Casos de prueba} & \textbf{Componente / módulo} & \textbf{Resultado} \\
+\midrule
 \endhead
-\bottomrule\noalign{}
+\bottomrule
 \endlastfoot
-RF-01 & HU-01, HU-02 & CU-01 & CPA-01, CPA-02 & {[}Paquete o clase{]} &
-{[}Pasa{]} \\
-& & & & & \\
-& & & & & \\
+RF-01 (Must) & HU-27 & --- & CPA-26 a CPA-29 & seguridad.py, rutas/personal.py & Pasa \\
+RF-02.1 (Must) & HU-02, HU-28 & CU-10, CU-11 & CPA-10, CPA-13, CPA-30 & rutas/portal.py, servicios/cotizaciones.py & Pasa (API; falta PWA) \\
+RF-02.2 (Should) & HU-02, HU-23 & CU-04 & CPA-22, CPA-25 & servicios/cobro.py & Pasa \\
+RF-02.3 (Could) & HU-02 & --- & --- & --- & Fase 2 \\
+RF-03.1 (Must) & HU-05, HU-06 & CU-02 & CPA-05, CPA-34 & rutas/personal.py & Pasa \\
+RF-03.2 (Should) & HU-23, HU-24 & CU-07 & CPA-22 & servicios/cobro.py (garantía) & Pasa (parcial) \\
+RF-04 (Must) & HU-01, HU-25, HU-26 & CU-02 & CPA-01 a CPA-04 & servicios/ordenes.py & Pasa (sin modo offline) \\
+RF-05 (Must) & HU-07, HU-08, HU-09, HU-11 & CU-05 & CPA-05 a CPA-09, CPA-35 & servicios/ordenes.py & Pasa \\
+RF-06 (Must) & HU-02, HU-12 a HU-15 & CU-03, CU-05, CU-11 & CPA-10 a CPA-17 & servicios/cotizaciones.py & Pasa \\
+RF-07 (Must) & HU-16 & CU-07 & CPA-18, CPA-19 & servicios/cotizaciones.py, cobro.py & Pasa \\
+RF-08.1 (Should) & HU-10, HU-19 & CU-06 & \pendiente{CPA por diseñar} & --- & No iniciado \\
+RF-08.2 (Should) & HU-17, HU-18 & CU-08 & \pendiente{CPA por diseñar} & --- & No iniciado \\
+RF-08.3 (Could) & HU-18 & CU-08 & --- & --- & No iniciado \\
+RF-09 (Should) & HU-03, HU-04, HU-06 & CU-01, CU-09 & CPA-31 a CPA-34 & servicios/citas.py & Pasa \\
+RF-10 (Must) & HU-21, HU-22, HU-23 & CU-04, CU-13 & CPA-21 a CPA-25 & servicios/cobro.py & Pasa \\
+RF-11 (Should) & HU-29 & CU-12 & CPA-35 & rutas/taller.py (panel) & Pasa (parcial) \\
+RNF-04 & HU-14, HU-16 & CU-03, CU-11 & CPA-13, CPA-20 & servicios/cotizaciones.py (huella) & Pasa \\
+RNF-05 & HU-30 & --- & CPA-31; datos ficticios en todas & seguridad.py & Pasa (parcial: falta HTTPS en staging) \\
 \end{longtable}
 }
+
+Todos los requisitos \textbf{Must} tienen al menos una historia y un caso de prueba que pasa. Quedan sin
+caso los requisitos del almacén (RF-08.x, Should/Could), planificados para el Sprint 4.
