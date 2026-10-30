@@ -1,0 +1,266 @@
+===============================================================================
+ AVANCES DEL PROYECTO · Sistema de Órdenes de Servicio y Citas
+ Servicio Automotriz Hermanos Ruiz · Equipo B · IS1 (IDSSI-27)
+ Repositorio: https://github.com/AbdiasChavez/Florentino
+ Última actualización: 29/10/2026
+===============================================================================
+
+Este archivo explica, paso por paso y organizado por rol de Scrum, lo que se
+ha hecho en el repositorio. Cada rol trabaja en su propia rama y sus commits
+llevan el formato "Rol: mensaje":
+
+    Product Owner  -> rama rol/product-owner
+    Scrum Master   -> rama rol/scrum-master
+    QA Lead        -> rama rol/qa-lead
+    Developers     -> rama rol/developers
+
+Cada rama se integra a main con un merge sin fast-forward ("Rol: integra rama
+rol/..."), así el historial muestra qué subió cada rol.
+
+Todo el trabajo de esta etapa se hizo con ayuda de Claude Code (IA), como se
+declara en la sección 2.6 del documento. Cada rol debe revisar y poder explicar
+lo que se subió a su nombre antes de la entrega.
+
+-------------------------------------------------------------------------------
+ RESUMEN DEL AVANCE (estimado: ~55 % del proyecto de la Fase 1)
+-------------------------------------------------------------------------------
+
+Documento de Ingeniería (machote, cortes de la tabla 0.2):
+  [hecho]      Portada, 1, 2.1-2.4, 3 ............................ Review 0 (v0.1)
+  [hecho]      4.1-4.9 (SRS) ..................................... Review 1-2
+  [pendiente]  4.10 imágenes de wireframes, 4.11 validación con el cliente,
+               firma del SRS ..................................... Review 2
+  [hecho]      5.1-5.3 plan de pruebas, 35 casos, matriz ......... Review 2
+  [hecho*]     6 modelos de análisis (*faltan imágenes en rojo) .. Review 3
+  [hecho*]     7.1-7.3 arquitectura y 5 ADR (*C4 en rojo) ........ Review 4
+  [hecho]      9.1-9.3 pila, instalación, CI ..................... Review 4
+  [pendiente]  7.4-7.8 imágenes, 8, 9.4, 10-13, anexos ........... Review 5 / final
+
+Software (release v0.1.0):
+  [hecho]      Base de datos PostgreSQL (db/schema.sql)
+  [hecho]      API del flujo núcleo: recepción con checklist y 4 fotos, bahías,
+               diagnóstico, cotización, autorización 2FA, re-cotización >10 %,
+               pagos, entrega, crédito a flotillas, citas, órdenes abiertas,
+               panel del gerente, portal del cliente con enlace seguro
+  [hecho]      35 pruebas automatizadas (todas pasan) + CI en GitHub Actions
+  [pendiente]  Interfaces web (PWA del personal y portal del cliente)
+  [pendiente]  Envío real de correo/SMS, operación sin conexión, almacén,
+               ambiente de pruebas en línea
+
+===============================================================================
+ PRODUCT OWNER  (rama rol/product-owner)
+===============================================================================
+
+Paso 1. Fuente del diagrama del proceso actual
+  - Se subió docs/03-vision/proceso-as-is.puml (Figura 3.1, sección 3.5).
+  Commit: "Product Owner: agrega fuente PlantUML del proceso actual (sección 3.5)"
+
+Paso 2. Propuesta de solución en LaTeX
+  - La "Propuesta de Solución Tecnológica.docx" se convirtió a LaTeX en
+    docs/propuesta/propuesta-solucion-tecnologica.tex (compila, 4 páginas).
+  Commit: "Product Owner: migra la propuesta de solución tecnológica a LaTeX"
+
+Paso 3. Backlog y SRS (sección 4)
+  - 20 historias con API terminada pasaron de "Pendiente" a
+    "En progreso (API)" (falta su pantalla para considerarlas terminadas).
+  - Cada historia con prueba quedó ligada a sus casos CPA (ej. HU-14 ->
+    CPA-11, CPA-13 a CPA-16).
+  - Se agregaron, en rojo y sin imagen: story map (Fig. 4.1), 3 diagramas de
+    casos de uso (Fig. 4.2-4.4) y 6 wireframes del flujo núcleo (Fig. 4.5-4.10),
+    cada uno con la descripción de lo que debe mostrar y la ruta de su fuente.
+  - 4.11 quedó marcada en rojo como pendiente: todavía no hay sesión de
+    validación con el cliente (solo la entrevista del 19/10/2026).
+  Commit: "Product Owner: actualiza backlog, liga casos de prueba y agrega
+           story map, casos de uso y wireframes pendientes (sección 4)"
+
+Paso 4. Información general (sección 1)
+  - Enlaces actualizados al repositorio nuevo y a la CI; tablero y prototipo
+    marcados como pendientes.
+  - Resumen ejecutivo reescrito con el estado actual, sin jerga técnica.
+  Commit: "Product Owner: actualiza enlaces del proyecto y resumen ejecutivo (sección 1)"
+
+Pendientes del Product Owner:
+  - Validar el SRS con el cliente y conseguir su firma (Review 2).
+  - Confirmar con el cliente RN-12 (mínimo 4 fotos) y RN-13 (garantía 30 días).
+  - Crear el tablero en GitHub Projects con HU-01 a HU-30 como issues.
+  - Dibujar story map, casos de uso y wireframes (figuras en rojo).
+
+===============================================================================
+ SCRUM MASTER  (rama rol/scrum-master)
+===============================================================================
+
+Paso 1. Acuerdos de trabajo
+  - Se subió CONTRIBUTING.md.
+  Commit: "Scrum Master: agrega acuerdos de trabajo del equipo (CONTRIBUTING.md)"
+
+Paso 2. .gitignore
+  - Se ignoran: informacion/ (carpeta local), .claude/, CLAUDE.md, .env y
+    archivos de credenciales, entorno virtual de Python y auxiliares de LaTeX.
+  - La base de datos (db/schema.sql) SÍ se sube; las credenciales NO.
+  Commit: "Scrum Master: configura .gitignore (carpeta local, credenciales,
+           Python y auxiliares de LaTeX)"
+
+Paso 3. Documento de Ingeniería de .docx a LaTeX
+  - El .docx se convirtió a LaTeX y se dividió en un archivo por sección
+    (docs/documento/secciones/). Así cada rol edita su sección en su rama y
+    git fusiona sin conflictos (cierra el riesgo R-08).
+  - Archivo principal: docs/documento/IS1-Fase1-EquipoB.tex
+  - Ya no se maneja .docx.
+  Commit: "Scrum Master: migra el Documento de Ingeniería de .docx a LaTeX
+           dividido por secciones"
+
+Paso 4. Grafo del proyecto
+  - Se subió graphify-out/ (grafo de conocimiento del repositorio).
+  Commit: "Scrum Master: agrega el grafo del proyecto (graphify)"
+
+Paso 5. Formato del documento
+  - Preámbulo con formato del machote (carta, 2.5 cm, 11 pt, páginas
+    numeradas) y dos macros:
+      \figura{...}           figura con número, título y ruta de su fuente
+      \figurapendiente{...}  figura que falta: recuadro ROJO con descripción
+                             de lo que debe mostrar y ruta de su fuente
+  Commits: "Scrum Master: agrega tipo de columna L y figura pendiente en rojo
+            al preámbulo LaTeX", "Scrum Master: hace divisibles las rutas en
+            los pies de figura del documento"
+
+Paso 6. Gestión del proyecto (sección 2) y control de versiones
+  - 2.1: ramas por rol y commits "Rol: mensaje"; documento en LaTeX.
+  - 2.3: objetivos de S0 a S6; fechas y puntos en rojo (no hay registro).
+  - 2.4: R-08 cerrado; nuevos R-10 (uso de IA), R-11 (SQLite vs PostgreSQL),
+    R-12 (sin ambiente de pruebas).
+  - 2.6: declaración del uso de Claude Code en esta etapa.
+  - Control de versiones: renglón v1.1 (borrador).
+  - Versión del documento: v1.1; PDF en docs/entregas/IS1-Fase1-EquipoB-v1.1.pdf
+  Commits: ver "Scrum Master: ..." en el historial.
+
+Paso 7. README, CONTRIBUTING y este archivo
+  - README con cómo ejecutar el backend, la base y el documento.
+  - CONTRIBUTING con ramas por rol, formato de commits y reglas del LaTeX.
+  - Avances.txt (este archivo).
+
+Paso 8. Corrección del historial
+  - Los commits anteriores de esta etapa ("feat: ..." y "Grafo del
+    proyecto") se rehicieron con el formato "Rol: mensaje" y se repartieron
+    en las ramas de cada rol. Se hizo force push de main al repositorio
+    AbdiasChavez/Florentino. Los commits de los integrantes anteriores a esta
+    etapa (hasta "Merge pull request #5") no se modificaron.
+
+Pendientes del Scrum Master:
+  - Registrar fechas, puntos y minutas de cada sprint (2.3).
+  - Activar la protección de main en GitHub (PR + revisión + CI).
+  - Asignar el rol de QA Lead a un integrante.
+  - Que cada integrante declare su propio uso de IA (2.6).
+
+===============================================================================
+ QA LEAD  (rama rol/qa-lead)
+===============================================================================
+
+Paso 1. Infraestructura de pruebas
+  - backend/tests/conftest.py: base SQLite en memoria, SOLO datos
+    ficticios, un usuario por rol y un "reloj" controlable para probar
+    vigencias (5 días de cotización, 5 minutos del código 2FA).
+  Commit: "QA Lead: agrega fixtures de prueba con datos ficticios y reloj controlable"
+
+Paso 2. 35 pruebas automatizadas = 35 casos de aceptación (CPA-01 a CPA-35)
+  - Recepción, bahías y diagnóstico ........ CPA-01 a CPA-09
+  - Cotización y autorización 2FA .......... CPA-10 a CPA-20
+  - Cobro, entrega y crédito ............... CPA-21 a CPA-25
+  - Control de acceso, citas y panel ....... CPA-26 a CPA-35
+  - Incluyen valores límite: cotización a 5 días (vigente) vs. 6 (vencida);
+    incremento de 10 % exacto (no pide autorización) vs. 10.06 % (sí);
+    código a 5 min vs. 5 min 1 s.
+  - Resultado: 35 de 35 pasan. Un defecto encontrado y corregido: el portal
+    respondía 404 ante una cotización vencida en vez del aviso de RN-11
+    (CPA-11).
+  Commits: "QA Lead: agrega pruebas de ... (CPA-xx a CPA-yy)"
+
+Paso 3. Integración continua (.github/workflows/ci.yml)
+  - Corre en cada push y Pull Request:
+      1) pruebas del backend (pytest)
+      2) carga db/schema.sql en PostgreSQL 16 real
+      3) compila el documento LaTeX y guarda el PDF
+  Commit: "QA Lead: configura integración continua (pruebas, esquema en
+           PostgreSQL y documento LaTeX)"
+
+Paso 4. Documento
+  - Sección 5 completa: plan de pruebas (ISO/IEC/IEEE 29119-3), 35 casos de
+    aceptación y matriz de trazabilidad (todo requisito Must tiene historia
+    y caso que pasa).
+  - 10.1 con el resultado parcial.
+  Commits: "QA Lead: redacta plan de pruebas, 35 casos de aceptación y matriz
+            de trazabilidad (sección 5)", "QA Lead: registra el resultado
+            parcial de las pruebas automatizadas (sección 10.1)"
+
+Pendientes del QA Lead:
+  - Casos para almacén (RF-08.x) y para operación sin conexión (RNF-08/09).
+  - Pruebas de integración contra PostgreSQL (riesgo R-11).
+  - Pruebas manuales en celular y tableta (RNF-01 a RNF-03), SUS, QA cruzado.
+
+===============================================================================
+ DEVELOPERS  (rama rol/developers)
+===============================================================================
+
+Paso 1. Base de datos
+  - db/schema.sql: 26 tablas, 15 enumeraciones, vistas y disparadores
+    derivados del diagrama de clases v4.
+  Commit: "Developers: agrega esquema inicial de la base de datos PostgreSQL (db/schema.sql)"
+  - Ajustes: huella SHA-256 en "autorizacion" (RNF-04) y la vista
+    v_orden_saldo suma los pagos de todas las versiones de la cotización.
+  Commit: "Developers: agrega huella SHA-256 a la autorización y suma todos
+           los pagos de la orden en v_orden_saldo"
+
+Paso 2. Backend FastAPI (backend/app/)
+  - config.py, db.py, models.py: modelos iguales a las tablas del esquema.
+  - seguridad.py: contraseñas con PBKDF2, sesiones firmadas, permisos por rol,
+    tokens del cliente guardados solo como hash, códigos 2FA de 6 dígitos.
+  - servicios/ordenes.py: recepción, 4 fotos obligatorias (RN-12), bahías
+    (RN-05, 4 bahías y 5 lugares de estacionamiento), responsable (RN-09),
+    diagnóstico y máquina de estados de la orden.
+  - servicios/citas.py: citas en línea que quedan Pendientes (RN-08).
+  - servicios/cotizaciones.py: vigencia 5 días (RN-11), opcionales (RN-03),
+    código 2FA de un solo uso y 5 minutos (RN-02), re-cotización >10 %
+    (RN-04), huella SHA-256 (RNF-04), enlace seguro del cliente (RN-01).
+  - servicios/cobro.py: pagos, entrega bloqueada con saldo y crédito solo a
+    flotillas autorizado por el Gerente (RN-10), garantía de 30 días (RN-13).
+  - rutas/: 34 rutas REST + portal del cliente (/portal/{token}).
+  - semilla.py: carga datos FICTICIOS; la contraseña no está en el código.
+  Commits: "Developers: crea el backend FastAPI ...", "Developers: implementa
+           ..." (5 commits), "Developers: expone la API REST, el portal del
+           cliente y la carga de datos ficticios"
+
+Paso 3. Documento
+  - Diagrama de clases v4 agregado a la documentación
+    (docs/06-analisis/clases/, Figuras 6.5a y 6.5b).
+  - Fuentes PlantUML: estados de la orden y de la cotización, actividades
+    to-be de recepción y de cotización (docs/06-analisis/).
+  - Sección 6: DFD (en rojo), diccionario de datos, clases, objetos (en
+    rojo), tablas de estados y actividades (imágenes en rojo).
+  - Sección 7: estilo arquitectónico con 6 RNF, 5 ADR (estilo, pila, base de
+    datos, hospedaje, fotos y enlace seguro), paquetes; C4, despliegue,
+    secuencias y comunicación descritos en rojo.
+  - Sección 8 marcada como pendiente; sección 9.1-9.3 completa.
+  Commits: "Developers: agrega el diagrama de clases ...", "Developers:
+           redacta modelos de análisis ... (sección 6)", "Developers: redacta
+           estilo arquitectónico ... (sección 7)", "Developers: documenta
+           pila tecnológica ... (sección 9)"
+
+Pendientes de Developers:
+  - Interfaces web (PWA del personal y portal del cliente).
+  - Envío real de correo (hoy se simula), operación sin conexión y
+    sincronización (RNF-08/09), módulo de almacén (RF-08.x).
+  - Decidir hospedaje (ADR-004) y desplegar el ambiente de pruebas.
+  - Generar las imágenes marcadas en rojo a partir de sus fuentes PlantUML.
+
+===============================================================================
+ CÓMO VERIFICAR ESTE AVANCE
+===============================================================================
+
+  cd backend
+  python -m venv .venv && .venv/Scripts/activate
+  pip install -r requirements.txt
+  python -m pytest                     -> 35 passed
+  python -m app.semilla --demo
+  uvicorn app.main:app --reload        -> http://localhost:8000/docs
+
+  cd docs/documento
+  pdflatex -interaction=nonstopmode IS1-Fase1-EquipoB.tex   (dos veces)

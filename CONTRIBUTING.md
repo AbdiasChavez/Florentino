@@ -23,21 +23,34 @@ Se toman por consenso. Si no se logra:
 ## Ramas y Pull Requests
 
 - `main` está protegida: solo se integra mediante Pull Request.
-- Cada integrante trabaja en `rama/<NOMBRE>` (por ejemplo, `rama/DULCE`).
-- Todo Pull Request necesita **al menos una revisión de otro integrante** antes de integrarse.
+- Hay una rama por rol de Scrum: `rol/product-owner`, `rol/scrum-master`, `rol/qa-lead` y `rol/developers`.
+  Cada rol trabaja en la suya y la integra a `main` con un merge sin fast-forward (`git merge --no-ff`),
+  para que quede visible qué integró cada rol.
+- Todo Pull Request necesita **al menos una revisión de otro integrante** y la CI en verde antes de integrarse.
 - Antes de abrir un PR, revisa que no haya datos personales reales, contraseñas ni llaves.
 
 ## Commits
 
-- En español y en presente: «Agrega…», «Corrige…», «Redacta…».
-- Con referencia a la historia o al issue cuando aplique: `Agrega checklist de recepción (HU-01)`.
+- Formato **`Rol: mensaje`**, en español y en presente:
+  `Developers: implementa recepción con checklist (HU-01)`, `QA Lead: agrega pruebas de cotización (CPA-10)`.
+- Roles válidos: `Product Owner`, `Scrum Master`, `QA Lead`, `Developers`.
+- Con referencia a la historia, el caso de prueba o la sección del documento cuando aplique.
 
 ## Documentos
 
-- Los entregables van en `docs/entregas/` con el nombre `IS1-Fase1-EquipoB-v<versión>.docx` y `.pdf`.
+- El Documento de Ingeniería está en LaTeX en `docs/documento/`, **un archivo por sección** en
+  `docs/documento/secciones/`. Cada rol edita sus secciones y git fusiona los cambios. Ya no se usa `.docx`.
+- Compila con `pdflatex -interaction=nonstopmode IS1-Fase1-EquipoB.tex` (dos veces) y revisa el `.log`
+  si hay errores. El PDF entregable va en `docs/entregas/IS1-Fase1-EquipoB-v<versión>.pdf`.
 - Los diagramas se guardan con su archivo fuente (PlantUML, draw.io o Mermaid) junto a la imagen.
-- El `.docx` es binario y git no puede fusionarlo: **solo una persona integra los cambios en cada entrega**.
-  Los demás entregan su sección en un archivo aparte (o en Markdown en `docs/`) para que esa persona la integre.
+- Una figura que todavía no existe se deja con `\figurapendiente{número}{título}{qué debe mostrar}{ruta}`:
+  sale en rojo con su descripción hasta que alguien la reemplace por `\figura{...}`.
+
+## Código
+
+- Backend en `backend/`. Las reglas de negocio (RN-xx) van en `app/servicios/`, nunca en las rutas.
+- Toda regla o permiso nuevo lleva su prueba en `backend/tests/` con el ID del caso (`test_cpaNN_...`).
+- Las credenciales van en `backend/.env`, que no se sube. Usa `backend/.env.example` como plantilla.
 
 ## Datos personales
 
