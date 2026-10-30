@@ -1,0 +1,40 @@
+@startuml cotizacion-autorizacion
+' Figura 6.10. Actividad to-be: cotización y autorización con código 2FA.
+title Cotización y autorización con el sistema (to-be)
+
+|Jefe de mecánicos|
+start
+:Genera la cotización desglosada\n(mano de obra, refacciones, opcionales);
+|Sistema|
+:Fija vigencia de 5 días;
+:Envía al cliente el enlace seguro;
+|Cliente|
+:Abre el enlace en su celular;
+:Elige los conceptos opcionales;
+if (¿Acepta?) then (no)
+  :Rechaza;
+  |Sistema|
+  :Cotización Rechazada,\norden Cancelada;
+  stop
+endif
+|Cliente|
+:Pide su código de verificación;
+|Sistema|
+:Envía código de 6 dígitos\n(vigente 5 minutos) al correo;
+|Cliente|
+:Captura el código;
+|Sistema|
+if (¿Código válido y cotización vigente?) then (sí)
+  :Registra autorización con fecha, IP,\nmonto y huella SHA-256;
+  :Orden pasa a Autorizada;
+else (no)
+  :Pide un código nuevo;
+endif
+|Jefe de mecánicos|
+:Realiza el trabajo;
+if (¿Trabajo adicional > 10 %?) then (sí)
+  :Re-cotiza; el sistema bloquea\nel avance hasta nueva autorización;
+endif
+:Marca el trabajo terminado;
+stop
+@enduml

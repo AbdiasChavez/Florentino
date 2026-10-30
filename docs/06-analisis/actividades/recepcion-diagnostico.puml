@@ -1,0 +1,32 @@
+@startuml recepcion-diagnostico
+' Figura 6.9. Actividad to-be: recepción del vehículo hasta el diagnóstico.
+title Recepción y diagnóstico con el sistema (to-be)
+
+|Cliente|
+start
+:Llega con su vehículo\n(con cita confirmada o sin cita);
+|Recepcionista|
+:Busca al cliente por teléfono o placas;
+if (¿Está registrado?) then (no)
+  :Registra cliente y vehículo\n(con aviso de privacidad);
+endif
+:Registra kilometraje, combustible\ny checklist de carrocería;
+:Toma 4 fotografías obligatorias\n(frente, trasera, izquierda, derecha);
+|Sistema|
+:Abre la orden en estado Abierta;
+if (¿Hay bahía libre?) then (sí)
+else (no)
+  :Marca la orden EnEsperaDeBahia\ny alerta a la recepcionista;
+endif
+|Jefe de mecánicos|
+:Asigna bahía y mecánico responsable\n(y colaboradores);
+:Registra el diagnóstico en la tableta;
+|Sistema|
+if (¿Checklist completo y 4 fotos?) then (sí)
+  :Orden pasa a Diagnosticada;
+else (no)
+  :Rechaza el diagnóstico (RN-12);
+  stop
+endif
+stop
+@enduml

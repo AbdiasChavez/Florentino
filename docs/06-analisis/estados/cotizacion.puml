@@ -1,0 +1,16 @@
+@startuml cotizacion
+' Figura 6.8. Máquina de estados de Cotizacion.
+' Coincide con backend/app/servicios/cotizaciones.py.
+title Estados de la Cotización
+hide empty description
+
+[*] --> Pendiente : generarCotizacion\n[orden Diagnosticada o Autorizada,\n≥ 1 concepto, sin otra pendiente vigente]\n/ Recepcionista o JefeMecanicos
+[*] --> Autorizada : recotizar\n[orden Autorizada y total ≤ inicial × 1.10 (RN-04)]\n/ Recepcionista o JefeMecanicos
+Pendiente --> Pendiente : cambiarSeleccion\n[solo conceptos opcionales (RN-03)]\n/ Cliente o Recepcionista
+Pendiente --> Autorizada : confirmarCodigo2FA\n[vigente, código válido (RN-02)]\n/ Cliente o Recepcionista
+Pendiente --> Rechazada : rechazar [vigente] / Cliente
+Pendiente --> Vencida : pasaFechaVencimiento\n[hoy > emisión + 5 días (RN-11)]\n/ Sistema
+Autorizada --> [*]
+Rechazada --> [*]
+Vencida --> [*]
+@enduml
