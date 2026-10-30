@@ -1,0 +1,42 @@
+# Carpetas/archivos locales
+informacion/
+.claude/
+CLAUDE.md
+graphify-out/cache/hook_sessions/
+
+# Credenciales (la base de datos sí se versiona: db/schema.sql)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+db/*.env
+db/credenciales*
+db/credentials*
+db/*.secret
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db
+*.sqlite3
+backend/media/
+
+# LaTeX: archivos auxiliares de compilación y PDF intermedios
+# (el PDF entregable se copia a docs/entregas/)
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+docs/documento/*.pdf
+docs/propuesta/*.pdf
+
+# Word: archivos temporales
+~$*
