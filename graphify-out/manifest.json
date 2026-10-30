@@ -1,62 +1,224 @@
 {
   "README.md": {
-    "mtime": 1793316765.2909698,
-    "seen": 1793316789.2065594,
-    "ast_hash": "d2d02e702a85dfd028269340b7f93f91",
-    "semantic_hash": ""
-  },
-  "informacion/contexto.md": {
-    "mtime": 1793314861.494123,
-    "seen": 1793315491.8358428,
-    "ast_hash": "3599dfe4368cd814217af1dd9e6c8cef",
-    "semantic_hash": ""
-  },
-  "informacion/Diagrama_Clases_Taller_v4_e1.png": {
-    "mtime": 1792561699.5960333,
-    "seen": 1793315491.8358443,
-    "ast_hash": "d6a1581a9c622fedcf48c0c19c75d2e6",
-    "semantic_hash": ""
-  },
-  "informacion/Diagrama_Clases_Taller_v4_e2.png": {
-    "mtime": 1792561701.956093,
-    "seen": 1793315491.8358455,
-    "ast_hash": "6c2f976d998063d598c79a1f7da3c4ed",
-    "semantic_hash": ""
-  },
-  ".claude/settings.json": {
-    "mtime": 1793315554.83201,
-    "seen": 1793316789.2065408,
-    "ast_hash": "c92fdb099b6078fc3c03f64329f1c7a9",
-    "semantic_hash": ""
-  },
-  "CLAUDE.md": {
-    "mtime": 1793315554.8254945,
-    "seen": 1793316789.2065504,
-    "ast_hash": "67d88e9d0760c3ba54c75dfd9551c1c5",
+    "mtime": 1793322138.4795964,
+    "seen": 1793322214.740025,
+    "ast_hash": "8afe758cb8d830f3513f2515de0e9a52",
     "semantic_hash": ""
   },
   "CONTRIBUTING.md": {
-    "mtime": 1793316757.5523584,
-    "seen": 1793316789.206555,
-    "ast_hash": "097307caf4391a5cbe06e6808cecc62f",
+    "mtime": 1793322150.1807377,
+    "seen": 1793322214.7400222,
+    "ast_hash": "c560cdab6eed7003fb484737d458bf6f",
     "semantic_hash": ""
   },
-  "graphify-out/converted/IS1-Fase1-EquipoB-v0.1_95255212.md": {
-    "mtime": 1793316775.3899407,
-    "seen": 1793316789.2065625,
-    "ast_hash": "1e67d58b1cc4f290ce0a60b2befe39ee",
+  ".github/workflows/ci.yml": {
+    "mtime": 1793322052.6495004,
+    "seen": 1793322214.73997,
+    "ast_hash": "f9c6715767d0350d7e8a95ae8a7e6de4",
     "semantic_hash": ""
   },
-  "graphify-out/converted/Propuesta de Soluci\u00f3n Tecnol\u00f3gica_890774e7.md": {
-    "mtime": 1793316774.641846,
-    "seen": 1793316789.206566,
-    "ast_hash": "f14732064d7d5f41ced6053d723c52c8",
+  "backend/app/__init__.py": {
+    "mtime": 1793322052.6515267,
+    "seen": 1793322214.7399778,
+    "ast_hash": "0df36c60e9d77efb315980c88c911d6e",
     "semantic_hash": ""
   },
-  "docs/entregas/IS1-Fase1-EquipoB-v0.1.pdf": {
-    "mtime": 1793316733.809275,
-    "seen": 1793316789.2069035,
-    "ast_hash": "493cd5b98772a647ddc2ac3a32b18e19",
+  "backend/app/config.py": {
+    "mtime": 1793322052.6515267,
+    "seen": 1793322214.7399812,
+    "ast_hash": "bc707f778acc6af978df1b6643a265aa",
+    "semantic_hash": ""
+  },
+  "backend/app/db.py": {
+    "mtime": 1793322052.6515267,
+    "seen": 1793322214.739983,
+    "ast_hash": "118151a5ce90cc5516dd5090adfa35a9",
+    "semantic_hash": ""
+  },
+  "backend/app/errores.py": {
+    "mtime": 1793322052.652696,
+    "seen": 1793322214.7399852,
+    "ast_hash": "e21505a6eb33b3c836c54b0233c062db",
+    "semantic_hash": ""
+  },
+  "backend/app/main.py": {
+    "mtime": 1793322052.652696,
+    "seen": 1793322214.7399867,
+    "ast_hash": "cb1a0f220a01db2c6e411bae369e671d",
+    "semantic_hash": ""
+  },
+  "backend/app/models.py": {
+    "mtime": 1793322052.652696,
+    "seen": 1793322214.7399876,
+    "ast_hash": "4d626f52e2773dafb90b1c9fc3f829e1",
+    "semantic_hash": ""
+  },
+  "backend/app/notificaciones.py": {
+    "mtime": 1793322052.652696,
+    "seen": 1793322214.739989,
+    "ast_hash": "7901d8d1c8ff3ae7d0c149cc250f3b44",
+    "semantic_hash": ""
+  },
+  "backend/app/reloj.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.73999,
+    "ast_hash": "6156e8a5b5526fb5696b61bab7c02456",
+    "semantic_hash": ""
+  },
+  "backend/app/rutas/__init__.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7399917,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "backend/app/rutas/personal.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7399926,
+    "ast_hash": "43f2fd6731760150b1643fce2faabc45",
+    "semantic_hash": ""
+  },
+  "backend/app/rutas/portal.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7399936,
+    "ast_hash": "8185aa65cfcad54fd2480e091e091452",
+    "semantic_hash": ""
+  },
+  "backend/app/rutas/serializar.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7399955,
+    "ast_hash": "d9d7156c0025d4d21d63007d7bad6b78",
+    "semantic_hash": ""
+  },
+  "backend/app/rutas/taller.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7399967,
+    "ast_hash": "7954e34166ecdb817ee745be3b65e17d",
+    "semantic_hash": ""
+  },
+  "backend/app/schemas.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7399976,
+    "ast_hash": "fe7a1f074fec8454c58e9b2f70d8520f",
+    "semantic_hash": ""
+  },
+  "backend/app/seguridad.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.739999,
+    "ast_hash": "33e533a71938c313895e33914226ad6b",
+    "semantic_hash": ""
+  },
+  "backend/app/semilla.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.74,
+    "ast_hash": "2ff199d9d2572583e04fba2ecb93da76",
+    "semantic_hash": ""
+  },
+  "backend/app/servicios/__init__.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.740001,
+    "ast_hash": "75eacb208f617f5b048983a99b2b8f80",
+    "semantic_hash": ""
+  },
+  "backend/app/servicios/citas.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7400024,
+    "ast_hash": "9dfeef426f77c3b61474ab6d06f66a86",
+    "semantic_hash": ""
+  },
+  "backend/app/servicios/cobro.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7400036,
+    "ast_hash": "927cc61cf53590ef723d68a86a6041e2",
+    "semantic_hash": ""
+  },
+  "backend/app/servicios/cotizaciones.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.740006,
+    "ast_hash": "f890f7b30cd2cd393dadabdb681dcee5",
+    "semantic_hash": ""
+  },
+  "backend/app/servicios/ordenes.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7400074,
+    "ast_hash": "bca5d5d707619d89197ae72f0642405f",
+    "semantic_hash": ""
+  },
+  "backend/tests/__init__.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7400093,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "backend/tests/conftest.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7400105,
+    "ast_hash": "c529118dcba46d772636d19d416ca569",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_acceso.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.740012,
+    "ast_hash": "18c6e19795f6bc7d81e6cde755572b24",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_citas_panel.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7400136,
+    "ast_hash": "1b5c4b3b6c0719492cd7b090024cb3ff",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_cobro.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.740015,
+    "ast_hash": "3cdb50ee60ebb9959f1ae4fe9c795c53",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_cotizacion.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.7400165,
+    "ast_hash": "5289cf1b640de320df6b40b3ce8f900c",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_recepcion.py": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.740018,
+    "ast_hash": "b835ca4c31a6a26df791fe84fe1838a4",
+    "semantic_hash": ""
+  },
+  "Avances.txt": {
+    "mtime": 1793322201.8839297,
+    "seen": 1793322214.7400196,
+    "ast_hash": "89c5364ac310347d249bc1a6b1c2cbc9",
+    "semantic_hash": ""
+  },
+  "backend/requirements.txt": {
+    "mtime": 1793322052.6540754,
+    "seen": 1793322214.740027,
+    "ast_hash": "55de4d41a5038c5d97da060f5f2c89c9",
+    "semantic_hash": ""
+  },
+  "docs/entregas/IS1-Fase1-EquipoB-v1.1.pdf": {
+    "mtime": 1793322125.195377,
+    "seen": 1793322214.7400284,
+    "ast_hash": "eb2f72aa6427de540c268f7eab25ffcd",
+    "semantic_hash": ""
+  },
+  "docs/06-analisis/clases/diagrama-clases-v4-1.png": {
+    "mtime": 1793322052.6671736,
+    "seen": 1793322214.7400298,
+    "ast_hash": "d6a1581a9c622fedcf48c0c19c75d2e6",
+    "semantic_hash": ""
+  },
+  "docs/06-analisis/clases/diagrama-clases-v4-2.png": {
+    "mtime": 1793322052.6690326,
+    "seen": 1793322214.7400315,
+    "ast_hash": "6c2f976d998063d598c79a1f7da3c4ed",
+    "semantic_hash": ""
+  },
+  "docs/documento/figuras/proceso-as-is.png": {
+    "mtime": 1793320859.0971136,
+    "seen": 1793322214.740033,
+    "ast_hash": "7e6619c2a59762e27b259558f0bd9780",
     "semantic_hash": ""
   }
 }
