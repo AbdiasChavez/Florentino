@@ -4,6 +4,9 @@ incidencias}\label{reporte-final-de-pruebas-e-incidencias}
 \subsection{10.1 Resultado de los casos de
 prueba}\label{resultado-de-los-casos-de-prueba}
 
+\textcolor{red}{Corte parcial (29/10/2026). El reporte final se completa en el Sprint 6 con la
+ejecución de aceptación con el cliente y el QA cruzado.}
+
 {\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5984}}
@@ -18,12 +21,14 @@ prueba}\label{resultado-de-los-casos-de-prueba}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Casos de prueba diseñados & \\
-Casos ejecutados & \\
-Pasan & \\
-Fallan & \\
-Bloqueados & \\
-Pruebas unitarias automatizadas (número y resultado en CI) & \\
+Casos de prueba diseñados & 35 (CPA-01 a CPA-35, sección 5.2) \\
+Casos ejecutados & 35, automatizados \\
+Pasan & 35 \\
+Fallan & 0. CPA-11 falló en su primera ejecución (el portal respondía 404 ante una cotización
+vencida, en lugar del aviso de RN-11); se corrigió antes de integrar a main. \\
+Bloqueados & 0 \\
+Pruebas unitarias automatizadas (número y resultado en CI) & 35 pruebas de pytest; se ejecutan en
+GitHub Actions en cada push y Pull Request \\
 \end{longtable}
 }
 
