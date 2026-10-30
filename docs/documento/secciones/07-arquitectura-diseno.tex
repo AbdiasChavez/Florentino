@@ -2,126 +2,214 @@
 
 \subsection{7.1 Estilo arquitectónico}\label{estilo-arquitectuxf3nico}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Expliquen el estilo elegido (capas, MVC,
-cliente-servidor con API\ldots) y cómo atiende al menos \textbf{4
-requisitos no funcionales} de la sección 4.6.}
-\end{quote}
+El sistema sigue un estilo \textbf{cliente-servidor con API REST}. El servidor es un \textbf{monolito
+modular en capas} (ADR-001):
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.1922}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.8078}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\textbf{RNF}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Decisión de arquitectura que lo atiende}
-\end{minipage} \\
-\midrule\noalign{}
+\begin{itemize}
+\tightlist
+\item \textbf{Rutas} (\texttt{app/rutas/}): traducen HTTP a llamadas de servicio, validan la entrada con
+Pydantic y declaran qué rol puede usar cada operación.
+\item \textbf{Servicios} (\texttt{app/servicios/}): toda la lógica y las reglas de negocio RN-xx. Es la
+única capa que cambia el estado de una orden o de una cotización.
+\item \textbf{Modelo} (\texttt{app/models.py}): entidades del dominio, iguales a las clases de 6.3 y a las
+tablas de \texttt{db/schema.sql}.
+\item \textbf{Datos}: PostgreSQL (ADR-003), que además refuerza las restricciones con CHECK, índices únicos
+parciales y disparadores.
+\end{itemize}
+
+Los clientes son dos interfaces web que consumen la misma API: la del personal del taller (tableta o
+laptop) y el portal del cliente, al que se entra con el enlace seguro (ADR-005).
+\pendiente{las interfaces web (PWA) se construyen en los Sprints 4 y 5; hoy la API se opera desde su
+documentación interactiva en /docs.}
+
+{\small
+\begin{longtable}{@{}L{0.14\linewidth}L{0.82\linewidth}@{}}
+\toprule
+\textbf{RNF} & \textbf{Decisión de arquitectura que lo atiende} \\
+\midrule
 \endhead
-\bottomrule\noalign{}
+\bottomrule
 \endlastfoot
-& \\
-& \\
-& \\
-& \\
+RNF-04 & Una sola capa de servicios registra las autorizaciones: guarda fecha y hora UTC, IP, medio, monto
+y una huella SHA-256 de lo aceptado, que se recalcula para detectar alteraciones (CPA-20). El historial de
+estados y los diagnósticos son registros inmutables (disparador \texttt{fn\_registro\_inmutable}). \\
+RNF-05 & Contraseñas con PBKDF2-SHA256; tokens del cliente y códigos 2FA guardados solo como hash; control
+de acceso por rol declarado en cada ruta; el portal identifica la orden por el token y no por el folio
+(OWASP A01, CPA-30); HTTPS lo provee el hospedaje (ADR-004). \\
+RNF-07 & Toda la pila es de código abierto: Python, FastAPI, SQLAlchemy, PostgreSQL, pytest (ADR-002 y
+ADR-003). \\
+RNF-08 y RNF-09 & Las entidades «OfflineSync» llevan \texttt{uuid\_local} único, generado en el dispositivo:
+reenviar un registro ya sincronizado no lo duplica (sincronización idempotente). La captura sin conexión
+vivirá en la PWA con IndexedDB. \pendiente{endpoint de sincronización por lotes (Sprint 4).} \\
+RNF-10 & Las operaciones del portal son seguras de reintentar: pedir un código nuevo expira el anterior y
+un código solo se acepta una vez (CPA-15), así que un reintento automático no duplica autorizaciones. \\
+RNF-01 & El portal del cliente es web y responsivo; no requiere instalar nada ni conceder permisos. \\
 \end{longtable}
 }
 
 \subsection{7.2 Diagramas C4}\label{diagramas-c4}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Contexto, Contenedores y Componentes de al
-menos un contenedor.}
-\end{quote}
+\figurapendiente{7.1}{C4 nivel 1: contexto del sistema}{el sistema y sus usuarios: Cliente (portal web
+con enlace seguro), Recepcionista, Jefe de Mecánicos, Gerente y Encargado de Almacén; sistemas externos:
+servicio de correo electrónico (enlaces y códigos 2FA) y, en Fase 2, servicio de SMS.}{docs/07-arquitectura/c4/contexto.puml}
 
-{[}Figuras 7.1 a 7.3.{]}
+\figurapendiente{7.2}{C4 nivel 2: contenedores}{PWA del personal (navegador en tableta/laptop, con
+IndexedDB para operar sin conexión), portal del cliente (navegador móvil), API REST FastAPI (Python 3.12),
+base de datos PostgreSQL 16, almacenamiento de fotografías y servicio de correo; protocolos HTTPS/JSON
+entre navegador y API y SQL (psycopg) entre API y base de datos.}{docs/07-arquitectura/c4/contenedores.puml}
+
+\figurapendiente{7.3}{C4 nivel 3: componentes de la API}{componentes Rutas del personal
+(\texttt{rutas/personal.py}), Rutas del taller (\texttt{rutas/taller.py}), Portal (\texttt{rutas/portal.py}),
+Seguridad (\texttt{seguridad.py}), Servicios de órdenes, citas, cotizaciones y cobro
+(\texttt{servicios/}), Notificaciones (\texttt{notificaciones.py}) y Modelo/ORM
+(\texttt{models.py}, \texttt{db.py}), con sus dependencias.}{docs/07-arquitectura/c4/componentes-api.puml}
 
 \subsection{7.3 Registros de decisiones de arquitectura
 (ADR)}\label{registros-de-decisiones-de-arquitectura-adr}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Mínimo \textbf{4 ADR}: estilo
-arquitectónico, pila tecnológica, base de datos y hospedaje. Equipo A:
-un ADR adicional sobre el soporte sin conexión. Equipo B: un ADR
-adicional sobre el almacenamiento de fotos y el acceso del cliente
-mediante un enlace seguro. Cada ADR evalúa al menos dos alternativas.}
-\end{quote}
-
-\subsubsection{Plantilla de ADR (repetir por cada
-decisión)}\label{plantilla-de-adr-repetir-por-cada-decisiuxf3n}
-
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Campo}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Contenido}
-\end{minipage} \\
-\midrule\noalign{}
+{\small
+\begin{longtable}{@{}L{0.2\linewidth}L{0.76\linewidth}@{}}
+\toprule
+\textbf{Campo} & \textbf{Contenido} \\
+\midrule
 \endhead
-\bottomrule\noalign{}
+\bottomrule
 \endlastfoot
-ID y título & ADR-001 {[}Decisión{]} \\
-Fecha y estado & {[}Propuesto / aceptado / reemplazado por
-ADR-\ldots{]} \\
-Contexto & {[}Qué problema o fuerza obliga a decidir{]} \\
-Alternativas evaluadas & 1. \ldots{} 2. \ldots{} \\
-Decisión & \\
-Consecuencias & {[}Positivas y negativas; qué se vuelve más fácil o más
-difícil{]} \\
-RNF relacionados & RNF-\ldots{} \\
+ID y título & \textbf{ADR-001 Estilo arquitectónico: monolito modular en capas con API REST} \\
+Fecha y estado & 29/10/2026 · Aceptado (reemplaza la propuesta de microservicios de la Propuesta de
+Solución Tecnológica) \\
+Contexto & Equipo de 5 personas con poca experiencia en FastAPI (R-07), 6 sprints, hospedaje gratuito y
+reglas de negocio que cruzan varias entidades en una misma transacción (autorizar cambia cotización,
+orden e historial). \\
+Alternativas evaluadas & 1. Microservicios (citas, órdenes, cotizaciones, cobro). 2. Monolito MVC con
+páginas generadas en el servidor. 3. Monolito modular en capas que expone una API REST. \\
+Decisión & Opción 3. Los módulos de servicio están separados por área y solo dependen hacia abajo
+(7.5), de modo que podrían separarse después si hiciera falta. \\
+Consecuencias & \textbf{+} Una sola transacción por operación; un solo despliegue; pruebas de extremo a
+extremo sencillas. \textbf{+} La API sirve igual a la PWA del personal y al portal del cliente.
+\textbf{--} Escala como una sola unidad (suficiente para un taller de 4 bahías). \textbf{--} Hay que vigilar
+que las rutas no contengan lógica de negocio. \\
+RNF relacionados & RNF-04, RNF-07, RNF-10 \\
+\midrule
+ID y título & \textbf{ADR-002 Pila tecnológica: Python 3.12 + FastAPI + SQLAlchemy 2} \\
+Fecha y estado & 29/10/2026 · Aceptado (la interfaz web queda por decidir en el Sprint 3) \\
+Contexto & La propuesta al cliente comprometió Python con FastAPI y herramientas gratuitas. Se necesita
+validación de datos, documentación automática de la API y un ORM que funcione con PostgreSQL y SQLite. \\
+Alternativas evaluadas & 1. Django + Django REST Framework. 2. Node.js + Express. 3. FastAPI + SQLAlchemy +
+Pydantic. \\
+Decisión & Opción 3: validación declarativa, documentación OpenAPI en \texttt{/docs} sin trabajo extra y
+pruebas con \texttt{TestClient}. \\
+Consecuencias & \textbf{+} Curva de aprendizaje corta para un equipo que ya usa Python. \textbf{--} FastAPI
+no trae panel de administración ni autenticación integrada: se implementó la propia con la biblioteca
+estándar (\texttt{seguridad.py}). \\
+RNF relacionados & RNF-07, RNF-05 \\
+\midrule
+ID y título & \textbf{ADR-003 Base de datos: PostgreSQL 16} \\
+Fecha y estado & 29/10/2026 · Aceptado \\
+Contexto & El modelo tiene restricciones fuertes: especialización disjunta, una bahía con una sola orden
+activa, una cita confirmada por bahía y horario, historial inmutable, atributos derivados. \\
+Alternativas evaluadas & 1. MySQL 8. 2. SQLite. 3. PostgreSQL 16. \\
+Decisión & PostgreSQL en el ambiente de pruebas y producción: tipos ENUM, índices únicos parciales,
+columnas generadas y disparadores PL/pgSQL. SQLite solo para desarrollo local y pruebas automatizadas;
+por eso las reglas también se validan en la capa de servicios. \\
+Consecuencias & \textbf{+} La base de datos protege las reglas aunque alguien la modifique directamente.
+\textbf{--} Dos motores (SQLite y PostgreSQL): la CI carga el esquema real en PostgreSQL para detectar
+diferencias. \\
+RNF relacionados & RNF-04, RNF-07, RNF-09 \\
+\midrule
+ID y título & \textbf{ADR-004 Hospedaje del ambiente de pruebas} \\
+Fecha y estado & 29/10/2026 · \textcolor{red}{Propuesto (decidir antes del Sprint 4)} \\
+Contexto & Se necesita un ambiente de pruebas con HTTPS, PostgreSQL y almacenamiento de fotografías, sin
+costo (RNF-07). \\
+Alternativas evaluadas & 1. Render (servicio web gratuito) + PostgreSQL gestionado gratuito (Neon o
+Supabase). 2. Fly.io. 3. Servidor dentro del taller. \\
+Decisión & \pendiente{elegir con el equipo; la recomendación inicial es la opción 1 por su HTTPS
+automático y despliegue desde GitHub.} \\
+Consecuencias & Opción 1: \textbf{+} sin servidor que mantener; \textbf{--} el plan gratuito suspende el
+servicio tras inactividad y limita el almacenamiento (R-06). \\
+RNF relacionados & RNF-05, RNF-07 \\
+\midrule
+ID y título & \textbf{ADR-005 Almacenamiento de fotografías y acceso del cliente con enlace seguro} \\
+Fecha y estado & 29/10/2026 · Aceptado (acceso del cliente); fotografías: aceptado para v0.1.0 \\
+Contexto & El cliente debe consultar y autorizar sin cuenta ni contraseña, pero nadie debe poder ver la
+orden de otro (OWASP A01). Cada recepción genera al menos 4 fotografías que no deben saturar el
+hospedaje gratuito. \\
+Alternativas evaluadas & \textbf{Acceso:} 1. Cuenta de cliente con contraseña. 2. Folio + teléfono.
+3. Token aleatorio en el enlace + código 2FA para autorizar. \textbf{Fotos:} 1. Guardarlas en la base de
+datos (BLOB). 2. Sistema de archivos del servidor. 3. Servicio de almacenamiento de objetos. \\
+Decisión & \textbf{Acceso:} opción 3 --- token de 256 bits generado con \texttt{secrets}, guardado solo como
+hash SHA-256, un enlace activo por orden, que expira al entregar y saldar (RN-01); autorizar exige además
+el código de 6 dígitos enviado al correo (RN-02). \textbf{Fotos:} opción 2 en v0.1.0 (carpeta
+\texttt{MEDIA\_DIR}, solo JPEG/PNG/WebP de hasta 5 MB, nombre aleatorio); la base guarda solo la ruta, así
+que migrar a la opción 3 no cambia el modelo. \\
+Consecuencias & \textbf{+} El folio no sirve para entrar (CPA-30); quien intercepte el enlace aún necesita
+el correo para autorizar. \textbf{--} Si el cliente pierde el enlace, el taller debe reenviarlo. \textbf{--}
+Los archivos locales se pierden si el hospedaje gratuito reinicia el disco: \pendiente{confirmar con
+ADR-004 y, de ser necesario, pasar a almacenamiento de objetos.} \\
+RNF relacionados & RNF-04, RNF-05, RNF-01 \\
 \end{longtable}
 }
 
 \subsection{7.4 Diagramas de artefactos y de
 despliegue}\label{diagramas-de-artefactos-y-de-despliegue}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Deben reflejar el ambiente de pruebas real:
-nodos, artefactos instalados y protocolos de comunicación.}
-\end{quote}
+\figurapendiente{7.4}{Diagrama de artefactos}{el artefacto \texttt{backend/} (paquete Python con
+\texttt{app/} y \texttt{requirements.txt}), \texttt{db/schema.sql} y, cuando exista, el paquete estático de
+la PWA; con sus dependencias de manifestación hacia los componentes de 7.3.}{docs/07-arquitectura/despliegue/artefactos.puml}
 
-{[}Figuras 7.4 y 7.5.{]}
+\figurapendiente{7.5}{Diagrama de despliegue del ambiente de pruebas}{nodo «dispositivo» tableta/laptop
+del taller y celular del cliente (navegador), nodo «servidor» del hospedaje con el proceso uvicorn y la
+API, nodo «base de datos» PostgreSQL 16 y almacenamiento de fotografías; conexiones HTTPS y TCP/5432. Debe
+reflejar el hospedaje que se elija en ADR-004.}{docs/07-arquitectura/despliegue/despliegue.puml}
 
 \subsection{7.5 Diagrama de paquetes}\label{diagrama-de-paquetes}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Organización de módulos y sus dependencias,
-sin dependencias circulares.}
-\end{quote}
+Dependencias entre paquetes de \texttt{backend/app} (todas en un solo sentido, sin ciclos):
+\texttt{rutas} $\rightarrow$ \texttt{servicios} $\rightarrow$ \texttt{models} $\rightarrow$ \texttt{db};
+\texttt{rutas} $\rightarrow$ \texttt{seguridad}, \texttt{schemas}; dentro de \texttt{servicios}:
+\texttt{cobro} $\rightarrow$ \texttt{cotizaciones} $\rightarrow$ \texttt{ordenes}, y \texttt{citas} es
+independiente.
 
-{[}Figura 7.6.{]}
+\figurapendiente{7.6}{Diagrama de paquetes del backend}{los paquetes \texttt{app.rutas},
+\texttt{app.servicios} (ordenes, citas, cotizaciones, cobro), \texttt{app.models}, \texttt{app.schemas},
+\texttt{app.seguridad}, \texttt{app.notificaciones} y \texttt{app.db}, con las dependencias «import» descritas
+arriba.}{docs/07-arquitectura/paquetes.puml}
 
 \subsection{7.6 Diagramas de clases de la
 solución}\label{diagramas-de-clases-de-la-soluciuxf3n}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Clases del flujo del núcleo tal como existen
-en el código (controladores, servicios, repositorios, entidades). Deben
-coincidir con el repositorio.}
-\end{quote}
-
-{[}Figura 7.7.{]}
+\figurapendiente{7.7}{Clases de la solución del flujo núcleo}{las clases tal como existen en el código:
+routers \texttt{personal}, \texttt{taller} y \texttt{portal}; módulos de servicio \texttt{ordenes}
+(\texttt{abrir\_orden}, \texttt{asignar}, \texttt{registrar\_diagnostico}, \texttt{cambiar\_estado}),
+\texttt{cotizaciones} (\texttt{crear\_cotizacion}, \texttt{solicitar\_codigo}, \texttt{confirmar\_codigo},
+\texttt{huella}), \texttt{cobro} (\texttt{registrar\_pago}, \texttt{entregar}); entidades
+\texttt{OrdenServicio}, \texttt{RecepcionVehicular}, \texttt{Cotizacion}, \texttt{Autorizacion},
+\texttt{TokenAcceso}; y los esquemas Pydantic de entrada y salida.}{docs/07-arquitectura/clases-solucion.puml}
 
 \subsection{7.7 Diagramas de secuencia}\label{diagramas-de-secuencia}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Mínimo \textbf{4}, incluido el escenario
-principal del flujo del núcleo.}
-\end{quote}
+\figurapendiente{7.8}{Secuencia: recepción del vehículo (escenario principal del flujo núcleo)}{Recepcionista
+→ \texttt{POST /ordenes} → \texttt{ordenes.abrir\_orden} (valida vehículo, cita y capacidad) → crea
+OrdenServicio, HistorialEstado y RecepcionVehicular → respuesta con folio y alerta de bahías; luego
+\texttt{POST /ordenes/\{folio\}/fotografias} por cada posición.}{docs/07-arquitectura/secuencias/recepcion.puml}
 
-{[}Figuras 7.8 a 7.11.{]}
+\figurapendiente{7.9}{Secuencia: autorización remota con código 2FA}{Cliente → \texttt{POST
+/portal/\{token\}/codigo} → \texttt{token\_valido} → \texttt{solicitar\_codigo} → notificaciones (correo);
+Cliente → \texttt{POST /portal/\{token\}/autorizacion} → \texttt{confirmar\_codigo} (vigencia, código,
+huella) → \texttt{cambiar\_estado(Autorizada)}.}{docs/07-arquitectura/secuencias/autorizacion-remota.puml}
+
+\figurapendiente{7.10}{Secuencia: re-cotización mayor al 10\,\%}{Jefe de mecánicos crea cotización
+versión 2 → el servicio compara con el total inicial → queda Pendiente y se envía enlace →
+\texttt{terminar} es rechazado (RN-04) hasta que el cliente autoriza.}{docs/07-arquitectura/secuencias/recotizacion.puml}
+
+\figurapendiente{7.11}{Secuencia: pago y entrega}{Recepcionista → \texttt{POST pagos} →
+\texttt{registrar\_pago} (no excede saldo) → \texttt{POST entrega} → \texttt{entregar} (saldo o crédito) →
+Cerrada, Garantía, bahía libre y token expirado.}{docs/07-arquitectura/secuencias/entrega.puml}
 
 \subsection{7.8 Diagrama de
 comunicación}\label{diagrama-de-comunicaciuxf3n}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Al menos uno.}
-\end{quote}
-
-{[}Figura 7.12.{]}
+\figurapendiente{7.12}{Comunicación: asignación de bahía}{objetos \texttt{:RutaTaller},
+\texttt{:ServicioOrdenes}, \texttt{os:OrdenServicio}, \texttt{b:Bahia}, \texttt{m:Usuario} y
+\texttt{:HistorialEstado}, con los mensajes numerados 1 asignar, 1.1 obtener bahía, 1.2 validar
+responsable, 1.3 ocupar bahía, 1.4 cambiarEstado(Abierta) si estaba en espera.}{docs/07-arquitectura/comunicacion-asignacion.puml}
