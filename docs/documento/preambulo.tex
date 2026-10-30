@@ -1,0 +1,72 @@
+% Preámbulo del Documento de Ingeniería del Proyecto – Fase 1 (Equipo B).
+% Formato del machote 0.3: carta, márgenes de 2.5 cm, 11 pt, páginas numeradas.
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[11pt,letterpaper,spanish]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc}
+\newcounter{none} % tablas sin número (formato heredado de la conversión)
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+\usepackage{footnotehyper}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[labelformat=empty,font=small]{caption}
+\usepackage{soul}
+\usepackage[bidi=default,shorthands=off]{babel}
+\usepackage{newunicodechar}
+\newunicodechar{☐}{$\square$}
+\newunicodechar{✓}{\checkmark}
+\newunicodechar{≤}{$\leq$}
+\newunicodechar{≥}{$\geq$}
+\newunicodechar{→}{$\rightarrow$}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small IS1 · Equipo B · Sistema de Órdenes de Servicio y Citas}
+\fancyhead[R]{\small v\versiondoc}
+\fancyfoot[C]{\thepage}
+\setlength{\emergencystretch}{3em}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % la numeración va en el título, como en el machote
+\setcounter{tocdepth}{2}
+\usepackage{bookmark}
+\usepackage{xurl}
+\urlstyle{same}
+\hypersetup{pdflang={es}, hidelinks, pdftitle={IS1-Fase1-EquipoB-v\versiondoc}}
+
+% ---------------------------------------------------------------------------
+% Figuras. El machote pide número, título y ruta del archivo fuente.
+%   \figura{archivo}{opciones de tamaño}{número}{título}{ruta fuente}
+\newcommand{\figura}[5]{%
+  \begin{figure}[H]\centering
+  \includegraphics[#2,keepaspectratio]{#1}
+  \caption{\textbf{Figura #3.} #4. Fuente: \texttt{#5}}
+  \end{figure}}
+
+% Figura pendiente: se deja el lugar, la descripción y la fuente, en rojo,
+% sin la imagen. Se reemplaza por \figura cuando exista la imagen.
+%   \figurapendiente{número}{título}{descripción de lo que debe mostrar}{ruta fuente}
+\newcommand{\figurapendiente}[4]{%
+  \begin{figure}[H]\centering
+  \fcolorbox{red}{red!4}{\parbox{0.92\linewidth}{\color{red}\small
+    \textbf{PENDIENTE: imagen de la Figura #1}\par\smallskip
+    \textbf{Debe mostrar:} #3\par\smallskip
+    \textbf{Archivo fuente:} \texttt{#4}}}
+  \caption{\textcolor{red}{\textbf{Figura #1.} #2. Fuente: \texttt{#4}}}
+  \end{figure}}
+
+% Texto pendiente (dato que falta o que debe confirmarse con el cliente).
+\newcommand{\pendiente}[1]{\textcolor{red}{\textbf{[Pendiente:} #1\textbf{]}}}

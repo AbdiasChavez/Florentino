@@ -1,0 +1,3199 @@
+\section{4. Especificación de requisitos de software
+(SRS)}\label{especificaciuxf3n-de-requisitos-de-software-srs}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Estructura adaptada de ISO/IEC/IEEE
+29148:2018. El SRS es lo que el cliente firma en la Review 2. Cada
+requisito tiene un identificador único que se utiliza para la
+trazabilidad.}
+\end{quote}
+
+\subsection{4.1 Propósito, alcance y audiencia del
+SRS}\label{propuxf3sito-alcance-y-audiencia-del-srs}
+
+\textbf{Propósito:} este SRS describe qué debe hacer el Sistema de
+Órdenes de Servicio y Citas y con qué calidad, para que el cliente lo
+valide y lo firme en la Review 2, y para que el equipo lo use como base
+del diseño, la implementación y las pruebas.
+
+\textbf{Alcance:} cubre el ciclo de atención del taller (citas,
+recepción, diagnóstico, cotización y autorización, refacciones, cobro y
+entrega) y el portal web del cliente, según el alcance de la sección
+3.3.
+
+\textbf{Audiencia:} los dueños y el gerente del taller (aprobación), el
+personal que usará el sistema (validación de sus flujos), el equipo de
+desarrollo y el docente evaluador.
+
+\textbf{Convenciones:} cada requisito tiene un identificador único: RF
+(funcional), RNF (no funcional), RN (regla de negocio), HU (historia de
+usuario) y CU (caso de uso). Estos identificadores se usan en la matriz
+de trazabilidad (5.3).
+
+\subsection{4.2 Glosario del dominio}\label{glosario-del-dominio}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2349}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.5342}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2309}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Término}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Definición}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Sinónimos que usa el cliente}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Autorización & Aceptación de una cotización por el cliente; registra
+fecha, hora, IP, monto y el código de verificación. & Aprobación, firma
+digital \\
+Bahía & Espacio de trabajo donde se repara un vehículo. El taller tiene
+4 y cada una aloja un vehículo a la vez. & --- \\
+Checklist de inspección & Lista de verificación del estado de
+carrocería, interiores y accesorios al recibir el vehículo. & Lista de
+inspección \\
+Cita & Solicitud para atender un vehículo en una fecha y hora; queda
+«Pendiente» hasta que la recepcionista la confirma. & --- \\
+Código 2FA & Código de 6 dígitos, de un solo uso y vigente 5 minutos,
+que se envía al correo del cliente para confirmar una autorización. &
+Código de verificación, doble verificación \\
+Compra & Adquisición de refacciones a un proveedor, respaldada por un
+ticket. & Ticket de compra \\
+Concepto & Renglón de una cotización: mano de obra, refacción o insumo.
+Puede ser opcional. & Rubro \\
+Cotización & Costo desglosado de mano de obra, refacciones e insumos de
+una orden; vigente 5 días naturales. & Presupuesto \\
+Diagnóstico & Descripción técnica de la falla y de las reparaciones
+necesarias que registra el jefe de mecánicos. & --- \\
+Enlace seguro & Liga web única que recibe el cliente para consultar su
+vehículo y autorizar cotizaciones sin usuario ni contraseña. & Token de
+acceso \\
+Entrega a crédito & Entrega del vehículo con saldo pendiente; solo para
+flotillas registradas y con autorización del gerente. & Crédito \\
+Flotilla & Empresa cliente con varios vehículos que puede recibir
+entrega a crédito. & Flotilla empresarial \\
+Folio & Identificador único de una orden de servicio. & --- \\
+Fotografía de recepción & Evidencia digital del estado del vehículo al
+llegar. Son obligatorias cuatro: frente, trasera, costado izquierdo y
+costado derecho. & --- \\
+Garantía & Cobertura de 30 días sobre la mano de obra, contados desde la
+entrega del vehículo. & --- \\
+Insumo & Material consumible que se usa en la reparación, como aceite o
+líquidos. & Consumible \\
+Jefe de mecánicos & Líder técnico: diagnostica, cotiza, asigna bahías y
+mecánicos y solicita refacciones desde la tableta. & Líder técnico \\
+Mecánico responsable & Mecánico titular de una orden; otros mecánicos
+pueden colaborar sin cambiar la titularidad. & Mecánico principal \\
+Orden de servicio & Registro de todo el trabajo sobre un vehículo, desde
+la recepción hasta la entrega. & Orden \\
+Proveedor & Refaccionaria local a la que el almacén compra piezas. &
+Refaccionaria \\
+Recepción vehicular & Registro de la llegada del vehículo: kilometraje,
+nivel de combustible, checklist y fotografías. & Check-in, registro de
+entrada \\
+Re-cotización & Nueva versión de la cotización cuando los trabajos
+adicionales aumentan el monto más de 10 \%. & --- \\
+Refacción & Pieza que se instala en el vehículo. & Pieza, repuesto \\
+Saldo pendiente & Diferencia entre el total autorizado de la orden y lo
+que el cliente ha pagado. & --- \\
+Solicitud de refacción & Pedido de piezas que el jefe de mecánicos hace
+al almacén para una orden. & Requisición \\
+\end{longtable}
+}
+
+\subsection{4.3 Descripción general}\label{descripciuxf3n-general}
+
+\subsubsection{4.3.1 Usuarios y sus
+características}\label{usuarios-y-sus-caracteruxedsticas}
+
+El sistema será utilizado por distintos perfiles dentro de la estructura
+operativa del negocio y la parte gerencial del taller mecánico, además
+de los clientes finales del negocio. La siguiente tabla detalla las
+características, nivel técnico y contexto de uso:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2138}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2990}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2138}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2734}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Tipo de usuario}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Tareas principales}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Experiencia tecnológica}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Dispositivo y contexto de uso}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Recepcionista & Registro de clientes/vehículos, check-in con fotos,
+apertura de órdenes, confirmación de citas web, cobranza y entrega. &
+Media: Manejo fluido de navegación web, correo electrónico y paquetes de
+oficina. & Computadora de escritorio en mostrador de recepción. Entorno
+de oficina con teclado/mouse. \\
+Jefe de Mecánicos (Líder Técnico) & Diagnóstico técnico, elaboración de
+cotizaciones, asignación de bahías/mecánicos, requisición de refacciones
+y sellado final. & Baja--Media: Familiarizado con smartphones
+personales; poca experiencia con sistemas de gestión. & Tabletas
+táctiles exclusivas de taller (1 o 2 dispositivos). Entorno con ruido,
+polvo y manipulación con manos sucias/grasosas. \\
+Mecánico en Bahía & Ejecución de reparaciones físicas, notificación de
+hallazgos adicionales o solicitud de refacciones al Jefe de Mecánicos. &
+Baja: Uso de teléfonos inteligentes para uso personal cotidiano. & Sin
+dispositivo asignado directo; interactúa a través del Jefe de Mecánicos
+para evitar deterioro de hardware \\
+Encargado de Almacén & Atender solicitudes de piezas, consultar
+directorio de proveedores locales, registrar compras/tickets e historial
+de insumos. & Baja--Media\textbf{:} Uso básico de computadora para
+consulta de inventarios. & Computadora de escritorio o terminal dedicada
+en el área de almacén/refacciones. \\
+Gerente (Dueño) & Monitoreo del Dashboard de KPIs (ocupación, ingresos),
+aprobación de entregas a crédito a flotillas y excepciones. & Media:
+Manejo de smartphones y computadoras para administración del negocio. &
+Laptop personal o dispositivo móvil (smartphone/tableta) con acceso
+remoto/local \\
+Cliente & Solicitud de citas en línea, seguimiento en vivo del servicio
+y aprobación/rechazo de cotizaciones mediante código 2FA. & Variable
+(Baja a Alta): Desde usuarios sin conocimientos técnicos hasta usuarios
+avanzados. & Dispositivo móvil personal (iOS/Android) vía navegador web
+progresivo (PWA) sin instalar aplicaciones. \\
+\end{longtable}
+}
+
+\subsubsection{4.3.2 Restricciones, supuestos y
+dependencias}\label{restricciones-supuestos-y-dependencias}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Restricciones:}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Presupuesto y Licenciamiento: El desarrollo debe realizarse
+  estrictamente con herramientas, lenguajes y frameworks de código
+  abierto (\emph{Open Source} como Python y FastAPI), garantizando cero
+  costos de licencias o rentas de software.
+\item
+  Infraestructura Física: El taller cuenta únicamente con 4 bahías de
+  trabajo físicas (capacidad estricta de 1 vehículo por bahía) y un
+  estacionamiento con capacidad máxima de 5 vehículos en espera.
+\item
+  Dispositivos Hardware: La captura digital en taller se limita a máximo
+  2 tabletas táctiles centralizadas por el Jefe de Mecánicos para
+  proteger la inversión y evitar daños.
+\end{itemize}
+
+\begin{itemize}
+\item
+  Alcance del Vehículo\textbf{:} La plataforma atenderá exclusivamente
+  vehículos ligeros (automóviles particulares, motocicletas y
+  camionetas), excluyendo maquinaria pesada o industrial.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \textbf{Supuestos:}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Se asume que el taller mantiene activa una conexión de red local
+  (Wi-Fi) para la sincronización entre computadoras de mostrador y
+  tabletas de taller en condiciones normales.
+\item
+  Se asume que los clientes cuentan con un correo electrónico para
+  recibir el enlace de seguimiento y los códigos de verificación de 6
+  dígitos (2FA); el número celular se usa para el envío opcional del
+  enlace por SMS (RF-02.3).
+\item
+  Se asume que los datos ingresados durante la fase de desarrollo y
+  pruebas son 100\% ficticios para dar cumplimiento a la Ley Federal de
+  Protección de Datos Personales.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  \textbf{Dependencias:}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Infraestructura Eléctrica y Red: Operación dependiente de baterías en
+  laptops/tabletas y arquitectura \emph{Local-First / PWA} (Service
+  Workers e IndexedDB) para permitir la captura de datos \emph{offline}
+  durante cortes de luz o fallas de internet.
+\item
+  Proveedores Externos de Comunicación: Dependencia del servicio de
+  correo electrónico para entregar enlaces y códigos 2FA al cliente, y
+  de un servicio de SMS para el envío opcional del enlace.
+\item
+  Disponibilidad de Refaccionarias Locales: La adquisición de piezas
+  fuera de stock depende del directorio de proveedores locales e
+  historial de compras del almacén.
+\end{itemize}
+
+\subsection{4.4 Requisitos funcionales}\label{requisitos-funcionales}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0962}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.4444}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1174}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1497}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1923}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{ID}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Requisito funcional}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Módulo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Prioridad (MoSCoW)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Historias relacionadas}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+RF-01 & El sistema deberá permitir autenticar mediante credenciales
+seguras al personal del taller según su rol (Gerente, Recepcionista,
+Jefe de Mecánicos y Encargado de Almacén). & M1 -- Autenticación y
+Seguridad & Must & HU-27 \\
+RF-02.1 & El sistema deberá permitir al cliente consultar el estado de
+su vehículo y autorizar cotizaciones mediante un enlace web seguro
+enviado por correo electrónico o por SMS (RF-02.3), sin instalar
+aplicaciones. & M1 -- Autenticación y Seguridad & Must & HU-02, HU-28 \\
+RF-02.2 & El sistema deberá de expirar el enlace del cliente de manera
+automática una vez que el vehículo sea entregado y saldado. & M1 --
+Autenticación y Seguridad & Should & HU-02, HU-23 \\
+RF-02.3 & El sistema deberá de permitir enviar el enlace del cliente
+también por SMS. & M1 -- Autenticación y Seguridad & Could & HU-02 \\
+RF-03.1 & El sistema deberá registrar, buscar y actualizar la
+información de clientes y vehículos (placas, marca, modelo, año y VIN
+(opcional)). & M3 -- Recepción E Historial Inicial & Must & HU-05,
+HU-06 \\
+RF-03.2 & El sistema deberá mantener el historial de servicios de cada
+vehículo, con fotografías de recepción, diagnósticos técnicos y
+garantías aplicables (30 días en mano de obra). & M7 -- Portal del
+Cliente, Cobro y Gerencia & Should & HU-23, HU-24 \\
+RF-04 & El sistema deberá registrar en la recepción el kilometraje, el
+nivel de combustible y un checklist de carrocería, y exigir fotografías
+digitales del estado inicial de la unidad. & M3 -- Recepción E Historial
+Inicial & Must & HU-01, HU-25, HU-26 \\
+RF-05 & El sistema deberá permitir abrir órdenes de servicio asociadas a
+una de las 4 bahías y a un mecánico responsable, controlando los estados
+operativos del taller. & M5 -- Taller, Bahías y Expediente Técnico &
+Must & HU-07, HU-08, HU-09, HU-11 \\
+RF-06 & El sistema deberá generar cotizaciones desglosadas (mano de obra
+y refacciones/insumos) con vigencia de 5 días naturales y requerir firma
+digital validada con un código enviado al correo del cliente, de forma
+remota o presencial. & M4 Cotización y Contratos 2FA & Must & HU-02,
+HU-12, HU-13, HU-14, HU-15 \\
+RF-07 & El sistema deberá bloquear el avance del trabajo y exigir una
+nueva autorización con verificación cuando los trabajos adicionales
+incrementen el monto inicial en más de 10 \%. & M4 Cotización y
+Contratos 2FA & Must & HU-16 \\
+RF-08.1 & El sistema deberá permitir al jefe de mecánicos solicitar al
+almacén las piezas que requieran los mecánicos, vinculadas a una orden
+de servicio. & M6 -- Almacén y Refacciones & Should & HU-10, HU-19 \\
+RF-08.2 & El sistema deberá permitir al encargado de almacén mantener un
+directorio de proveedores locales (teléfonos o correos) y registrar
+costos y fechas de llegada de las piezas. & M6 -- Almacén y Refacciones
+& Should & HU-17, HU-18 \\
+RF-08.3 & El sistema deberá de emitir un ticket e historial de compras
+asociado a cada orden de servicio. & M6 -- Almacén y Refacciones & Could
+& HU-18 \\
+RF-09 & El sistema deberá ofrecer una agenda digital por día y bahía,
+donde las citas solicitadas en línea quedan ``Pendientes'' hasta que la
+recepcionista verifique disponibilidad y las confirme manualmente & M2
+-- Citas y Solicitudes & Should & HU-03, HU-04, HU-06 \\
+RF-10 & El sistema deberá impedir la entrega física del vehículo con
+saldo pendiente, a menos que el gerente autorice la entrega a crédito
+para vehículos de flotillas empresariales previamente registradas. & M7
+-- Portal del Cliente, Cobro y Gerencia & Must & HU-21, HU-22, HU-23 \\
+RF-11 & El sistema deberá ofrecer al gerente un panel con las órdenes
+abiertas y su estado, la ocupación de las 4 bahías, los tiempos de
+estancia y los ingresos acumulados. & M7 -- Portal del Cliente, Cobro y
+Gerencia & Should & HU-29 \\
+\end{longtable}
+}
+
+\subsection{4.5 Historias de usuario (Product
+Backlog)}\label{historias-de-usuario-product-backlog}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1389}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.4124}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1068}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0855}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1282}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1282}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{ID / issue}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Historia (Como\ldots{} quiero\ldots{} para\ldots)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Prioridad}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Puntos}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Release}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Estado}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+HU-01 / \#{[}1{]} & Como recepcionista del taller, quiero registrar la
+recepción del vehículo adjuntando kilometraje, nivel de combustible,
+checklist de carrocería y fotografías del estado inicial, para contar
+con un respaldo digital inalterable que evite reclamos infundados por
+daños o faltantes al entregar la unidad. & Must & 3 & v0.1.0 &
+Pendiente \\
+HU-02 / \#{[}2{]} & Como cliente del taller, quiero recibir un enlace
+web seguro con la cotización detallada (mano de obra y refacciones) y
+botones claros de aprobación o rechazo, para revisar y autorizar los
+trabajos desde mi teléfono sin necesidad de realizar llamadas ni acudir
+físicamente al taller & Must & 3 & v0.1.0 & Pendiente \\
+HU-03 / \#{[}3{]} & Como cliente del taller, quiero solicitar una cita
+en línea seleccionando el día y la hora disponible, para apartar un
+espacio sin necesidad de realizar llamadas telefónicas. & Must & 3 &
+v0.1.0 & Pendiente \\
+HU-04 / \#{[}4{]} & Como recepcionista del taller, quiero consultar la
+agenda digital por día y por bahía, para verificar las solicitudes
+pendientes de los clientes y realizar su confirmación manual. & Must & 3
+& v0.1.0 & Pendiente \\
+HU-05 / \#{[}5{]} & Como recepcionista del taller, quiero buscar a un
+cliente o vehículo registrado mediante su número telefónico o placas,
+para agilizar el proceso de recepción en visitas recurrentes. & Should &
+2 & Fase 2 & Pendiente \\
+HU-06 / \#{[}6{]} & Como recepcionista del taller, quiero registrar un
+vehículo con cita previa seleccionando su folio de origen, para que el
+sistema precargue automáticamente los datos del cliente y del auto. &
+Should & 2 & v0.1.0 & Pendiente \\
+HU-07 / \#{[}7{]} & Como recepcionista del taller, quiero ver la alerta
+de "Sin Bahías Disponibles" cuando las 4 bahías físicas estén ocupadas,
+para ubicar temporalmente el vehículo en el estacionamiento de
+recepción. & Must & 3 & v0.1.0 & Pendiente \\
+HU-08 / \#{[}8{]} & Como jefe de mecánicos, quiero asignar la orden de
+servicio a una de las 4 bahías físicas disponibles y a un mecánico
+responsable, para iniciar formalmente los trabajos en el taller. & Must
+& 5 & v0.1.0 & Pendiente \\
+HU-09 / \#{[}9{]} & Como jefe de mecánicos, quiero registrar el
+diagnóstico técnico y las observaciones iniciales en la tableta, para
+cambiar el estado de la orden a "En Diagnóstico". & Must & 3 & v0.1.0 &
+Pendiente \\
+HU-10 / \#{[}10{]} & Como jefe de mecánicos, quiero registrar las
+refacciones e insumos que los mecánicos detecten durante la revisión,
+para que el área de almacén gestione su cotización o pedido. & Should &
+3 & v0.1.0 & Pendiente \\
+HU-11 / \#{[}11{]} & Como jefe de mecánicos, quiero visualizar el
+estatus actual de las 4 bahías de trabajo en una interfaz simplificada
+para tabletas, para conocer rápidamente qué unidades están listas o en
+proceso. & Should & 3 & Fase 2 & Pendiente \\
+HU-12 / \#{[}12{]} & Como recepcionista o jefe de mecánicos, quiero
+generar un presupuesto desglosado de mano de obra y refacciones con
+vigencia de 5 días naturales, para enviarlo de forma transparente al
+cliente. & Must & 5 & v0.1.0 & Pendiente \\
+HU-13 / \#{[}13{]} & Como cliente del taller, quiero seleccionar o
+deseleccionar servicios opcionales dentro de mi cotización antes de
+aprobarla, para adaptar el presupuesto a mis necesidades financieras. &
+Should & 3 & v0.1.0 & Pendiente \\
+HU-14 / \#{[}14{]} & Como cliente del taller, quiero realizar la firma
+digital de aprobación mediante un código de verificación de 2 pasos
+enviado a mi correo, para autorizar los trabajos de forma segura ya sea
+de forma presencial o remota. & Must & 5 & v0.1.0 & Pendiente \\
+HU-15 / \#{[}15{]} & Como cliente del taller, quiero presionar un botón
+de rechazo en la cotización digital, para cancelar la orden y coordinar
+la recolección del vehículo sin autorizar reparaciones. & Should & 2 &
+v0.1.0 & Pendiente \\
+HU-16 / \#{[}16{]} & Como cliente del taller, quiero que se me pida una
+nueva autorización con código 2FA cuando los costos imprevistos superen
+el 10 \% del presupuesto autorizado, para no pagar trabajos que no
+aprobé. & Must & 5 & v0.1.0 & Pendiente \\
+HU-17 / \#{[}17{]} & Como encargado de almacén, quiero consultar y
+administrar un directorio de proveedores locales con teléfonos y correos
+electrónicos, para solicitar refacciones especiales rápidamente. &
+Should & 3 & v0.1.0 & Pendiente \\
+HU-18 / \#{[}18{]} & Como encargado de almacén, quiero registrar los
+costos, fechas de llegada y tickets de compra de las refacciones
+asociadas a una orden, para mantener un control financiero estricto. &
+Should & 3 & v0.1.0 & Pendiente \\
+HU-19 / \#{[}19{]} & Como jefe de mecánicos, quiero verificar el stock
+de refacciones comunes en el inventario interno, para saber si se
+dispone de la pieza de forma inmediata. & Could & 2 & Fase 2 &
+Pendiente \\
+HU-20 / \#{[}20{]} & Como recepcionista, quiero recibir una notificación
+automática cuando los trabajos del vehículo finalicen, para avisar al
+cliente que su unidad está lista para entrega. & Should & 2 & v0.1.0 &
+Pendiente \\
+HU-21 / \#{[}21{]} & Como gerente del taller, quiero que el sistema
+impida registrar la entrega de un vehículo cuya orden tenga saldo
+pendiente, para evitar pérdidas financieras al taller. & Must & 3 &
+v0.1.0 & Pendiente \\
+HU-22 / \#{[}22{]} & Como gerente del taller, quiero autorizar de forma
+excepcional la entrega a crédito únicamente para vehículos de flotillas
+empresariales registradas, para cumplir con los convenios comerciales. &
+Should & 3 & v0.1.0 & Pendiente \\
+HU-23 / \#{[}23{]} & Como recepcionista, quiero registrar el pago total
+del servicio y cerrar formalmente la orden, para liberar la bahía de
+trabajo y archivar el historial del vehículo. & Must & 3 & v0.1.0 &
+Pendiente \\
+HU-24 / \#{[}24{]} & Como cliente, quiero consultar la vigencia de la
+garantía de 30 días en mano de obra asociada a mi servicio anterior,
+para reclamar ajustes en caso de incidencias. & Could & 2 & Fase 2 &
+Pendiente \\
+HU-25 / \#{[}25{]} & Como recepcionista o jefe de mecánicos, quiero
+registrar la llegada de autos, tomar fotografías y hacer diagnósticos
+sin conexión a internet usando la batería del equipo, para que la
+operación no se detenga ante fallas eléctricas. & Must & 8 & v0.1.0 &
+Pendiente \\
+HU-26 / \#{[}26{]} & Como recepcionista o jefe de mecánicos, quiero que
+los registros y fotografías que capturé sin conexión se sincronicen
+automáticamente cuando vuelva la red, para no perder ni duplicar
+información. & Must & 8 & v0.1.0 & Pendiente \\
+HU-27 / \#{[}27{]} & Como gerente del taller, quiero dar de alta al
+personal y asignarle su rol (Gerente, Recepcionista, Jefe de Mecánicos o
+Encargado de Almacén), para que cada quien acceda solo a la información
+que le corresponde. & Must & 3 & v0.1.0 & Pendiente \\
+HU-28 / \#{[}28{]} & Como cliente, quiero visualizar la plataforma web
+desde mi teléfono celular de forma responsiva y sin instalar
+aplicaciones adicionales, para consultar mi estatus con facilidad. &
+Must & 5 & v0.1.0 & Pendiente \\
+HU-29 / \#{[}29{]} & Como gerente, quiero generar reportes mensuales de
+ingresos, servicios realizados y tiempos de ocupación de las 4 bahías,
+para evaluar el rendimiento general del taller. & Could & 5 & Fase 2 &
+Pendiente \\
+HU-30 / \#{[}30{]} & Como cliente del taller, quiero conocer el aviso de
+privacidad antes de proporcionar mis datos, para saber para qué se
+usarán conforme a la LFPDPPP. & Must & 3 & v0.1.0 & Pendiente \\
+\end{longtable}
+}
+
+Detalle de las historias de usuario
+
+\textbf{HU-01: Recepción e Inspección con Evidencia Fotográfica}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-01 / \#{[}1{]} \\
+Historia & Como recepcionista del taller, quiero registrar la recepción
+del vehículo adjuntando kilometraje, nivel de combustible, checklist de
+carrocería y fotografías del estado inicial, para contar con un respaldo
+digital inalterable que evite reclamos infundados por daños o faltantes
+al entregar la unidad. \\
+Criterio de aceptación 1 & Dado que la recepcionista se encuentra en el
+módulo de recepción vehicular, cuando intenta registrar una unidad
+nueva, entonces el sistema exige obligatoriamente adjuntar al menos 4
+fotografías (frente, parte trasera, costado izquierdo y costado
+derecho). \\
+Criterio de aceptación 2 & Dado que se capturan las evidencias, cuando
+se finaliza el formulario de inspección, entonces el sistema genera una
+firma visual o sello digital con fecha y hora exacta de recepción,
+bloqueando el avance al estado "En Diagnóstico" si falta completar algún
+punto del checklist obligatorio. \\
+Reglas de negocio & RN-12 (Evidencia fotográfica de recepción), RN-07
+(Clasificación de vehículos autorizados). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-02: Autorización Digital de Cotización por Parte del Cliente}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-02 / \#{[}2{]} \\
+Historia & Como cliente del taller, quiero recibir un enlace web seguro
+con la cotización detallada (mano de obra y refacciones) y botones
+claros de aprobación o rechazo, para revisar y autorizar los trabajos
+desde mi teléfono sin necesidad de realizar llamadas ni acudir
+físicamente al taller \\
+Criterio de aceptación 1 & Dado que la cotización ha sido generada por
+el taller, cuando el sistema envía el aviso, entonces el cliente recibe
+un enlace por correo electrónico (o por SMS cuando se habilite RF-02.3)
+que no requiere registro previo ni contraseña, operando mediante un
+token temporal firmado. \\
+Criterio de aceptación 2 & Dado que el cliente revisa el desglose en su
+dispositivo móvil, cuando presiona el botón "Autorizar" e ingresa un
+código 2FA válido (HU-14), entonces el sistema registra de forma
+inalterable la dirección IP, fecha, hora y el monto final aceptado,
+cambiando automáticamente el estado de la orden a "Autorizada" y
+notificando al mecánico responsable. \\
+Reglas de negocio & RN-01 (Expiración y vigencia de enlaces), RN-02
+(Doble verificación en autorizaciones), RN-11 (Vigencia de
+cotizaciones). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-03: Solicitud de Cita en Línea}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-03 / \#{[}3{]} \\
+Historia & Como cliente del taller, quiero solicitar una cita en línea
+seleccionando el día y la hora disponible, para apartar un espacio sin
+necesidad de realizar llamadas telefónicas. \\
+Criterio de aceptación 1 & Dado que el cliente accede al portal web,
+cuando selecciona fecha, hora y tipo de servicio, entonces el sistema
+valida que exista disponibilidad en la agenda del taller. \\
+Criterio de aceptación 2 & Dado que se envía la solicitud, cuando se
+registra con éxito, entonces queda en estado "Pendiente" a la espera de
+la confirmación manual de la recepcionista. \\
+Reglas de negocio & RN-08 (Confirmación manual de citas web). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-04: Consulta y Confirmación Manual de Citas}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-04 / \#{[}4{]} \\
+Historia & Como recepcionista del taller, quiero consultar la agenda
+digital por día y por bahía, para verificar las solicitudes pendientes
+de los clientes y realizar su confirmación manual. \\
+Criterio de aceptación 1 & Dado que la recepcionista accede al módulo de
+agenda, cuando filtra los registros por el día actual, entonces el
+sistema despliega todas las citas con estatus "Pendiente". \\
+Criterio de aceptación 2 & Dado que la recepcionista revisa una cita
+solicitada, cuando presiona el botón "Confirmar", entonces el estatus
+cambia a "Confirmada" y se habilita la asignación de la bahía
+correspondiente. \\
+Reglas de negocio & RN-08 (Confirmación manual de citas web), RN-05
+(Capacidad física del taller). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-05: Búsqueda Rápida de Clientes y Vehículos}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-05 / \#{[}5{]} \\
+Historia & Como recepcionista del taller, quiero buscar a un cliente o
+vehículo registrado mediante su número telefónico o placas, para
+agilizar el proceso de recepción en visitas recurrentes. \\
+Criterio de aceptación 1 & Dado que la recepcionista se encuentra en el
+módulo de búsqueda, cuando ingresa los dígitos de las placas o el
+teléfono, entonces el sistema filtra instantáneamente la base de datos
+de clientes recurrentes. \\
+Criterio de aceptación 2 & Dado que se localiza el expediente, cuando el
+usuario lo selecciona, entonces el sistema precarga los datos generales
+del cliente y del auto para evitar duplicidad de registros. \\
+Reglas de negocio & Sin regla de negocio específica; ver RF-03.1. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-06: Registro de Vehículos con Cita Previa}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-06 / \#{[}6{]} \\
+Historia & Como recepcionista del taller, quiero registrar un vehículo
+con cita previa seleccionando su folio de origen, para que el sistema
+precargue automáticamente los datos del cliente y del auto. \\
+Criterio de aceptación 1 & Dado que el cliente llega al taller con cita
+agendada, cuando la recepcionista introduce el número de folio de la
+cita, entonces el sistema recupera la información asociada. \\
+Criterio de aceptación 2 & Dado que los datos están precargados, cuando
+se procede con el ingreso, entonces el sistema vincula la cita
+directamente con la nueva orden de servicio abierta. \\
+Reglas de negocio & RN-08 (Confirmación manual de citas web). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-07: Alerta de Bahías Ocupadas}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-07 / \#{[}7{]} \\
+Historia & Como recepcionista del taller, quiero ver la alerta de "Sin
+Bahías Disponibles" cuando las 4 bahías físicas estén ocupadas, para
+ubicar temporalmente el vehículo en el estacionamiento de recepción. \\
+Criterio de aceptación 1 & Dado que las 4 bahías físicas del taller
+registran una orden activa, cuando la recepcionista intenta registrar la
+entrada de un nuevo vehículo, entonces el sistema emite una advertencia
+visual en pantalla indicando "Sin Bahías Disponibles". \\
+Criterio de aceptación 2 & Dado que se activa la alerta de saturación,
+cuando el usuario acepta la notificación, entonces el sistema permite
+guardar el registro temporal asignando la unidad al estacionamiento de
+espera. \\
+Reglas de negocio & RN-05 (Capacidad física del taller). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-08: Asignación de Bahía y Mecánico}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-08 / \#{[}8{]} \\
+Historia & Como jefe de mecánicos, quiero asignar la orden de servicio a
+una de las 4 bahías físicas disponibles y a un mecánico responsable,
+para iniciar formalmente los trabajos en el taller. \\
+Criterio de aceptación 1 & Dado que la orden se encuentra abierta,
+cuando el jefe de mecánicos selecciona una de las 4 bahías físicas
+libres, entonces el sistema actualiza el estado de la bahía a
+"Ocupada". \\
+Criterio de aceptación 2 & Dado que las 4 bahías están ocupadas, cuando
+se intenta una asignación, entonces el sistema emite una alerta
+impidiendo el cruce de unidades en la misma bahía. \\
+Reglas de negocio & RN-05 (Capacidad física del taller), RN-09
+(Asignación y colaboración de mecánicos). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-09: Registro de Diagnóstico en Tableta}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-09 / \#{[}9{]} \\
+Historia & Como jefe de mecánicos, quiero registrar el diagnóstico
+técnico y las observaciones iniciales en la tableta, para cambiar el
+estado de la orden a "En Diagnóstico". \\
+Criterio de aceptación 1 & Dado que el jefe de mecánicos se encuentra
+autenticado en la tableta, cuando selecciona una orden con vehículo en
+bahía, entonces visualiza un formulario táctil optimizado con campos
+amplios para el dictamen técnico. \\
+Criterio de aceptación 2 & Dado que se ingresan las observaciones de la
+revisión, cuando se presiona "Guardar Diagnóstico", entonces el sistema
+actualiza automáticamente el estado de la orden a "En Diagnóstico" y
+habilita la creación de cotizaciones. \\
+Reglas de negocio & RN-12 (Evidencia fotográfica de recepción).
+Usabilidad en tableta: RNF-02 y RNF-03. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-10: Solicitud de Refacciones e Insumos}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-10 / \#{[}10{]} \\
+Historia & Como jefe de mecánicos, quiero registrar las refacciones e
+insumos que los mecánicos detecten durante la revisión, para que el área
+de almacén gestione su cotización o pedido. \\
+Criterio de aceptación 1 & Dado que un mecánico reporta piezas
+necesarias en la bahía, cuando el jefe de mecánicos las añade desde la
+tableta y las vincula a la orden, entonces la solicitud se envía
+automáticamente al módulo de almacén. \\
+Criterio de aceptación 2 & Dado que el almacén recibe el requerimiento,
+cuando se procesa, entonces el sistema refleja el estatus de la
+refacción como "Solicitada" o "Pedida". \\
+Reglas de negocio & RN-04 (Re-cotización obligatoria por sobrecostos),
+RN-06 (Reubicación por espera de refacciones). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-11: Visualización del Estatus de Bahías}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-11 / \#{[}11{]} \\
+Historia & Como jefe de mecánicos, quiero visualizar el estatus actual
+de las 4 bahías de trabajo en una interfaz simplificada para tabletas,
+para conocer rápidamente qué unidades están listas o en proceso. \\
+Criterio de aceptación 1 & Dado que el jefe de mecánicos accede al
+tablero de control, cuando visualiza la sección de bahías, entonces
+identifica mediante códigos de color las unidades activas, en
+diagnóstico o listas. \\
+Criterio de aceptación 2 & Dado que se actualiza el estado de una
+reparación, cuando cambia de fase, entonces el tablero refresca la
+información en tiempo real para optimizar la supervisión del taller. \\
+Reglas de negocio & RN-05 (Capacidad física del taller). Usabilidad en
+tableta: RNF-02. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-12: Generación de Presupuesto Desglosado}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-12 / \#{[}12{]} \\
+Historia & Como recepcionista o jefe de mecánicos, quiero generar un
+presupuesto desglosado de mano de obra y refacciones con vigencia de 5
+días naturales, para enviarlo de forma transparente al cliente. \\
+Criterio de aceptación 1 & Dado que el diagnóstico ha concluido, cuando
+el personal selecciona la opción de cotizar, entonces el sistema
+presenta apartados separados para costos de mano de obra y
+refacciones. \\
+Criterio de aceptación 2 & Dado que se emite la cotización, entonces el
+sistema calcula automáticamente el total con IVA e integra una fecha de
+expiración exactamente a los 5 días naturales posteriores a su
+emisión. \\
+Reglas de negocio & RN-11 (Vigencia de cotizaciones), RN-03 (Selección
+granular de rubros). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-13: Selección de Servicios Opcionales en Cotización}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-13 / \#{[}13{]} \\
+Historia & Como cliente del taller, quiero seleccionar o deseleccionar
+servicios opcionales dentro de mi cotización antes de aprobarla, para
+adaptar el presupuesto a mis necesidades financieras. \\
+Criterio de aceptación 1 & Dado que el cliente revisa el presupuesto
+desglosado en su celular, cuando marca o desmarca las casillas de
+servicios opcionales o sugeridos, entonces el sistema recalcula el costo
+total en tiempo real. \\
+Criterio de aceptación 2 & Dado que se ajustan los opcionales, cuando el
+cliente procede a la firma, entonces el sistema guarda únicamente los
+conceptos seleccionados como parte oficial de la orden. \\
+Reglas de negocio & RN-03 (Selección granular de rubros). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-14: Firma Digital y Autorización por 2FA}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-14 / \#{[}14{]} \\
+Historia & Como cliente del taller, quiero realizar la firma digital de
+aprobación mediante un código de verificación de 2 pasos enviado a mi
+correo, para autorizar los trabajos de forma segura ya sea de forma
+presencial o remota. \\
+Criterio de aceptación 1 & Dado que el cliente accede al enlace web de
+cotización, when solicita el código de autorización, entonces el sistema
+envía un token numérico de 6 dígitos al correo electrónico registrado
+del cliente. \\
+Criterio de aceptación 2 & Dado que el cliente ingresa el código
+recibido en la interfaz, cuando presiona "Autorizar Presupuesto",
+entonces el sistema valida el token, registra la dirección IP y la marca
+de tiempo, cambiando la orden a "Autorizada". \\
+Reglas de negocio & RN-02 (Doble verificación en autorizaciones). No
+repudio: RNF-04. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-15: Rechazo de Cotización y Cancelación}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-15 / \#{[}15{]} \\
+Historia & Como cliente del taller, quiero presionar un botón de rechazo
+en la cotización digital, para cancelar la orden y coordinar la
+recolección del vehículo sin autorizar reparaciones. \\
+Criterio de aceptación 1 & Dado que el cliente evalúa la cotización en
+su dispositivo, cuando presiona el botón "Rechazar", entonces el sistema
+solicita una confirmación de la acción. \\
+Criterio de aceptación 2 & Dado que se confirma el rechazo, cuando se
+procesa, entonces la orden cambia a estatus "Rechazada" y notifica a
+recepción para coordinar la entrega física del auto sin costo de
+reparación. \\
+Reglas de negocio & RN-02 (Doble verificación en autorizaciones). Flujo
+de rechazo: CU-11 (A1). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-16: Re-cotización por Incremento \textgreater10\%}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-16 / \#{[}16{]} \\
+Historia & Como cliente del taller, quiero que se me pida una nueva
+autorización con código 2FA cuando los costos imprevistos superen el 10
+\% del presupuesto autorizado, para no pagar trabajos que no aprobé. \\
+Criterio de aceptación 1 & Dado que surgen refacciones imprevistas,
+cuando el incremento total supera el 10\% del presupuesto aprobado,
+entonces el sistema bloquea el flujo y solicita una nueva autorización
+con código 2FA. \\
+Criterio de aceptación 2 & Dado que el cliente recibe la notificación
+del sobrecosto, cuando aprueba mediante el código digital, entonces se
+actualiza el monto total e historial de la orden. \\
+Reglas de negocio & RN-04 (Re-cotización obligatoria por sobrecostos),
+RN-02 (Doble verificación en autorizaciones). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-17: Directorio y Gestión de Proveedores Locales}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-17 / \#{[}17{]} \\
+Historia & Como encargado de almacén, quiero consultar y administrar un
+directorio de proveedores locales con teléfonos y correos electrónicos,
+para solicitar refacciones especiales rápidamente. \\
+Criterio de aceptación 1 & Dado que el almacenista ingresa al módulo de
+refacciones, cuando abre el directorio de proveedores, entonces
+visualiza la lista con datos de contacto actualizados (teléfonos y
+correos). \\
+Criterio de aceptación 2 & Dado que se requiere dar de alta un nuevo
+proveedor, cuando el almacenista completa el formulario de registro,
+entonces el sistema lo almacena para futuras solicitudes de piezas. \\
+Reglas de negocio & RN-06 (Reubicación por espera de refacciones). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-18: Registro de Costos e Historial de Compras}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-18 / \#{[}18{]} \\
+Historia & Como encargado de almacén, quiero registrar los costos,
+fechas de llegada y tickets de compra de las refacciones asociadas a una
+orden, para mantener un control financiero estricto. \\
+Criterio de aceptación 1 & Dado que se adquiere una pieza externa con un
+proveedor, cuando el almacenista registra el ticket, costo unitario y
+fecha estimada de entrega, entonces el sistema lo vincula a la orden de
+servicio. \\
+Criterio de aceptación 2 & Dado que se ingresa la compra, cuando se
+consolida el registro, entonces el sistema actualiza el historial de
+adquisiciones de la refacción para auditoría interna. \\
+Reglas de negocio & Sin regla de negocio específica; ver RF-08.2 y
+RF-08.3. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-19: Verificación de Stock Interno}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-19 / \#{[}19{]} \\
+Historia & Como jefe de mecánicos, quiero verificar el stock de
+refacciones comunes en el inventario interno, para saber si se dispone
+de la pieza de forma inmediata. \\
+Criterio de aceptación 1 & Dado que el jefe de mecánicos busca un insumo
+estándar, cuando consulta el inventario en el sistema, entonces
+visualiza las existencias disponibles en almacén. \\
+Criterio de aceptación 2 & Dado que hay existencia en stock, cuando se
+selecciona la pieza, entonces el sistema descuenta automáticamente la
+cantidad del inventario interno. \\
+Reglas de negocio & Sin regla de negocio específica; ver RF-08.1. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-20: Notificación Automática de Fin de Trabajos}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-20 / \#{[}20{]} \\
+Historia & Como recepcionista, quiero recibir una notificación
+automática cuando los trabajos del vehículo finalicen, para avisar al
+cliente que su unidad está lista para entrega. \\
+Criterio de aceptación 1 & Dado que el mecánico marca la orden como
+terminada en bahía, cuando se actualiza el estatus, entonces el sistema
+envía una alerta interna a la recepcionista. \\
+Criterio de aceptación 2 & Dado que la recepción recibe la alerta,
+cuando se verifica el estado, entonces se habilita el aviso automatizado
+al cliente de que su vehículo está listo. \\
+Reglas de negocio & Sin regla de negocio específica; ver CU-07. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-21: Bloqueo de Entrega por Saldo Pendiente}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-21 / \#{[}21{]} \\
+Historia & Como gerente del taller, quiero que el sistema impida
+registrar la entrega de un vehículo cuya orden tenga saldo pendiente,
+para evitar pérdidas financieras al taller. \\
+Criterio de aceptación 1 & Dado que un vehículo se encuentra en estado
+"Lista para Entrega", cuando la recepcionista intenta registrar la
+salida y el balance de pago es mayor a cero, entonces el sistema bloquea
+la acción de liberación. \\
+Criterio de aceptación 2 & Dado que se activa el bloqueo por saldo
+pendiente, cuando el sistema detecta que cuenta con un convenio de
+crédito autorizado, entonces permite omitir la restricción
+exclusivamente bajo permisos del rol Gerente. \\
+Reglas de negocio & RN-10 (Restricción de entrega y excepción a
+flotillas). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-22: Autorización Excepcional de Crédito a Flotillas}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-22 / \#{[}22{]} \\
+Historia & Como gerente del taller, quiero autorizar de forma
+excepcional la entrega a crédito únicamente para vehículos de flotillas
+empresariales registradas, para cumplir con los convenios
+comerciales. \\
+Criterio de aceptación 1 & Dado que un vehículo pertenece a una empresa
+con cuenta de flotilla registrada, cuando se intenta liberar sin pago en
+caja, entonces el sistema solicita la clave de autorización
+gerencial. \\
+Criterio de aceptación 2 & Dado que el gerente ingresa su contraseña de
+aprobación, cuando valida el convenio comercial, entonces el sistema
+permite liberar la unidad y factura el adeudo a crédito empresarial. \\
+Reglas de negocio & RN-10 (Restricción de entrega y excepción a
+flotillas). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-23: Registro de Pago Total y Cierre de Orden}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-23 / \#{[}23{]} \\
+Historia & Como recepcionista, quiero registrar el pago total del
+servicio y cerrar formalmente la orden, para liberar la bahía de trabajo
+y archivar el historial del vehículo. \\
+Criterio de aceptación 1 & Dado que el cliente cubre el monto total en
+caja, cuando la recepcionista registra el método de pago y confirma la
+transacción, entonces el sistema salda la cuenta a cero. \\
+Criterio de aceptación 2 & Dado que el pago ha sido registrado con
+éxito, cuando se ejecuta el cierre, entonces la orden cambia a estado
+"Cerrada", liberando de inmediato la bahía física ocupada y generando el
+comprobante digital. \\
+Reglas de negocio & RN-10 (Restricción de entrega y excepción a
+flotillas), RN-13 (Garantía de mano de obra), RN-01 (Expiración y
+vigencia de enlaces). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-24: Consulta de Vigencia de Garantía}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-24 / \#{[}24{]} \\
+Historia & Como cliente, quiero consultar la vigencia de la garantía de
+30 días en mano de obra asociada a mi servicio anterior, para reclamar
+ajustes en caso de incidencias. \\
+Criterio de aceptación 1 & Dado que el cliente revisa el expediente de
+su servicio pasado en el portal web, cuando consulta el apartado de
+garantías, entonces visualiza la fecha exacta de expiración (30 días
+naturales en mano de obra). \\
+Criterio de aceptación 2 & Dado que la garantía se encuentra vigente,
+cuando se solicita una revisión por el mismo concepto, entonces el
+sistema valida el estatus sin generar cargos adicionales de mano de
+obra. \\
+Reglas de negocio & RN-13 (Garantía de mano de obra). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-25: Operación Offline del Personal Interno}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-25 / \#{[}25{]} \\
+Historia & Como recepcionista o jefe de mecánicos, quiero registrar la
+llegada de autos, tomar fotografías y hacer diagnósticos sin conexión a
+internet usando la batería del equipo, para que la operación no se
+detenga ante fallas eléctricas. \\
+Criterio de aceptación 1 & Dado que ocurre un corte de energía o caída
+de internet en el taller, cuando el personal opera mediante las baterías
+de laptops o tabletas, entonces el sistema local permite continuar
+capturando registros, checklists y fotografías. \\
+Criterio de aceptación 2 & Dado que se trabaja de forma local (offline),
+cuando se guardan los datos, entonces el almacenamiento temporal
+mediante Service Workers e IndexedDB asegura que no exista pérdida de
+información. \\
+Reglas de negocio & Sin regla de negocio específica; ver RNF-06 y
+RNF-08. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-26: Sincronización Automática en la Nube}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-26 / \#{[}26{]} \\
+Historia & Como recepcionista o jefe de mecánicos, quiero que los
+registros y fotografías que capturé sin conexión se sincronicen
+automáticamente cuando vuelva la red, para no perder ni duplicar
+información. \\
+Criterio de aceptación 1 & Dado que se restablece la conexión a internet
+en el taller, cuando el sistema detecta conectividad, entonces inicia de
+forma automática la sincronización de los datos almacenados
+localmente. \\
+Criterio de aceptación 2 & Dado que finaliza el proceso de
+sincronización, cuando se actualiza la base de datos central en la nube,
+entonces la información multimedia y de auditoría se consolida sin
+duplicidades. \\
+Reglas de negocio & Sin regla de negocio específica; ver RNF-09. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-27: Gestión de Roles y Permisos de Seguridad}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-27 / \#{[}27{]} \\
+Historia & Como gerente del taller, quiero dar de alta al personal y
+asignarle su rol (Gerente, Recepcionista, Jefe de Mecánicos o Encargado
+de Almacén), para que cada quien acceda solo a la información que le
+corresponde. \\
+Criterio de aceptación 1 & Dado que un usuario intenta acceder a la
+plataforma, cuando introduce sus credenciales, entonces el sistema
+autentica su identidad y restringe los menús según su rol asignado
+(Gerente, Recepcionista, Jefe de Mecánicos o Encargado de Almacén). \\
+Criterio de aceptación 2 & Dado que un usuario sin privilegios intenta
+ingresar a una ruta protegida (como reportes gerenciales), entonces el
+sistema deniega el acceso y muestra una pantalla de error por permisos
+insuficientes. \\
+Reglas de negocio & Sin regla de negocio específica; ver RNF-05 y 4.8
+(control de acceso por rol). \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-28: Accesibilidad PWA Responsiva para Clientes}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-28 / \#{[}28{]} \\
+Historia & Como cliente, quiero visualizar la plataforma web desde mi
+teléfono celular de forma responsiva y sin instalar aplicaciones
+adicionales, para consultar mi estatus con facilidad. \\
+Criterio de aceptación 1 & Dado que el cliente abre el enlace recibido
+por SMS o correo en un navegador móvil (iOS/Android), cuando carga la
+página, entonces el diseño se adapta responsivamente a la pantalla sin
+requerir descargas de tiendas de aplicaciones. \\
+Criterio de aceptación 2 & Dado que el cliente navega por el portal web,
+cuando consulta el progreso de su vehículo o galería de fotos, entonces
+los elementos táctiles responden de manera fluida y adaptada a
+dispositivos móviles. \\
+Reglas de negocio & RN-01 (Expiración y vigencia de enlaces).
+Portabilidad: RNF-01. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-29: Generación de Reportes Gerenciales}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-29 / \#{[}29{]} \\
+Historia & Como gerente, quiero generar reportes mensuales de ingresos,
+servicios realizados y tiempos de ocupación de las 4 bahías, para
+evaluar el rendimiento general del taller. \\
+Criterio de aceptación 1 & Dado que el gerente ingresa al módulo de
+reportes, cuando selecciona el intervalo de fechas mensual, entonces el
+sistema genera métricas consolidadas de ingresos y servicios
+completados. \\
+Criterio de aceptación 2 & Dado que se consultan los tiempos operativos,
+cuando el sistema procesa las órdenes, entonces muestra gráficos de
+ocupación de las 4 bahías para medir la eficiencia del taller. \\
+Reglas de negocio & Sin regla de negocio específica; ver RF-11. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+\textbf{HU-30: Cumplimiento de Privacidad y Uso de Datos Ficticios}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID e issue & HU-30 / \#{[}30{]} \\
+Historia & Como cliente del taller, quiero conocer el aviso de
+privacidad antes de proporcionar mis datos, para saber para qué se
+usarán conforme a la LFPDPPP. \\
+Criterio de aceptación 1 & Dado que la recepcionista registra a un
+cliente nuevo, cuando captura sus datos personales, entonces el sistema
+muestra el aviso de privacidad simplificado (4.8) antes de guardar el
+registro. \\
+Criterio de aceptación 2 & Dado que el cliente abre su enlace seguro por
+primera vez, cuando carga la página, entonces el sistema muestra el
+enlace al aviso de privacidad integral y cómo ejercer sus derechos
+ARCO. \\
+Reglas de negocio & Sin regla de negocio específica; ver 4.8 y
+RNF-05. \\
+Wireframe & Pendiente (sección 4.10) \\
+Casos de prueba & Pendiente (sección 5.2) \\
+\end{longtable}
+}
+
+{[}Figura 4.1. Story map con el corte del release v0.1.0.{]}
+
+\subsection{4.6 Requisitos no
+funcionales}\label{requisitos-no-funcionales}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0962}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2136}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2735}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2137}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2031}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{ID}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Característica ISO/IEC 25010:2023}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Requisito}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Métrica y umbral}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Cómo se verificará}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+RNF-01 & Flexibilidad (instalabilidad y adaptabilidad) & El portal del
+cliente deberá ser una PWA responsiva que funcione en navegadores
+móviles iOS y Android sin instalar software ni conceder permisos
+especiales. & Funciona sin errores bloqueantes en las 2 últimas
+versiones de Safari (iOS) y Chrome (Android); 0 permisos solicitados al
+cliente; sin desplazamiento horizontal en anchos de 360 a 430 px. &
+Pruebas manuales en 2 móviles reales (iOS y Android) con una lista de
+verificación de las pantallas del cliente y revisión con las
+herramientas de desarrollo del navegador. \\
+RNF-02 & Capacidad de interacción & La interfaz de la tableta del jefe
+de Mecánicos deberá tener botones grandes, alto contraste y controles
+táctiles adaptados al uso con manos sucias y en ambiente ruidoso. &
+Botones de al menos 48 × 48 px con separación mínima de 8 px; contraste
+de texto de al menos 7:1; al menos 95 \% de aciertos en 20 toques con
+guantes de trabajo. & Auditoría con Lighthouse o axe DevTools
+(gratuitos), medición del contraste con un verificador y prueba en la
+tableta real con guantes. \\
+RNF-03 & Capacidad de interacción & La interfaz de la tableta deberá
+ofrecer flujos de pocos pasos para las operaciones frecuentes del
+taller. & Asignar bahía, actualizar el estado de una orden y sellar un
+trabajo en máximo 4 toques y 30 s cada una. & Prueba de usabilidad
+cronometrada con al menos 3 usuarios (o compañeros que simulen el rol),
+repitiendo cada operación 3 veces. \\
+RNF-04 & Seguridad (no repudio e integridad) & Toda autorización de
+presupuesto o de sobrecosto mayor al 10 \% deberá registrar marca de
+tiempo y metadatos inalterables, incluida la dirección IP, para evitar
+disputas con el cliente. & 100 \% de las autorizaciones guardan fecha y
+hora UTC, IP, identificador de orden y huella SHA-256 del documento; 100
+\% de los intentos de alterar un registro se detectan al verificar la
+huella. & Prueba con 20 autorizaciones, revisión de los registros
+guardados e intento de modificar directamente la base de datos para
+confirmar que la verificación lo detecta. \\
+RNF-05 & Seguridad (confidencialidad y cumplimiento legal) & El manejo
+de datos personales deberá apegarse a la Ley Federal de Protección de
+Datos Personales en Posesión de los Particulares y usar solo datos
+ficticios en las pruebas. & 100 \% de las conexiones con HTTPS (TLS 1.2
+o superior); datos personales sensibles cifrados en reposo; aviso de
+privacidad visible en el 100 \% de los formularios que capturan datos; 0
+registros reales en el ambiente de pruebas. & Análisis con testssl.sh o
+SSL Labs, lista de verificación de la ley revisada por el equipo y
+revisión de los datos de prueba antes de cada entrega. \\
+RNF-06 & Eficiencia de desempeño & El registro de recepción se deberá
+guardar de forma local con rapidez, aun sin conexión. & Guardar un
+registro con 5 fotografías en máximo 2 s (percentil 95) en la tableta o
+laptop del taller. & 20 repeticiones cronometradas con la herramienta de
+rendimiento del navegador, calculando el percentil 95. \\
+RNF-07 & Mantenibilidad (modificabilidad) & El desarrollo deberá usar
+únicamente herramientas de código abierto, frameworks de uso libre (como
+FastAPI y Python) y planes educativos. & 100 \% de las dependencias con
+licencia de código abierto o plan educativo vigente; costo de
+licenciamiento de \$0 en esta fase. & Inventario de dependencias con
+herramientas de revisión de licencias (por ejemplo, pip-licenses) y
+registro de los planes educativos usados. \\
+RNF-08 & Fiabilidad (tolerancia a fallos) & El personal interno deberá
+poder operar sin internet o sin energía eléctrica, con equipos en
+batería, bajo una arquitectura local con sincronización diferida. & Las
+7 operaciones definidas (registro de entrada, checklist, fotografías,
+diagnósticos, asignación de bahías, consulta de proveedores y
+autorizaciones gerenciales) funcionan al 100 \% durante al menos 4 h sin
+conexión; 0 datos perdidos. & Casos de prueba de las 7 operaciones con
+la red desconectada y un equipo con batería, comparando los registros al
+terminar. \\
+RNF-09 & Fiabilidad (recuperabilidad) & Al restablecerse la conexión, el
+sistema deberá sincronizar automáticamente datos, archivos multimedia y
+registros de auditoría con la base de datos central, sin duplicados. &
+100 \% de los registros sincronizados, 0 duplicados y 0 pérdidas; 200
+registros con 50 fotografías en máximo 5 min. & Crear 200 registros sin
+conexión, reconectar y comparar conteos y huellas con la base central;
+repetir 3 veces e interrumpir la conexión a mitad de una
+sincronización. \\
+RNF-10 & Fiabilidad (tolerancia a fallos del cliente) & Ante una falla
+de conectividad durante la consulta de estatus o la autorización 2FA, la
+interfaz del cliente deberá informar el estado y reintentar
+automáticamente. & Mensaje de estado en máximo 3 s; reintento automático
+cada 30 s o menos hasta completar; 0 autorizaciones duplicadas o
+perdidas. & Cortar el servidor durante la consulta y durante el envío
+del código, cronometrar el mensaje y revisar la base de datos tras
+restablecer el servicio. \\
+\end{longtable}
+}
+
+\subsection{4.7 Reglas de negocio y requisitos de
+dominio}\label{reglas-de-negocio-y-requisitos-de-dominio}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.0963}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.4871}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2351}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1815}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{ID}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Regla de negocio}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Fuente (anteproyecto / entrevista con fecha)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Requisitos que afecta}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+RN-01 & Expiración y vigencia de enlaces: El enlace web de seguimiento
+permanecerá activo durante la estancia del vehículo en el taller.
+Expirará automáticamente al entregar y saldar la unidad. Si el cliente
+requiere ver su historial posteriormente, deberá solicitar la generación
+de un nuevo enlace. La vigencia del enlace es independiente de la
+vigencia de la cotización (RN-11). & Entrevista con el cliente
+(19/10/2026) & RF-02.1, RF-02.2 \\
+RN-02 & Doble verificación en autorizaciones: Toda aprobación remota o
+presencial de cotización exigirá una doble verificación (código 2FA de 6
+dígitos, de un solo uso y vigente 5 minutos, enviado al correo
+electrónico registrado del cliente) para evitar reclamos por trabajos no
+autorizados. & Entrevista con el cliente (19/10/2026) & RF-06, RNF-04 \\
+RN-03 & Selección granular de rubros: El cliente puede aprobar o
+rechazar de manera independiente los conceptos opcionales desglosados en
+el presupuesto (mano de obra o refacciones), ejecutando únicamente lo
+autorizado explícitamente. & Entrevista con el cliente (19/10/2026) &
+RF-06 \\
+RN-04 & Re-cotización obligatoria por sobrecostos (\textgreater10\%):
+Cualquier trabajo o repuesto imprevisto durante la reparación que
+incremente el costo inicial más de un 10\% detendrá el avance hasta
+contar con una nueva autorización validada por el cliente. &
+Anteproyecto y propuesta técnica & RF-07, RNF-04 \\
+RN-05 & Capacidad física del taller\textbf{:} La atención simultánea
+está limitada estrictamente a 4 bahías físicas (1 vehículo por bahía) y
+un área de estacionamiento de recepción/espera con capacidad máxima para
+5 vehículos. & Anteproyecto y entrevista con el cliente & RF-05,
+RF-09 \\
+RN-06 & Reubicación por espera de refacciones: Si un vehículo requiere
+refacciones externas con demora de entrega de varios días, se liberará
+la bahía de trabajo reubicando la unidad en el estacionamiento hasta el
+arribo de las piezas. & Entrevista con el cliente (19/10/2026) & RF-05,
+RF-08.2 \\
+RN-07 & Clasificación de vehículos autorizados: El sistema operará
+exclusivamente con vehículos automotrices ligeros (automóviles
+particulares, motocicletas y camionetas hasta de 3 toneladas). Se
+excluyen bicicletas, tráilers y maquinaria pesada. & Entrevista con el
+cliente (19/10/2026) & RF-03.1 \\
+RN-08 & Confirmación manual de citas web: Las solicitudes de cita
+agendadas desde el portal público ingresarán en estado "Pendiente" y no
+reservarán espacio en la agenda hasta que la recepcionista las confirme
+manualmente. & Entrevista con el cliente (19/10/2026) & RF-09 \\
+RN-09 & Asignación y colaboración de mecánicos\textbf{:} Cada orden
+mantendrá un mecánico principal responsable. Otros mecánicos podrán
+colaborar en el trabajo técnico sin alterar la titularidad de la orden,
+salvo reasignación formal. & Entrevista con el cliente (19/10/2026) &
+RF-05 \\
+RN-10 & Restricción de entrega y excepción a flotillas: Queda prohibida
+la entrega física del vehículo con saldo pendiente. Como única
+excepción, el Gerente podrá autorizar la entrega a crédito para
+vehículos pertenecientes a flotillas empresariales registradas. &
+Anteproyecto y entrevista con el cliente & RF-10 \\
+RN-11 & Vigencia de cotizaciones: Toda cotización tiene vigencia de 5
+días naturales desde su emisión. Una cotización vencida no puede
+autorizarse; el taller debe emitir una nueva versión. & Anteproyecto &
+RF-06 \\
+RN-12 & Evidencia fotográfica de recepción: Al recibir un vehículo se
+exigen el checklist completo y al menos 4 fotografías (frente, trasera,
+costado izquierdo y costado derecho); sin ellas la orden no puede pasar
+a diagnóstico. & Anteproyecto; el mínimo de 4 fotografías debe validarse
+con el cliente & RF-04 \\
+RN-13 & Garantía de mano de obra: Los trabajos tienen garantía de 30
+días naturales sobre la mano de obra, contados desde la entrega del
+vehículo. & RF-03.2; confirmar la fuente con el cliente & RF-03.2 \\
+\end{longtable}
+}
+
+\subsection{4.8 Requisitos de protección de datos
+personales}\label{requisitos-de-protecciuxf3n-de-datos-personales}
+
+En cumplimiento con la Ley Federal de Protección de Datos Personales en
+Posesión de los Particulares (LFPDPPP - DOF):
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Datos Personales Recabados
+\end{enumerate}
+
+\begin{quote}
+El sistema capturará y procesará los siguientes datos de clientes
+particulares y representantes de flotillas:
+\end{quote}
+
+\begin{itemize}
+\item
+  Datos de identificación y contacto: Nombre completo, número telefónico
+  celular (WhatsApp/SMS) y correo electrónico.
+\item
+  Datos del vehículo y de la propiedad: Placas, marca, modelo, año,
+  número de serie (VIN - opcional), kilometraje, nivel de combustible,
+  fotografías del estado físico de la unidad, historial de servicios e
+  importes de facturación.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  Finalidad del Tratamiento
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Finalidades primarias: Identificación del cliente, vinculación del
+  vehículo a la orden de servicio, generación y envío de enlaces
+  temporales de seguimiento, envío de códigos 2FA para validación de
+  presupuestos, cobro, emisión de comprobantes de pago y aplicación de
+  garantías de mano de obra (30 días).
+\item
+  Finalidades secundarias: Recordatorios de mantenimiento preventivo y
+  consulta de historial a solicitud del cliente.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  Medidas de Seguridad y Control de Accesos
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Control de Acceso Basado en Roles (RBAC): La información personal del
+  cliente solo estará accesible para los roles de Recepcionista y
+  Gerente. Los Mecánicos y Encargados de Almacén únicamente visualizarán
+  datos técnicos del vehículo y requerimientos de refacciones.
+\item
+  Acceso mediante Tokens Temporales: Los clientes accederán a sus
+  cotizaciones y estatus vía tokens dinámicos sin necesidad de almacenar
+  contraseñas de usuarios externos en la base de datos. Protección de
+  Datos en Pruebas: Se garantiza el uso exclusivo de datos sintéticos o
+  ficticios (mock data) durante todas las fases de desarrollo, pruebas y
+  demostraciones académicas, sin almacenar registros reales en los
+  entornos de staging o prueba.
+\item
+  Seguridad en Tránsito: Las comunicaciones entre navegadores móviles,
+  tabletas y servidores se realizarán mediante protocolos cifrados HTTPS
+  (TLS 1.2 o superior).
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\item
+  Borrador del Aviso de Privacidad Simplificado
+\end{enumerate}
+
+\begin{quote}
+AVISO DE PRIVACIDAD SIMPLIFICADO
+
+Servicio Automotriz Hermanos Ruiz, S.A. de C.V., con domicilio en las
+instalaciones operativas del taller, es responsable del tratamiento de
+los datos personales (contacto, identificación y datos de su vehículo)
+proporcionados en la recepción.
+
+Sus datos serán utilizados exclusivamente para la apertura de órdenes de
+servicio, seguimiento en vivo, envío de cotizaciones para su
+autorización remota o presencial mediante doble verificación (2FA),
+cobro, entrega y aplicación de garantías. Sus datos no serán
+transferidos ni compartidos con terceros sin su consentimiento
+explícito. Para consultar el Aviso de Privacidad Integral o ejercer sus
+derechos ARCO (Acceso, Rectificación, Cancelación y Oposición), puede
+acudir a la recepción de nuestro taller o solicitarlo a través de
+nuestro portal web de atención a clientes.
+\end{quote}
+
+\subsection{4.9 Casos de uso}\label{casos-de-uso}
+
+CU-01 --- Confirmación de cita web
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2351}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7649}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Campo
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Contenido
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID y nombre & CU-01 Confirmación de cita web \\
+Actor principal & Recepcionista \\
+Actores secundarios & Cliente; servicio de correo electrónico. \\
+Descripción breve & Permite revisar solicitudes de citas realizadas
+desde el sitio web, verificar la disponibilidad del taller y confirmar
+fecha, hora y bahía preliminar. El sistema actualiza el estado y
+notifica al cliente. \\
+Precondiciones & 1. El cliente solicitó previamente una cita mediante el
+sitio web.
+
+2. La solicitud está registrada y pendiente de revisión.
+
+3. La recepcionista dispone de credenciales válidas. \\
+Flujo principal & 1. La recepcionista inicia sesión desde la computadora
+de mostrador.
+
+2. El sistema valida las credenciales y muestra el menú principal.
+
+3. La recepcionista abre el módulo de Gestión de Citas.
+
+4. El sistema muestra las solicitudes pendientes.
+
+5. La recepcionista selecciona una solicitud y revisa los datos del
+cliente.
+
+6. El sistema muestra la agenda y la disponibilidad de horarios y
+bahías.
+
+7. La recepcionista verifica la disponibilidad y selecciona fecha, hora
+y bahía preliminar.
+
+8. La recepcionista confirma la programación.
+
+9. El sistema actualiza la cita a «Confirmada» y guarda la programación.
+
+10. El sistema envía una notificación al cliente por correo electrónico.
+
+11. El sistema informa a la recepcionista que la cita fue confirmada. \\
+\textbf{Flujos alternos} & A1 (paso 7): Horario o fecha sin
+disponibilidad. El sistema muestra que no hay espacio y permite
+seleccionar una alternativa; recepción propone la nueva fecha u hora al
+cliente y continúa con la confirmación.
+
+A2 (paso 4): No hay solicitudes pendientes. El sistema informa que la
+bandeja está vacía y la recepcionista puede salir del módulo. \\
+\textbf{Flujos de excepción} & E1 (paso 1): Credenciales incorrectas o
+cuenta bloqueada. El sistema rechaza el acceso; después de tres intentos
+fallidos consecutivos bloquea temporalmente la cuenta durante 15
+minutos.
+
+E2 (paso 9): Error al guardar. El sistema informa que no fue posible
+actualizar la cita y conserva el estado anterior.
+
+E3 (paso 10): Fallo de correo. La cita permanece confirmada y el envío
+queda para seguimiento o reintento. \\
+\textbf{Postcondiciones} & La cita queda registrada con estado
+«Confirmada» y con fecha y hora asignadas. El sistema conserva el
+resultado del envío de la notificación. \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-08 (Confirmación manual
+de citas web), RN-05 (Capacidad física del taller).
+
+Validaciones del caso de uso:
+
+• Solo se confirma una solicitud registrada.
+
+• La programación debe respetar la disponibilidad de horarios y bahías.
+
+• La cita confirmada debe contar con fecha y hora.
+
+• La notificación se envía al correo registrado. \\
+\textbf{Requisitos relacionados} & RF-09 · HU-04 \\
+\end{longtable}
+}
+
+CU-02 --- Recepción del vehículo y apertura de orden
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2351}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7649}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-02 Recepción del vehículo y apertura de
+orden \\
+\textbf{Actor principal} & Recepcionista \\
+\textbf{Actores secundarios} & Cliente. \\
+\textbf{Descripción breve} & Registra la llegada del vehículo, verifica
+o captura los datos del cliente y del automóvil, documenta sus
+condiciones iniciales y abre una orden de servicio para dar seguimiento
+al trabajo. \\
+\textbf{Precondiciones} & 1. El cliente se presenta físicamente en el
+taller con su vehículo.
+
+2. La recepcionista tiene acceso autorizado al sistema.
+
+3. El sistema permite registrar clientes, vehículos y órdenes. \\
+\textbf{Flujo principal} & 1. La recepcionista inicia sesión o continúa
+con una sesión activa.
+
+2. Accede al módulo de Registro de Cliente y Vehículo.
+
+3. Busca al cliente por los datos disponibles.
+
+4. El sistema muestra al cliente y sus vehículos registrados, si
+existen.
+
+5. La recepcionista verifica o registra los datos del cliente y del
+vehículo: placas, marca, modelo y VIN.
+
+6. Accede al módulo de Check-in y Registro de Entrada.
+
+7. El sistema solicita los datos iniciales del vehículo.
+
+8. La recepcionista registra kilometraje y nivel de combustible.
+
+9. Completa la lista de inspección inicial, incluyendo herramientas y
+llanta de refacción, entre otros elementos definidos por el taller.
+
+10. Toma o carga fotografías de la carrocería para documentar daños
+previos.
+
+11. Revisa los datos y selecciona «Abrir Orden de Servicio».
+
+12. El sistema valida los datos obligatorios y registra la orden con
+estado «Abierta».
+
+13. El sistema genera un enlace seguro asociado a la orden para el
+cliente.
+
+14. El sistema confirma la apertura de la orden. \\
+\textbf{Flujos alternos} & A1 (paso 3): Cliente no registrado. La
+recepcionista captura sus datos y continúa con el registro del vehículo.
+
+A2 (paso 5): Vehículo no registrado. La recepcionista captura sus datos
+y lo vincula con el cliente.
+
+A3 (paso 10): No se observan daños visibles. La recepcionista registra
+el resultado de la inspección y continúa. \\
+\textbf{Flujos de excepción} & E1 (paso 5): Datos obligatorios
+incompletos. El sistema identifica los campos faltantes y no permite
+guardar hasta completarlos.
+
+E2 (paso 5): Vehículo con orden previa abierta. Si las placas
+corresponden a una orden activa, el sistema muestra el folio y dirige a
+la orden existente para actualizarla o cerrarla antes de abrir otra.
+
+E3 (paso 10): Fotografía inválida o mayor a 10 MB. El sistema muestra un
+error de formato o tamaño y solicita seleccionar una imagen compatible o
+comprimida.
+
+E4 (paso 12): Error al abrir la orden. El sistema informa que la
+operación no se completó y no debe mostrar una orden como abierta si no
+fue guardada. \\
+\textbf{Postcondiciones} & Quedan registrados el check-in y la orden de
+servicio en estado «Abierta»; el vehículo se asocia al cliente y se
+genera el enlace seguro correspondiente. \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-12 (Evidencia fotográfica
+de recepción), RN-07 (Clasificación de vehículos autorizados), RN-01
+(Expiración y vigencia de enlaces).
+
+Validaciones del caso de uso:
+
+• Cada vehículo debe estar asociado con un cliente.
+
+• Se registra kilometraje y nivel de combustible al ingreso.
+
+• La inspección inicial documenta el estado del vehículo.
+
+• La orden requiere los datos obligatorios completos.
+
+• La orden tiene folio único y estado inicial «Abierta».
+
+• El enlace seguro debe corresponder a la orden correcta. \\
+\textbf{Requisitos relacionados} & RF-02.1, RF-03.1, RF-04 · HU-01,
+HU-05, HU-06 \\
+\end{longtable}
+}
+
+\textbf{CU-03 --- Firma de contrato presencial (2FA)}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2387}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7158}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-03 Firma de contrato presencial (2FA) \\
+\textbf{Actor principal} & Recepcionista \\
+\textbf{Actores secundarios} & Cliente; servicio de correo
+electrónico. \\
+\textbf{Descripción breve} & Formaliza en el mostrador la autorización
+de una cotización técnica mediante un código de un solo uso enviado al
+correo registrado del cliente. \\
+\textbf{Precondiciones} & 1. El jefe de mecánicos ya generó el
+diagnóstico y la cotización técnica.
+
+2. La cotización está asociada a una orden y disponible para revisión.
+
+3. El cliente decide autorizar de forma presencial.
+
+4. El cliente tiene un correo registrado y accesible.
+
+5. La recepcionista tiene acceso al sistema. \\
+\textbf{Flujo principal} & 1. El clnte comunica que desea autorizar
+presencialmente la cotización.
+
+2. La recepcionista abre el módulo de Firma de Contrato Presencial.
+
+3. El sistema muestra las órdenes y cotizaciones pendientes de
+autorización.
+
+4. La recepcionista selecciona la orden correspondiente.
+
+5. El sistema muestra el desglose de la cotización.
+
+6. El cliente revisa el alcance y el importe cotizado.
+
+7. La recepcionista selecciona «Enviar Código 2FA».
+
+8. El sistema genera un código de verificación y lo envía al correo
+registrado.
+
+9. El cliente recibe el código y se lo proporciona a la recepcionista.
+
+10. La recepcionista introduce los seis dígitos.
+
+11. La recepcionista selecciona «Validar y Firmar».
+
+12. El sistema comprueba que el código sea correcto, vigente y no
+utilizado.
+
+13. El sistema registra la autorización y cambia la orden a
+«Autorizada».
+
+14. El sistema muestra la confirmación de la operación. \\
+\textbf{Flujos alternos} & A1 (paso 6): El cliente solicita
+aclaraciones. La recepcionista aclara la información disponible o
+consulta al jefe de mecánicos; después el cliente puede continuar o
+rechazar la cotización.
+
+A2 (paso 9): El cliente no recibe el código. Se verifica el correo y el
+estado del envío; si está habilitado, se reenvía el código.
+
+A3 (paso 10): Si el sistema lo permite, el cliente introduce
+personalmente el código. \\
+\textbf{Flujos de excepción} & E1 (paso 8): Fallo de envío. El sistema
+informa que no pudo enviar el código y no permite autorizar hasta
+completar la verificación.
+
+E2 (paso 12): Código incorrecto o expirado tras cinco minutos. El
+sistema lo rechaza y permite introducir un código vigente o solicitar un
+reenvío.
+
+E3 (paso 12): Límite de intentos excedido. El sistema bloquea
+temporalmente la validación o exige iniciar nuevamente el proceso.
+
+E4 (paso 13): Error al registrar la autorización. La orden conserva el
+estado anterior hasta que se registre correctamente.
+
+E5: El cliente rechaza la cotización. La recepcionista registra el
+rechazo; la orden queda «Cancelada/Rechazada» y se coordina el cobro de
+revisión y la entrega del vehículo sin reparar, si aplica. \\
+\textbf{Postcondiciones} & Si la validación tiene éxito, la autorización
+queda registrada y la orden cambia a «Autorizada». Si el cliente rechaza
+la cotización, se registra el rechazo y no continúa la reparación
+cotizada. \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-02 (Doble verificación en
+autorizaciones), RN-03 (Selección granular de rubros), RN-11 (Vigencia
+de cotizaciones).
+
+Validaciones del caso de uso:
+
+• La cotización debe haberse generado y estar asociada a la orden.
+
+• El cliente debe revisar la cotización antes de autorizarla.
+
+• El código es de un solo uso y tiene vigencia definida de cinco
+minutos, según la especificación recibida.
+
+• Se rechazan códigos incorrectos, vencidos o ya utilizados.
+
+• La orden solo cambia a «Autorizada» después de validar y registrar la
+aceptación. \\
+\textbf{Requisitos relacionados} & RF-06 · HU-12, HU-14 \\
+\end{longtable}
+}
+
+CU-04 --- Cobro y entrega del vehículo
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2387}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7613}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-04 Cobro y entrega del vehículo \\
+\textbf{Actor principal} & Recepcionista \\
+\textbf{Actores secundarios} & Cliente; gerente (cuando se requiera
+autorización de crédito); sistema de registro de pagos. \\
+\textbf{Descripción breve} & Registra el pago de la orden, emite el
+comprobante, entrega las llaves al cliente y cierra la orden de servicio
+cuando se cumplen las condiciones de salida. \\
+\textbf{Precondiciones} & 1. El jefe de mecánicos marcó el trabajo como
+«Terminado» y el vehículo está listo para entrega.
+
+2. Existe una orden de servicio registrada.
+
+3. La recepcionista tiene permiso para realizar el cobro y registrar la
+entrega. \\
+\textbf{Flujo principal} & 1. El cliente acude al taller a recoger su
+vehículo.
+
+2. La recepcionista abre el módulo de Cobro y Entrega.
+
+3. El sistema muestra el saldo pendiente de la orden.
+
+4. La recepcionista verifica el importe, registra el pago y emite el
+comprobante.
+
+5. La recepcionista entrega las llaves al cliente.
+
+6. La recepcionista selecciona «Registrar Entrega».
+
+7. El sistema guarda la orden en el Historial de Servicio del vehículo y
+cambia el estado a «Cerrada».
+
+8. El sistema confirma el cierre de la orden. \\
+\textbf{Flujos alternos} & A1: Entrega a crédito para flotilla
+empresarial. Si el vehículo pertenece a una flotilla y queda saldo
+pendiente, la recepcionista solicita autorización al gerente. Si el
+gerente autoriza, se continúa con el registro de entrega sin pago
+inmediato de contado (véase CU-13).
+
+A2: El cliente paga el saldo pendiente y se reanuda el proceso de cobro
+y entrega. \\
+\textbf{Flujos de excepción} & E1: Saldo pendiente sin autorización de
+crédito. El sistema bloquea la entrega y muestra que se requiere
+liquidación completa o autorización expresa de Gerencia.
+
+E2: Sesión expirada por más de 30 minutos de inactividad. El sistema
+redirige al inicio de sesión y conserva el borrador del formulario de
+cobro; tras autenticarse, la recepcionista retoma el proceso. \\
+\textbf{Postcondiciones} & La orden queda «Cerrada», el pago queda
+registrado, se emite un comprobante y la orden se conserva en el
+historial de servicio del vehículo. \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-10 (Restricción de
+entrega y excepción a flotillas), RN-13 (Garantía de mano de obra),
+RN-01 (Expiración y vigencia de enlaces).
+
+Validaciones del caso de uso:
+
+• No se entrega un vehículo con saldo pendiente salvo autorización
+expresa de Gerencia para crédito de flotilla.
+
+• El pago debe registrarse en el sistema y producir un comprobante.
+
+• La orden se cierra después de registrar la entrega.
+
+• El cierre debe quedar en el historial de servicio del vehículo. \\
+\textbf{Requisitos relacionados} & RF-02.2, RF-03.2, RF-10 · HU-21,
+HU-23 \\
+\end{longtable}
+}
+
+CU-05 --- Diagnóstico, cotización técnica y asignación de trabajo
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2387}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7613}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-05 Diagnóstico, cotización técnica y
+asignación de trabajo \\
+\textbf{Actor principal} & Jefe de Mecánicos (líder técnico) \\
+\textbf{Actores secundarios} & Recepcionista; mecánico asignado; sistema
+de agenda de bahías. \\
+\textbf{Descripción breve} & Permite inspeccionar técnicamente un
+vehículo con orden abierta, elaborar el diagnóstico y la cotización de
+mano de obra y refacciones, y asignar una bahía y un mecánico. \\
+\textbf{Precondiciones} & 1. Existe una orden de servicio en estado
+«Abierta».
+
+2. El jefe de mecánicos tiene acceso autorizado desde la tableta del
+taller.
+
+3. Hay información suficiente para identificar la orden y el
+vehículo. \\
+\textbf{Flujo principal} & 1. El jefe de mecánicos inicia sesión en la
+tableta del taller.
+
+2. Revisa las órdenes abiertas y localiza el vehículo en el área de
+recepción.
+
+3. Inspecciona físicamente el automóvil.
+
+4. Abre el módulo de Diagnóstico y Cotización Técnica.
+
+5. Registra el diagnóstico y desglosa la mano de obra estimada y las
+refacciones necesarias.
+
+6. Consulta el Tablero de Bahías y Mecánicos.
+
+7. Asigna la orden a una bahía disponible y a un mecánico de su equipo.
+
+8. Selecciona «Guardar Diagnóstico».
+
+9. El sistema guarda el diagnóstico y cambia la orden a «Diagnosticada».
+
+10. El sistema deja disponible la cotización para que se gestione la
+autorización del cliente. \\
+\textbf{Flujos alternos} & A1 (paso 7): Las cuatro bahías están
+ocupadas. El sistema muestra «Capacidad máxima alcanzada (4/4 bahías
+ocupadas)» y coloca la orden en la lista de espera; al liberarse una
+bahía, el jefe retoma la asignación.
+
+A2: La orden se diagnostica pero queda en espera de asignación hasta que
+exista capacidad disponible. \\
+\textbf{Flujos de excepción} & E1: Credenciales incorrectas. El sistema
+rechaza el acceso y permite volver a intentar.
+
+E2: Pérdida de Wi‑Fi o sesión pausada al guardar. El sistema informa que
+no hay conexión o que la sesión se pausó, conserva una copia local si
+está disponible y solicita volver a iniciar sesión al restablecer la
+red.
+
+E3: Durante la reparación se detecta una falla adicional cuyo costo
+incrementa más del 10 \% respecto de lo autorizado. El sistema detiene
+el avance, cambia la orden a «Pendiente de Re-cotización» y deshabilita
+nuevas requisiciones hasta obtener una nueva autorización mediante
+2FA. \\
+\textbf{Postcondiciones} & El diagnóstico y la cotización quedan
+guardados; la orden cambia a «Diagnosticada». La asignación queda
+establecida o la orden queda en lista de espera si todas las bahías
+están ocupadas. \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-05 (Capacidad física del
+taller), RN-09 (Asignación y colaboración de mecánicos), RN-04
+(Re-cotización obligatoria por sobrecostos), RN-11 (Vigencia de
+cotizaciones).
+
+Validaciones del caso de uso:
+
+• El diagnóstico se registra sobre una orden existente en estado
+«Abierta».
+
+• La asignación física requiere una bahía disponible y un mecánico
+asignado.
+
+• El taller dispone de cuatro bahías; si todas están ocupadas, se
+utiliza lista de espera.
+
+• Un incremento superior al 10 \% del costo autorizado requiere
+re-cotización y nueva autorización del cliente antes de solicitar
+refacciones adicionales. \\
+\textbf{Requisitos relacionados} & RF-05, RF-06, RF-07 · HU-07, HU-08,
+HU-09, HU-12, HU-16 \\
+\end{longtable}
+}
+
+CU-06 --- Requisición de refacciones
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2387}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7613}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-06 Requisición de refacciones \\
+\textbf{Actor principal} & Jefe de Mecánicos (líder técnico) \\
+\textbf{Actores secundarios} & Encargado de almacén; cliente (cuando se
+requiere nueva autorización). \\
+\textbf{Descripción breve} & Registra y envía al almacén la solicitud de
+refacciones necesarias para ejecutar una reparación autorizada. \\
+\textbf{Precondiciones} & 1. La orden está autorizada por el cliente.
+
+2. La reparación se encuentra en proceso.
+
+3. El jefe de mecánicos tiene acceso a la tableta y a la orden
+activa. \\
+\textbf{Flujo principal} & 1. El jefe de mecánicos inicia sesión y abre
+el módulo de Requisición de Refacciones en la tableta.
+
+2. Selecciona la orden de servicio activa.
+
+3. Ingresa las refacciones requeridas para realizar el trabajo
+autorizado.
+
+4. Revisa la lista de piezas solicitadas.
+
+5. Selecciona «Enviar Solicitud a Almacén».
+
+6. El sistema registra la requisición y notifica al encargado de
+almacén.
+
+7. El encargado de almacén puede consultar la solicitud pendiente para
+atenderla. \\
+\textbf{Flujos alternos} & A1: Si las piezas solicitadas corresponden a
+una re-cotización previamente autorizada por el cliente, el jefe
+registra la requisición adicional y continúa el flujo normal. \\
+\textbf{Flujos de excepción} & E1: Se detecta durante la reparación una
+falla oculta que incrementa el costo en más del 10 \% del importe
+autorizado. El sistema detiene la orden, la cambia a «Pendiente de
+Re-cotización» y deshabilita la solicitud de nuevas refacciones. El jefe
+prepara la cotización complementaria; tras una nueva autorización 2FA
+por Recepción o por la Web, puede volver a requisar.
+
+E2: Pérdida de conexión o sesión pausada al guardar. El sistema muestra
+el aviso correspondiente y, si está disponible, conserva una copia local
+para reintentar cuando se restablezca la conexión. \\
+\textbf{Postcondiciones} & La requisición queda registrada y disponible
+para el encargado de almacén, que recibe una notificación. Si se
+requiere re-cotización, las nuevas piezas quedan bloqueadas hasta
+obtener autorización. \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-04 (Re-cotización
+obligatoria por sobrecostos), RN-06 (Reubicación por espera de
+refacciones).
+
+Validaciones del caso de uso:
+
+• La requisición ordinaria corresponde a una orden autorizada y en
+proceso de reparación.
+
+• Las piezas adicionales asociadas a un aumento superior al 10 \%
+requieren re-cotización y autorización 2FA.
+
+• La solicitud enviada debe quedar asociada a la orden de servicio. \\
+\textbf{Requisitos relacionados} & RF-08.1 · HU-10 \\
+\end{longtable}
+}
+
+CU-07 --- Finalización de trabajo y sellado de historial
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2387}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7613}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-07 Finalización de trabajo y sellado de
+historial \\
+\textbf{Actor principal} & Jefe de Mecánicos (líder técnico) \\
+\textbf{Actores secundarios} & Mecánico asignado; cliente; servicio de
+notificaciones. \\
+\textbf{Descripción breve} & Registra las notas técnicas finales,
+verifica que las tareas autorizadas estén completadas y finaliza el
+trabajo para habilitar la entrega del vehículo. \\
+\textbf{Precondiciones} & 1. El mecánico asignado terminó físicamente
+las reparaciones.
+
+2. La orden está en reparación y cuenta con diagnóstico y autorización
+del cliente.
+
+3. El jefe de mecánicos tiene acceso al sistema desde la tableta. \\
+\textbf{Flujo principal} & 1. El jefe de mecánicos inicia sesión en la
+tableta y supervisa el vehículo.
+
+2. Abre el módulo de Cierre Técnico y Sellado de Historial.
+
+3. Redacta las notas técnicas finales del trabajo realizado y verifica
+su correspondencia con lo autorizado por el cliente.
+
+4. Marca las tareas realizadas como completadas.
+
+5. Selecciona «Finalizar Trabajo».
+
+6. El sistema valida el cierre técnico.
+
+7. El sistema cambia el estado de la orden a «Lista para Entrega».
+
+8. El sistema envía una notificación automática al cliente. \\
+\textbf{Flujos alternos} & A1: Si faltan tareas por marcar, el jefe
+revisa el estado de las reparaciones, completa las tareas
+correspondientes y vuelve a intentar finalizar el trabajo. \\
+\textbf{Flujos de excepción} & E1: El jefe intenta cerrar la orden con
+tareas autorizadas pendientes. El sistema muestra «Existen tareas
+autorizadas pendientes por marcar como concluidas» y no finaliza la
+orden.
+
+E2: La sesión se pausa o se pierde la conexión Wi‑Fi antes de guardar.
+El sistema informa el problema y permite reanudar el proceso tras
+recuperar conexión y autenticarse. \\
+\textbf{Postcondiciones} & Las notas técnicas y las tareas completadas
+quedan registradas; la orden cambia a «Lista para Entrega» y se envía la
+notificación al cliente. \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-03 (Selección granular de
+rubros), RN-13 (Garantía de mano de obra).
+
+Validaciones del caso de uso:
+
+• Solo se finaliza técnicamente una reparación concluida.
+
+• Las tareas completadas deben corresponder con lo autorizado por el
+cliente.
+
+• No se cambia la orden a «Lista para Entrega» si quedan tareas
+autorizadas pendientes.
+
+• La finalización genera una notificación al cliente. \\
+\textbf{Requisitos relacionados} & RF-03.2, RF-05 · HU-20 \\
+\end{longtable}
+}
+
+CU-08 --- Atender solicitud de refacciones y registrar compra
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2387}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7613}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-08 Atender solicitud de refacciones y
+registrar compra \\
+\textbf{Actor principal} & Encargado de Almacén \\
+\textbf{Actores secundarios} & Jefe de Mecánicos; proveedor local;
+sistema de inventario. \\
+\textbf{Descripción breve} & Atiende una solicitud de refacciones,
+contacta a un proveedor, registra la compra y el ticket, y actualiza la
+disponibilidad de las piezas para que continúe la reparación. \\
+\textbf{Precondiciones} & 1. El jefe de mecánicos envió una solicitud de
+refacciones asociada a una orden.
+
+2. El encargado de almacén tiene acceso a la computadora y al
+sistema. \\
+\textbf{Flujo principal} & 1. El encargado de almacén inicia sesión en
+la computadora de almacén.
+
+2. Abre Solicitudes Pendientes y selecciona el pedido recibido.
+
+3. Consulta el Directorio de Proveedores Locales y localiza un
+proveedor.
+
+4. Realiza la compra o pedido por teléfono o correo con el proveedor
+seleccionado.
+
+5. Abre el módulo de Registro de Compra y Ticket.
+
+6. Captura los costos de las piezas, el proveedor y la fecha de
+recepción.
+
+7. Selecciona «Confirmar Compra y Generar Ticket».
+
+8. El sistema genera el historial de compra, descuenta del inventario si
+aplica y marca la refacción como «Recibida».
+
+9. El sistema deja la solicitud registrada para que el taller continúe
+la reparación. \\
+\textbf{Flujos alternos} & A1: Si existe stock local disponible, el
+encargado puede registrar el surtido de las piezas correspondientes sin
+efectuar una nueva compra, actualizando el inventario y la solicitud
+según corresponda. \\
+\textbf{Flujos de excepción} & E1: No hay existencia en almacén y ningún
+proveedor local tiene la pieza para entrega inmediata. El encargado
+selecciona «Sin disponibilidad de proveedor»; el sistema cambia la orden
+a «Detenida por Refacción» y avisa al jefe de mecánicos y al portal del
+cliente. Cuando se confirma la llegada de la pieza, el encargado
+registra el pedido y marca las piezas como recibidas.
+
+E2: Credenciales incorrectas o tres intentos fallidos. El sistema
+rechaza el acceso y bloquea temporalmente la cuenta conforme a la
+política descrita.
+
+E3: Cuenta abierta en otro dispositivo o sesión expirada. El sistema
+cierra la sesión anterior o informa que la sesión expiró. \\
+\textbf{Postcondiciones} & La compra queda en el historial, el ticket se
+genera, el inventario se actualiza si aplica y las refacciones quedan
+marcadas como «Recibida»; si no hay disponibilidad, la orden queda
+«Detenida por Refacción». \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-06 (Reubicación por
+espera de refacciones).
+
+Validaciones del caso de uso:
+
+• Toda compra debe asociarse a la solicitud y a su orden de servicio.
+
+• Se registra el proveedor, los costos y la fecha de recepción.
+
+• El inventario solo se descuenta o actualiza según aplique al
+movimiento registrado.
+
+• La falta de pieza disponible debe comunicarse al taller y al portal
+del cliente. \\
+\textbf{Requisitos relacionados} & RF-08.2, RF-08.3 · HU-17, HU-18 \\
+\end{longtable}
+}
+
+CU-09 --- Solicitud de cita desde la web
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2351}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7649}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-09 Solicitud de cita desde la web \\
+\textbf{Actor principal} & Cliente \\
+\textbf{Actores secundarios} & Sistema web; recepcionista (revisa
+posteriormente la solicitud). \\
+\textbf{Descripción breve} & Permite que el cliente solicite una cita en
+el sitio web público sin crear una cuenta ni iniciar sesión,
+proporcionando sus datos, los de su vehículo y el horario deseado. \\
+\textbf{Precondiciones} & 1. El cliente puede acceder a la página web
+pública del taller.
+
+2. El servicio web de solicitud de citas está disponible. \\
+\textbf{Flujo principal} & 1. El cliente abre la pantalla de Solicitud
+de Cita desde el sitio web, sin registrarse ni introducir contraseña.
+
+2. Llena sus datos personales y la información de su automóvil.
+
+3. Selecciona la fecha y hora deseadas.
+
+4. Revisa la información y selecciona «Solicitar Cita».
+
+5. El sistema registra la solicitud como pendiente de revisión.
+
+6. El sistema muestra un mensaje que indica que Recepción revisará la
+petición. \\
+\textbf{Flujos alternos} & A1: Si la fecha u hora solicitada no tiene
+espacio disponible, Recepción revisa la solicitud y puede proponer al
+cliente un día u horario alternativo antes de confirmar la cita. \\
+\textbf{Flujos de excepción} & E1: No se puede enviar o registrar la
+solicitud. El material proporcionado no especifica el mensaje ni el
+procedimiento concreto de recuperación; la solicitud no debe
+considerarse recibida hasta que el sistema confirme el registro. \\
+\textbf{Postcondiciones} & La solicitud queda registrada para revisión
+de Recepción y el cliente recibe confirmación en pantalla de que su
+petición fue enviada. \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-08 (Confirmación manual
+de citas web).
+
+Validaciones del caso de uso:
+
+• El cliente puede solicitar la cita sin usuario ni contraseña.
+
+• La solicitud requiere datos del cliente, información del vehículo y
+fecha/hora deseadas.
+
+• Enviar una solicitud no equivale a confirmar la cita; Recepción debe
+revisarla. \\
+\textbf{Requisitos relacionados} & RF-09 · HU-03 \\
+\end{longtable}
+}
+
+CU-10 --- Consulta del estado del vehículo en vivo
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2351}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7649}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-10 Consulta del estado del vehículo en vivo \\
+\textbf{Actor principal} & Cliente \\
+\textbf{Actores secundarios} & Sistema web; servicio de generación y
+validación de enlaces seguros. \\
+\textbf{Descripción breve} & Permite consultar el avance del automóvil
+desde un teléfono mediante un enlace seguro asociado a la orden, sin
+requerir usuario, contraseña ni descarga de una aplicación. \\
+\textbf{Precondiciones} & 1. El vehículo fue recibido en el taller y
+cuenta con una orden de servicio.
+
+2. El cliente recibió por correo o SMS el enlace seguro
+correspondiente. \\
+\textbf{Flujo principal} & 1. El cliente abre desde su teléfono el
+enlace seguro recibido.
+
+2. El sistema valida automáticamente el token incluido en el enlace.
+
+3. El sistema muestra la pantalla de Seguimiento en Vivo.
+
+4. El cliente visualiza la barra de progreso y el estado actual del
+vehículo.
+
+5. El sistema presenta el avance disponible, que puede incluir
+Recepción, Diagnóstico, En Reparación y Listo. \\
+\textbf{Flujos alternos} & A1: El cliente vuelve a abrir el mismo enlace
+vigente para consultar el estado actualizado de la orden. \\
+\textbf{Flujos de excepción} & E1: El enlace ha expirado o el token fue
+alterado. El sistema bloquea el acceso y muestra: «Su enlace de acceso
+ha expirado o es inválido. Por favor, solicite un nuevo enlace de
+seguimiento a la recepción del taller». \\
+\textbf{Postcondiciones} & El cliente visualiza el estado asociado a la
+orden si el token es válido. No se modifican los datos ni el estado de
+la orden mediante esta consulta. \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-01 (Expiración y vigencia
+de enlaces).
+
+Validaciones del caso de uso:
+
+• El acceso del cliente se realiza mediante un token seguro, sin usuario
+ni contraseña.
+
+• Un enlace expirado o alterado no debe permitir consultar la
+información.
+
+• La información mostrada corresponde a la orden asociada al enlace. \\
+\textbf{Requisitos relacionados} & RF-02.1 · HU-28 \\
+\end{longtable}
+}
+
+CU-11 --- Aprobación remota de cotización (2FA)
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2317}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7683}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-11 Aprobación remota de cotización (2FA) \\
+\textbf{Actor principal} & Cliente \\
+\textbf{Actores secundarios} & Recepcionista; servicio de correo
+electrónico; sistema web. \\
+\textbf{Descripción breve} & Permite que el cliente revise y autorice a
+distancia la cotización técnica mediante un enlace seguro y un código
+2FA de seis dígitos enviado por correo electrónico. \\
+\textbf{Precondiciones} & 1. El vehículo ya fue diagnosticado.
+
+2. La cotización fue enviada al cliente mediante un enlace seguro.
+
+3. El enlace está vigente y asociado a la orden correcta.
+
+4. El cliente puede acceder al correo registrado. \\
+\textbf{Flujo principal} & 1. El cliente abre el enlace dinámico desde
+su teléfono.
+
+2. El sistema valida el enlace y muestra el desglose de mano de obra y
+refacciones.
+
+3. El cliente revisa los conceptos y el importe cotizado.
+
+4. Presiona «Solicitar Código 2FA para Autorizar».
+
+5. El sistema envía por correo un código de verificación de seis
+dígitos.
+
+6. El cliente introduce el código en la página web.
+
+7. Presiona «Aceptar y Autorizar».
+
+8. El sistema valida el código y registra el monto, la fecha y la hora
+de la autorización.
+
+9. El sistema cambia la orden a «Autorizada» y muestra el resultado. \\
+\textbf{Flujos alternos} & A1 (paso 3): El cliente no está de acuerdo
+con el costo y selecciona «Rechazar Cotización». El sistema solicita
+confirmar el rechazo; tras la confirmación cambia la orden a
+«Cancelada/Rechazada», notifica a Recepción para coordinar la entrega
+del vehículo sin reparar y finaliza la sesión web. \\
+\textbf{Flujos de excepción} & E1: Enlace expirado o token alterado. El
+sistema bloquea el acceso e indica al cliente que solicite un nuevo
+enlace a Recepción.
+
+E2 (paso 8): Código 2FA incorrecto o expirado después de cinco minutos.
+El sistema rechaza la autorización e indica que debe solicitarse un
+código nuevo.
+
+E3: El código no llega al correo. El material indica que el cliente debe
+solicitar un nuevo código; el flujo no concluye hasta que la
+verificación sea satisfactoria. \\
+\textbf{Postcondiciones} & Si la autorización es válida, queda
+registrada la cotización aprobada y la orden pasa a «Autorizada». Si el
+cliente la rechaza, la orden queda «Cancelada/Rechazada» y Recepción
+recibe aviso para coordinar la entrega sin reparar. \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-02 (Doble verificación en
+autorizaciones), RN-03 (Selección granular de rubros), RN-11 (Vigencia
+de cotizaciones).
+
+Validaciones del caso de uso:
+
+• La cotización debe estar asociada a una orden diagnosticada.
+
+• El enlace seguro debe ser vigente y válido.
+
+• El código 2FA es de seis dígitos y su vigencia indicada es de cinco
+minutos.
+
+• La orden solo se autoriza después de validar el código y registrar el
+consentimiento del cliente.
+
+• El rechazo confirmado debe notificarse a Recepción. \\
+\textbf{Requisitos relacionados} & RF-02.1, RF-06 · HU-02, HU-13, HU-14,
+HU-15 \\
+\end{longtable}
+}
+
+CU-12 --- Monitoreo global del taller y KPIs
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2317}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7683}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-12 Monitoreo global del taller y KPIs \\
+\textbf{Actor principal} & Gerente (dueño) \\
+\textbf{Actores secundarios} & Sistema de gestión del taller. \\
+\textbf{Descripción breve} & Proporciona al gerente un tablero general
+para visualizar indicadores operativos y financieros del taller,
+incluyendo ocupación de bahías, órdenes abiertas, tiempos promedio e
+ingresos acumulados. \\
+\textbf{Precondiciones} & 1. El gerente requiere revisar la operación
+general.
+
+2. Cuenta con perfil gerencial y credenciales válidas.
+
+3. Existen datos operativos registrados en el sistema. \\
+\textbf{Flujo principal} & 1. El gerente inicia sesión en su computadora
+o teléfono con el perfil gerencial.
+
+2. El sistema valida las credenciales y abre el Dashboard General de
+Control.
+
+3. El gerente consulta la ocupación de las cuatro bahías.
+
+4. El gerente visualiza las órdenes abiertas.
+
+5. El gerente consulta los tiempos promedio de estancia.
+
+6. El gerente visualiza los ingresos acumulados y los indicadores
+disponibles en tiempo real. \\
+\textbf{Flujos alternos} & A1: El gerente consulta el tablero desde otro
+dispositivo autorizado y revisa los mismos indicadores según los
+permisos de su perfil. \\
+\textbf{Flujos de excepción} & E1: Credenciales incorrectas u olvido de
+contraseña. El sistema muestra un error y permite iniciar el flujo de
+recuperación por correo y verificación de seguridad.
+
+E2: Cambio de red o inactividad. Para proteger la información operativa
+y financiera, el sistema requiere reautenticación mediante huella o
+contraseña, de acuerdo con el flujo descrito en el material. \\
+\textbf{Postcondiciones} & El gerente visualiza los indicadores
+disponibles del taller. La consulta no modifica las órdenes ni los datos
+operativos. \\
+\textbf{Reglas de negocio} & Sin regla de 4.7 específica.
+
+Validaciones del caso de uso:
+
+• Solo un perfil gerencial autorizado puede consultar el Dashboard
+General de Control.
+
+• Los indicadores mostrados deben basarse en los datos registrados en el
+sistema.
+
+• Tras inactividad o cambio de red, el sistema puede exigir
+reautenticación para proteger la información. \\
+\textbf{Requisitos relacionados} & RF-11 · HU-29 \\
+\end{longtable}
+}
+
+CU-13 --- Autorización de entrega a crédito (flotillas)
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2313}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7687}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{ID y nombre} & CU-13 Autorización de entrega a crédito
+(flotillas) \\
+\textbf{Actor principal} & Gerente (dueño) \\
+\textbf{Actores secundarios} & Recepcionista; cliente
+empresarial/flotilla; sistema de control de crédito. \\
+\textbf{Descripción breve} & Permite decidir si se libera a crédito un
+vehículo de una flotilla empresarial que terminó su reparación pero
+conserva saldo pendiente, con revisión de la línea de crédito de la
+empresa. \\
+\textbf{Precondiciones} & 1. El vehículo de una flotilla empresarial
+terminó su reparación.
+
+2. La orden conserva saldo pendiente.
+
+3. Recepción solicitó autorización de crédito para liberar el vehículo.
+
+4. El gerente tiene un perfil autorizado para aprobar excepciones. \\
+\textbf{Flujo principal} & 1. La recepcionista solicita al gerente
+autorización de entrega a crédito.
+
+2. El gerente inicia sesión y abre Aprobación de Créditos y Excepciones.
+
+3. Selecciona la orden correspondiente a la flotilla empresarial.
+
+4. El sistema muestra la información de la orden y la línea de crédito
+aprobada.
+
+5. El gerente revisa la información de crédito y decide autorizar la
+entrega.
+
+6. El gerente selecciona «Autorizar Entrega a Crédito».
+
+7. El sistema registra la autorización y habilita a Recepción para
+entregar el vehículo sin pago inmediato de contado. \\
+\textbf{Flujos alternos} & \begin{minipage}[t]{\linewidth}\raggedright
+A1: La flotilla excede su límite autorizado o presenta facturas
+vencidas. El sistema muestra una alerta con el saldo vencido y pregunta
+si el gerente desea forzar la autorización bajo su responsabilidad.
+
+\begin{quote}
+• Si acepta, el sistema registra la excepción gerencial y habilita la
+entrega.
+
+• Si rechaza, la entrega continúa bloqueada y se exige liquidar el saldo
+pendiente.
+\end{quote}
+\end{minipage} \\
+\textbf{Flujos de excepción} & E1: Credenciales gerenciales incorrectas
+o cuenta inaccesible. El gerente debe corregir los datos o recuperar la
+contraseña por correo antes de continuar.
+
+E2: El sistema detecta que la empresa excedió el límite de crédito. Si
+no existe autorización expresa del gerente, la entrega permanece
+bloqueada. \\
+\textbf{Postcondiciones} & Si se autoriza, queda registrada la excepción
+de crédito y Recepción puede continuar con la entrega. Si se deniega, el
+vehículo no se libera hasta liquidar el saldo o conseguir autorización
+válida. \\
+\textbf{Reglas de negocio} & Reglas de 4.7: RN-10 (Restricción de
+entrega y excepción a flotillas).
+
+Validaciones del caso de uso:
+
+• Esta excepción aplica a vehículos de flotillas empresariales.
+
+• Se debe revisar la línea de crédito antes de autorizar.
+
+• El gerente puede forzar una autorización con límite excedido bajo su
+responsabilidad, según el flujo definido.
+
+• Si el gerente rechaza la excepción, la entrega permanece bloqueada y
+se exige pago del saldo. \\
+\textbf{Requisitos relacionados} & RF-10 · HU-22 \\
+\end{longtable}
+}
+
+\subsubsection{4.9.1 Flujos transversales de autenticación y
+sesión}\label{flujos-transversales-de-autenticaciuxf3n-y-sesiuxf3n}
+
+Estos flujos se presentan como apoyo transversal de seguridad, no como
+casos de uso de negocio adicionales a los 13 anteriores. Los
+comportamientos se transcriben y ordenan a partir del material
+entregado.
+
+FT-01 --- Autenticación y sesión de Recepcionista
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Actor / flujo} & Actor: Recepcionista
+
+Precondición: la recepcionista intenta acceder desde la computadora de
+mostrador.
+
+Flujo normal: ingresa usuario/correo y contraseña; el sistema valida los
+datos y muestra la pantalla principal de Recepción.
+
+Excepciones: (1) Credenciales incorrectas: muestra «Usuario o contraseña
+incorrectos. Intentos restantes: 2». (2) Tres intentos fallidos
+consecutivos: bloquea la cuenta por 15 minutos y muestra aviso de
+bloqueo. (3) Recuperación: solicita correo corporativo; si no existe
+muestra «Correo no registrado»; si existe, envía enlace/token válido por
+15 minutos; la recepcionista restablece la contraseña y vuelve al login.
+(4) Más de 30 minutos de inactividad: expira la sesión, guarda el
+borrador del formulario actual, redirige al login y muestra aviso de
+sesión expirada. \\
+\end{longtable}
+}
+
+FT-02 --- Autenticación y sesión del Jefe de Mecánicos
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2299}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7701}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Actor / flujo} & Actor: Jefe de Mecánicos
+
+Precondición: el jefe intenta acceder desde la tableta del taller.
+
+Flujo normal: introduce usuario y contraseña y accede al tablero del
+taller.
+
+Excepciones: (1) Error de captura o credenciales: se rechaza el acceso y
+se permite reintentar. (2) Recuperación: ingresa el correo, recibe un
+token de restablecimiento, crea una nueva contraseña y vuelve al login.
+(3) Pérdida de Wi‑Fi o cierre por inactividad durante el guardado:
+muestra «Sin conexión / Sesión pausada. Se guardó una copia local.
+Vuelva a iniciar sesión al restablecer la red». \\
+\end{longtable}
+}
+
+FT-03 --- Autenticación y sesión del Encargado de Almacén
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2290}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7710}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Actor / flujo} & Actor: Encargado de Almacén
+
+Precondición: el almacenista intenta acceder a la terminal de
+inventarios.
+
+Flujo normal: introduce credenciales y accede a la pantalla de
+solicitudes.
+
+Excepciones: (1) Tres contraseñas fallidas: bloqueo temporal y
+notificación al gerente/sistema. (2) Recuperación por correo corporativo
+y restablecimiento de contraseña. (3) Inicio en dos computadoras o
+expiración de sesión por inactividad: el sistema cierra la sesión
+anterior y muestra «Se ha iniciado sesión en otro dispositivo o la
+sesión ha expirado». \\
+\end{longtable}
+}
+
+FT-04 --- Acceso del Cliente mediante enlace seguro y token
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2281}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7719}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Actor / flujo} & Actor: Cliente
+
+Precondición: el cliente intenta consultar el estado del vehículo o
+autorizar una cotización desde el celular. No requiere usuario ni
+contraseña: la validación se realiza con el token del enlace único.
+
+Excepción: enlace expirado (el enlace expira al entregar y saldar el
+vehículo, RN-01) o token alterado. El sistema bloquea el acceso e
+indica: «Su enlace de acceso ha expirado o es inválido. Por favor,
+solicite un nuevo enlace de seguimiento a la recepción del taller».
+
+Cotización vencida: si pasaron los 5 días naturales de vigencia (RN-11),
+el enlace sigue activo, pero la cotización se muestra como «Vencida» y
+no puede autorizarse; el cliente pide una nueva versión a Recepción.
+
+Excepción 2FA: código incorrecto o expirado después de cinco minutos. El
+sistema rechaza la autorización y solicita un nuevo código. El cliente
+también puede rechazar expresamente la cotización; tras confirmar, el
+sistema cambia la orden a «Cancelada/Rechazada», notifica a Recepción y
+finaliza la sesión web. \\
+\end{longtable}
+}
+
+FT-05 --- Autenticación y sesión del Gerente
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2248}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7752}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Actor / flujo} & Actor: Gerente (dueño)
+
+Precondición: el gerente intenta ingresar al dashboard desde su laptop o
+celular.
+
+Flujo normal: inicia sesión con sus credenciales y accede al Dashboard
+General.
+
+Excepciones: (1) Credenciales olvidadas o incorrectas: puede recuperar
+la cuenta mediante correo personal/gerencial, completar la verificación
+de seguridad, cambiar la contraseña y volver a iniciar sesión. (2)
+Cambio de red Wi‑Fi o inactividad: el sistema exige reautenticación
+mediante huella o contraseña para proteger métricas financieras y
+operativas. \\
+\end{longtable}
+}
+
+\subsection{4.10 Prototipos de baja
+fidelidad}\label{prototipos-de-baja-fidelidad}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Wireframes de todas las pantallas del flujo
+núcleo, cada uno con la historia o el caso de uso que representa.}
+\end{quote}
+
+{[}Figuras 4.x. Wireframes.{]}
+
+\subsection{4.11 Validación de requisitos con el
+cliente}\label{validaciuxf3n-de-requisitos-con-el-cliente}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Resumen de las sesiones de validación: qué
+se mostró, qué cambió y qué acordó el cliente. Incluyan los defectos de
+documentación que reportó el otro equipo en la revisión cruzada y cómo
+se atendieron.}
+\end{quote}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1497}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2564}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3161}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2778}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Fecha}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Técnica (recorrido, prototipo, revisión)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Hallazgos}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Cambios acordados}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& & & \\
+& & & \\
+\end{longtable}
+}

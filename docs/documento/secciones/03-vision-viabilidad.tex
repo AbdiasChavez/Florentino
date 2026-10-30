@@ -1,0 +1,307 @@
+\section{3. Visión y viabilidad del
+producto}\label{visiuxf3n-y-viabilidad-del-producto}
+
+\subsection{3.1 Problema y contexto del
+cliente}\label{problema-y-contexto-del-cliente}
+
+Servicio Automotriz Hermanos Ruiz, S.A. de C.V. es un taller que atiende
+vehículos ligeros (automóviles particulares, motocicletas y camionetas)
+de clientes particulares y de pequeñas flotillas empresariales. Tiene 4
+bahías de trabajo y un estacionamiento para 5 vehículos en espera. Hoy
+las citas se apuntan en un cuaderno, las órdenes se llenan en papel y la
+comunicación con el cliente es por teléfono o WhatsApp (ver el proceso
+actual en 3.5).
+
+Según el anteproyecto y la entrevista con el cliente del 19/10/2026, los
+problemas principales son:
+
+\textbf{• Disputas por cobros:} las autorizaciones son verbales o por
+mensaje y no queda registro de qué se aprobó ni por cuánto («dijo que
+sí, pero cobra otra cosa»).
+
+\textbf{• Reclamos por daños:} no hay checklist ni fotografías del
+estado en que llega el vehículo.
+
+\textbf{• Exceso de llamadas:} el cliente llama para saber el avance y
+la recepcionista interrumpe su trabajo para averiguarlo.
+
+\textbf{• Poca visibilidad:} la carga de trabajo y las bahías se asignan
+de palabra, y hay vehículos detenidos sin justificación.
+
+\textbf{• Historial disperso:} las órdenes se archivan en carpetas y es
+difícil consultar reparaciones y garantías anteriores.
+
+Hallazgos de la entrevista que no estaban en el anteproyecto:
+
+• El cliente quiere una doble verificación con código de 6 dígitos al
+autorizar cotizaciones, en forma remota o presencial (RN-02).
+
+• El cliente puede aprobar o rechazar por separado los conceptos
+opcionales de una cotización (RN-03).
+
+• Si una refacción tarda varios días, el vehículo pasa al
+estacionamiento para liberar la bahía (RN-06).
+
+• Las citas pedidas en línea no apartan lugar hasta que la recepcionista
+las confirma (RN-08).
+
+• Varios mecánicos pueden colaborar en una orden, pero siempre hay un
+responsable (RN-09).
+
+Además, hay cortes de luz e internet, por lo que el personal necesita
+seguir capturando sin conexión, y el jefe de mecánicos trabajará con 1 o
+2 tabletas en un ambiente con ruido, polvo y manos sucias (4.3).
+
+\subsection{3.2 Objetivos del producto e
+indicadores}\label{objetivos-del-producto-e-indicadores}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2349}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2030}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1710}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1708}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2202}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Objetivo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Indicador}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Situación actual}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Meta}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Cómo se medirá}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Eliminar las disputas por cobros no autorizados & \% de órdenes cerradas
+cuya cotización tiene autorización digital registrada (fecha, hora, IP y
+monto) & Autorizaciones verbales o por mensaje, sin registro & 100 \% de
+las órdenes cerradas & Reporte mensual del sistema: órdenes cerradas con
+autorización confirmada / total de órdenes cerradas \\
+Reducir las llamadas de seguimiento a recepción & Llamadas por día de
+clientes que preguntan por el avance de su vehículo & Por medir:
+bitácora de llamadas de una semana antes de liberar el portal del
+cliente & Al menos 50 \% menos que la medición inicial & Bitácora de
+llamadas de recepción, una semana antes y una semana después de la
+liberación \\
+Contar con evidencia del estado del vehículo al recibirlo & \% de
+recepciones con checklist completo y las 4 fotografías obligatorias &
+Órdenes en papel sin checklist ni fotografías & 100 \% de las
+recepciones & Reporte mensual del sistema de recepciones completas \\
+\end{longtable}
+}
+
+\subsection{3.3 Alcance}\label{alcance}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Dentro del alcance de la Fase 1}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Dentro del alcance de la Fase 2}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Fuera de alcance}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+• Acceso del personal por rol (HU-27)
+
+• Citas en línea y agenda con confirmación manual (HU-03, HU-04, HU-06)
+
+• Recepción con checklist y fotografías, también sin conexión (HU-01,
+HU-25, HU-26)
+
+• Asignación de bahía y mecánico, y diagnóstico (HU-07 a HU-09)
+
+• Cotización desglosada y autorización del cliente con código 2FA
+(HU-02, HU-12 a HU-16)
+
+• Solicitud de refacciones y proveedores (HU-10, HU-17, HU-18)
+
+• Aviso de fin de trabajos, cobro, entrega y crédito a flotillas (HU-20
+a HU-23)
+
+• Portal del cliente responsivo y aviso de privacidad (HU-28, HU-30) & •
+Búsqueda rápida de clientes y vehículos (HU-05)
+
+• Tablero simplificado de bahías para tableta (HU-11)
+
+• Consulta de existencias de refacciones (HU-19)
+
+• Consulta de garantías por el cliente (HU-24)
+
+• Panel y reportes gerenciales (HU-29, RF-11)
+
+• Envío del enlace por SMS (RF-02.3) & • Facturación electrónica (CFDI)
+y contabilidad
+
+• Pagos en línea con tarjeta
+
+• Aplicación móvil nativa (iOS o Android)
+
+• Vehículos pesados, tráileres y maquinaria (RN-07)
+
+• Nómina y control de asistencia del personal \\
+\end{longtable}
+}
+
+\subsection{3.4 Stakeholders}\label{stakeholders}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1922}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2031}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2349}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1496}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2202}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Stakeholder}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Rol en el negocio}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Interés en el sistema}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Poder / interés}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Estrategia de participación}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Dueños del taller & Propietarios; deciden la inversión y aprueban el
+proyecto. & Reducir disputas por cobros, cuidar la rentabilidad y la
+reputación, y no pagar licencias. & Alto poder -- alto interés &
+Gestionar de cerca mediante entrevistas y revisiones de avance en cada
+entrega, validación de requisitos y aprobación formal del alcance. \\
+Gerente & Supervisa la operación y autoriza entregas a crédito a
+flotillas. & Consultar tableros de control, controlar saldos y autorizar
+créditos con respaldo. & Alto poder -- alto interés & Gestionar de cerca
+mediante sesiones de definición de reglas de crédito y de reportes, y
+pruebas de aceptación de su flujo. \\
+Recepcionista & Registra ingresos, confirma citas y atiende a clientes.
+& Reducir llamadas de seguimiento y tener el registro de recepción y
+fotografías en un solo lugar. & Bajo poder -- alto interés & Mantener
+informada e involucrada, participando en las pruebas de usabilidad,
+capacitación y retroalimentación continua. \\
+Jefe de mecánicos & Centraliza diagnóstico, cotización y asignación de
+bahías en la tableta. & Flujos cortos, botones grandes y operación sin
+conexión. & Alto poder -- alto interés & Gestionar de cerca los
+prototipos en el entrono real (tableta, pruebas con manos sucias) y
+ajustes por iteración. \\
+Mecánicos de bahía y de apoyo & Realizan reparaciones, inspecciones y
+cubrimientos de turnos. & Recibir órdenes claras y enfocarse en el
+trabajo físico & Bajo poder -- alto interés & Mantener informado con
+capacitaciones breves y un canal para reportar dificultades. \\
+Encargado de almacén & Controla requisiciones, proveedores, costos e
+inventario de consumibles. & Directorio de proveedores, registro de
+costos y fechas, y tickets de compra por orden & Bajo poder -- alto
+interés & Mantener informado e involucrado mediante entrevistas sobre su
+flujo de compras y pruebas del módulo M6. \\
+Clientes particulares & Dueños de autos, motocicletas y vehículos. & Ver
+el estado de su vehículo, autorizar presupuestos y recibir un cobro
+transparente & Bajo poder -- alto interés & Mantener informado con las
+pruebas de usabilidad con algunos clientes y alguna encuesta breve de
+satisfacción al finalizar el servicio. \\
+Clientes de flotillas empresariales & Empresas con vehículos que pueden
+recibir entrega a crédito. & Condiciones de crédito claras y seguimiento
+de varios vehículos & Poder medio -- interés medio & Mantener
+satisfechos al definir con el gerente las reglas del crédito y validar
+el flujo con un representante. \\
+Equipo de desarrollo & Diseñan, construyen y prueban la plataforma. &
+Entregar un sistema que cumpla los requisitos y la norma ISO/IEC 25010 &
+Alto poder -- alto interés & Gestionar de cerca con reuniones
+periódicas, control de versiones y revisiones internas de calidad. \\
+Docente evaluador & Revisa el documento y el producto en curso. & Que el
+proyecto cumpla los criterios y entregas del curso & Alto poder -- alto
+interés & Mantener satisfecho entregando a tiempo, pidiendo asesoría en
+los avances y pidiendo aclaraciones de dudas. \\
+\end{longtable}
+}
+
+\subsection{3.5 Proceso actual (as-is)}\label{proceso-actual-as-is}
+
+\figura{figuras/proceso-as-is.png}{height=0.8\textheight}{3.1}{Diagrama de actividades del proceso actual (as-is) de
+atención del taller, con los problemas identificados en cada etapa.
+Elaboración propia}{docs/03-vision/proceso-as-is.puml}
+
+El diagrama de actividades muestra el proceso actual de atención del
+taller antes de implementar la solución tecnológica. Se organiza en
+cuatro carriles (cliente, recepcionista, mecánico y registro manual) y
+recorre el flujo completo: solicitud de cita, recepción del vehículo,
+diagnóstico, cotización, autorización, reparación, entrega y archivo del
+historial. Los recuadros rojos señalan los problemas detectados en cada
+etapa, como el riesgo de errores en el registro de citas, los datos
+incompletos en las órdenes en papel, la información dispersa e ilegible,
+las demoras en la cotización manual, el exceso de llamadas y un
+historial difícil de consultar.
+
+\subsection{3.6 Estudio de viabilidad}\label{estudio-de-viabilidad}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1708}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.5513}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2779}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Tipo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Análisis y evidencia}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Conclusión (viable / viable con condiciones / no viable)}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Técnica & La pila propuesta (Python con FastAPI, PostgreSQL y una PWA
+con Service Workers e IndexedDB) es de código abierto y está bien
+documentada. El mayor riesgo técnico es la operación sin conexión con
+sincronización posterior (RNF-08, RNF-09, R-02), que se validará con un
+prototipo en el Sprint 1. & Viable con condiciones: validar la
+sincronización sin conexión en el Sprint 1. \\
+Económica & Costo de licencias de \$0: todas las herramientas son de
+código abierto o de planes educativos (RNF-07). El taller usa las
+computadoras que ya tiene en recepción y almacén, y 1 o 2 tabletas para
+el jefe de mecánicos. Los planes gratuitos de correo y almacenamiento
+tienen límites (R-05, R-06). & Viable con condiciones: el taller aporta
+las tabletas y el sistema respeta los límites de los planes
+gratuitos. \\
+Operativa & El personal tiene experiencia tecnológica baja a media
+(4.3.1). Se atiende con flujos de pocos pasos y botones grandes (RNF-02,
+RNF-03), capacitación breve y pruebas de usabilidad con el personal. Los
+dueños y el gerente apoyan el proyecto porque reduce disputas y llamadas
+(3.4). & Viable con condiciones: capacitar y probar con el personal
+antes de la Demo final. \\
+Legal & Se tratan datos de identificación y contacto de los clientes
+(nombre, teléfono y correo) y datos de sus vehículos, incluidas
+fotografías; no se tratan datos sensibles. Las finalidades y medidas de
+seguridad (control de acceso por rol, HTTPS, tokens temporales y aviso
+de privacidad) están en 4.8, conforme a la Ley Federal de Protección de
+Datos Personales en Posesión de los Particulares (DOF 20-03-2025). En
+desarrollo y pruebas solo se usan datos ficticios (RNF-05). & Viable \\
+De calendario & El semestre tiene 7 sprints (S0 a S6) hasta la Demo
+final de la semana 16. El backlog tiene 30 historias; el release v0.1.0
+incluye el flujo núcleo y las historias Should o Could pueden pasar a la
+Fase 2 si la velocidad del equipo no alcanza. & Viable con condiciones:
+priorizar las historias Must. \\
+\end{longtable}
+}
+
+\textbf{Conclusión general:} el proyecto es viable con condiciones:
+validar en el Sprint 1 la operación sin conexión, que el taller aporte
+las tabletas, respetar los límites de los planes gratuitos y priorizar
+las historias Must del flujo núcleo.

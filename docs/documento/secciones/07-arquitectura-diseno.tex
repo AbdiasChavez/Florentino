@@ -1,0 +1,127 @@
+\section{7. Arquitectura y diseño}\label{arquitectura-y-diseuxf1o}
+
+\subsection{7.1 Estilo arquitectónico}\label{estilo-arquitectuxf3nico}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Expliquen el estilo elegido (capas, MVC,
+cliente-servidor con API\ldots) y cómo atiende al menos \textbf{4
+requisitos no funcionales} de la sección 4.6.}
+\end{quote}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.1922}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.8078}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{RNF}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Decisión de arquitectura que lo atiende}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+& \\
+& \\
+& \\
+& \\
+\end{longtable}
+}
+
+\subsection{7.2 Diagramas C4}\label{diagramas-c4}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Contexto, Contenedores y Componentes de al
+menos un contenedor.}
+\end{quote}
+
+{[}Figuras 7.1 a 7.3.{]}
+
+\subsection{7.3 Registros de decisiones de arquitectura
+(ADR)}\label{registros-de-decisiones-de-arquitectura-adr}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Mínimo \textbf{4 ADR}: estilo
+arquitectónico, pila tecnológica, base de datos y hospedaje. Equipo A:
+un ADR adicional sobre el soporte sin conexión. Equipo B: un ADR
+adicional sobre el almacenamiento de fotos y el acceso del cliente
+mediante un enlace seguro. Cada ADR evalúa al menos dos alternativas.}
+\end{quote}
+
+\subsubsection{Plantilla de ADR (repetir por cada
+decisión)}\label{plantilla-de-adr-repetir-por-cada-decisiuxf3n}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Campo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ID y título & ADR-001 {[}Decisión{]} \\
+Fecha y estado & {[}Propuesto / aceptado / reemplazado por
+ADR-\ldots{]} \\
+Contexto & {[}Qué problema o fuerza obliga a decidir{]} \\
+Alternativas evaluadas & 1. \ldots{} 2. \ldots{} \\
+Decisión & \\
+Consecuencias & {[}Positivas y negativas; qué se vuelve más fácil o más
+difícil{]} \\
+RNF relacionados & RNF-\ldots{} \\
+\end{longtable}
+}
+
+\subsection{7.4 Diagramas de artefactos y de
+despliegue}\label{diagramas-de-artefactos-y-de-despliegue}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Deben reflejar el ambiente de pruebas real:
+nodos, artefactos instalados y protocolos de comunicación.}
+\end{quote}
+
+{[}Figuras 7.4 y 7.5.{]}
+
+\subsection{7.5 Diagrama de paquetes}\label{diagrama-de-paquetes}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Organización de módulos y sus dependencias,
+sin dependencias circulares.}
+\end{quote}
+
+{[}Figura 7.6.{]}
+
+\subsection{7.6 Diagramas de clases de la
+solución}\label{diagramas-de-clases-de-la-soluciuxf3n}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Clases del flujo del núcleo tal como existen
+en el código (controladores, servicios, repositorios, entidades). Deben
+coincidir con el repositorio.}
+\end{quote}
+
+{[}Figura 7.7.{]}
+
+\subsection{7.7 Diagramas de secuencia}\label{diagramas-de-secuencia}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Mínimo \textbf{4}, incluido el escenario
+principal del flujo del núcleo.}
+\end{quote}
+
+{[}Figuras 7.8 a 7.11.{]}
+
+\subsection{7.8 Diagrama de
+comunicación}\label{diagrama-de-comunicaciuxf3n}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Al menos uno.}
+\end{quote}
+
+{[}Figura 7.12.{]}
