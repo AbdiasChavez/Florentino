@@ -15,6 +15,7 @@
 \usepackage{longtable,booktabs,array}
 \usepackage{calc}
 \newcounter{none} % tablas sin número (formato heredado de la conversión)
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % columna de ancho fijo alineada a la izquierda
 \usepackage{etoolbox}
 \makeatletter
 \patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
