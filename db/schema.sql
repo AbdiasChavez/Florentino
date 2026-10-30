@@ -331,6 +331,10 @@ CREATE TABLE autorizacion (
     codigo_verificacion_hash VARCHAR(255)        NOT NULL,
     estado                   estado_autorizacion NOT NULL DEFAULT 'Pendiente',
     token_hash               CHAR(64)            REFERENCES token_acceso (token_hash),
+    -- RNF-04: huella SHA-256 de lo aceptado (conceptos, monto, fecha, IP, medio);
+    -- la API la recalcula para detectar alteraciones del registro.
+    huella_sha256            CHAR(64),
+    CONSTRAINT ck_autorizacion_huella CHECK (estado <> 'Confirmada' OR huella_sha256 IS NOT NULL),
     -- La autorización remota llega por el enlace del cliente y registra su IP.
     CONSTRAINT ck_autorizacion_remota CHECK (
         medio <> 'Remoto' OR (token_hash IS NOT NULL AND ip IS NOT NULL))
@@ -452,20 +456,26 @@ GROUP BY c.id_cotizacion;
 -- {/totalAutorizado = total de la Cotizacion en estado Autorizada}: si hubo
 -- re-cotización, cuenta la versión autorizada más reciente.
 -- {/saldoPendiente = Cotizacion Autorizada.total − suma(Pago.monto)}
+-- Los pagos de todas las versiones de la orden cuentan (un pago hecho antes de
+-- una re-cotización no se pierde).
 CREATE VIEW v_orden_saldo AS
 WITH autorizada AS (
     SELECT DISTINCT ON (folio) folio, id_cotizacion, total
     FROM v_cotizacion_total
     WHERE estado = 'Autorizada'
     ORDER BY folio, version DESC
+), pagado AS (
+    SELECT c.folio, SUM(p.monto) AS total
+    FROM pago p JOIN cotizacion c ON c.id_cotizacion = p.id_cotizacion
+    GROUP BY c.folio
 )
 SELECT o.folio,
-       COALESCE(a.total, 0)::NUMERIC(12,2)                                      AS total_autorizado,
-       COALESCE((SELECT SUM(p.monto) FROM pago p WHERE p.id_cotizacion = a.id_cotizacion), 0)::NUMERIC(12,2) AS total_pagado,
-       (COALESCE(a.total, 0)
-        - COALESCE((SELECT SUM(p.monto) FROM pago p WHERE p.id_cotizacion = a.id_cotizacion), 0))::NUMERIC(12,2) AS saldo_pendiente
+       COALESCE(a.total, 0)::NUMERIC(12,2)                         AS total_autorizado,
+       COALESCE(pg.total, 0)::NUMERIC(12,2)                        AS total_pagado,
+       (COALESCE(a.total, 0) - COALESCE(pg.total, 0))::NUMERIC(12,2) AS saldo_pendiente
 FROM orden_servicio o
-LEFT JOIN autorizada a ON a.folio = o.folio;
+LEFT JOIN autorizada a ON a.folio = o.folio
+LEFT JOIN pagado pg    ON pg.folio = o.folio;
 
 -- RecepcionVehicular.estaCompleta(): checklist completo y las 4 fotos obligatorias (RN-12)
 CREATE VIEW v_recepcion_estado AS
