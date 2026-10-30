@@ -51,10 +51,12 @@
 % ---------------------------------------------------------------------------
 % Figuras. El machote pide número, título y ruta del archivo fuente.
 %   \figura{archivo}{opciones de tamaño}{número}{título}{ruta fuente}
+\DeclareUrlCommand\ruta{\urlstyle{tt}} % rutas del repositorio, con cortes de línea
+\captionsetup{justification=raggedright,singlelinecheck=true}
 \newcommand{\figura}[5]{%
   \begin{figure}[H]\centering
   \includegraphics[#2,keepaspectratio]{#1}
-  \caption{\textbf{Figura #3.} #4. Fuente: \texttt{#5}}
+  \caption[Figura #3. #4]{\textbf{Figura #3.} #4. Fuente: \ruta{#5}}
   \end{figure}}
 
 % Figura pendiente: se deja el lugar, la descripción y la fuente, en rojo,
@@ -65,8 +67,8 @@
   \fcolorbox{red}{red!4}{\parbox{0.92\linewidth}{\color{red}\small
     \textbf{PENDIENTE: imagen de la Figura #1}\par\smallskip
     \textbf{Debe mostrar:} #3\par\smallskip
-    \textbf{Archivo fuente:} \texttt{#4}}}
-  \caption{\textcolor{red}{\textbf{Figura #1.} #2. Fuente: \texttt{#4}}}
+    \textbf{Archivo fuente:} \ruta{#4}}}
+  \caption[Figura #1. #2]{\textcolor{red}{\textbf{Figura #1.} #2. Fuente: \ruta{#4}}}
   \end{figure}}
 
 % Texto pendiente (dato que falta o que debe confirmarse con el cliente).
