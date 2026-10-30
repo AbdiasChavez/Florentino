@@ -18,12 +18,20 @@ dos semanas.
 Owner en temas de alcance y prioridad, y el Scrum Master en temas de
 proceso.
 
-\textbf{• Ramas:} main está protegida; cada integrante trabaja en
-rama/\textless NOMBRE\textgreater{} y se integra solo mediante Pull
-Request con al menos una revisión de otro integrante.
+\textbf{• Ramas:} main está protegida; hay una rama por rol de Scrum
+(\texttt{rol/product-owner}, \texttt{rol/scrum-master}, \texttt{rol/qa-lead},
+\texttt{rol/developers}) y cada rol integra a main con un merge que deja
+visible su rama, mediante Pull Request con al menos una revisión de otro
+integrante. Las ramas personales anteriores
+(rama/\textless NOMBRE\textgreater) quedan en el historial.
 
-\textbf{• Commits:} en español, en presente y con referencia a la
-historia (por ejemplo, «Agrega checklist de recepción (HU-01)»).
+\textbf{• Commits:} en español y en presente, con el formato
+«Rol: mensaje» y referencia a la historia cuando aplique (por ejemplo,
+«Developers: implementa recepción con checklist (HU-01)»).
+
+\textbf{• Documentos:} el Documento de Ingeniería se escribe en LaTeX,
+un archivo por sección en \texttt{docs/documento/secciones/}, para que
+git pueda fusionar los cambios de varios roles; ya no se usa .docx.
 
 \textbf{• Incumplimiento:} se registra en la retrospectiva; a la segunda
 falta en el mismo sprint, el Scrum Master lo informa al profesor.
@@ -105,15 +113,26 @@ contraseñas en el repositorio.
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-S0 & Por registrar & Conocer al cliente, levantar los requisitos
-iniciales y preparar el repositorio y el documento base. & En curso &
+S0 & \pendiente{fechas} & Conocer al cliente, levantar los requisitos
+iniciales y preparar el repositorio y el documento base. &
+\pendiente{confirmar con la minuta de la Review 0} &
 --- & --- \\
-S1 & & & & & \\
-S2 & & & & & \\
-S3 & & & & & \\
-S4 & & & & & \\
-S5 & & & & & \\
-S6 & & & & & \\
+S1 & \pendiente{fechas} & SRS en borrador (4.1--4.7) y validación con el
+cliente. & Parcial: falta validar con el cliente (4.11) &
+\pendiente{} & \pendiente{} \\
+S2 & \pendiente{fechas} & SRS completo, plan de pruebas y backend del
+flujo núcleo (recepción, diagnóstico, cotización y autorización 2FA). &
+Parcial: backend y pruebas listos; falta firma del SRS &
+\pendiente{} & \pendiente{} \\
+S3 & \pendiente{fechas} & Modelos de análisis (6) y arquitectura
+(7.1--7.5). & Parcial: falta generar las figuras & \pendiente{} &
+\pendiente{} \\
+S4 & Planeado & Ambiente de pruebas, PWA del personal, almacén y
+operación sin conexión. & --- & \pendiente{} & --- \\
+S5 & Planeado & Portal del cliente, accesibilidad, prueba con usuarios
+y SUS. & --- & \pendiente{} & --- \\
+S6 & Planeado & Release v0.1.0, QA cruzado y transferencia a Fase 2. &
+--- & \pendiente{} & --- \\
 \end{longtable}
 }
 
@@ -203,11 +222,23 @@ R-07 & Poca experiencia del equipo con FastAPI y PWA & Alta & Medio &
 Mitigar: capacitación en S0--S1 y trabajo en pares en las primeras
 historias; responsable: SM & Abierto \\
 R-08 & Conflictos al editar en paralelo el documento .docx en ramas
-distintas & Alta & Medio & Mitigar: un solo integrador por entrega y
-avances por sección en docs/; responsable: SM & Abierto \\
+distintas & Alta & Medio & Evitar: el documento se migró a LaTeX con un
+archivo por sección; responsable: SM & Cerrado \\
 R-09 & Se publican datos personales reales en el repositorio público &
 Media & Alto & Evitar: solo datos ficticios y revisión de datos
-personales en cada PR; responsable: todos & Abierto \\
+personales en cada PR; .gitignore excluye .env y credenciales;
+responsable: todos & Abierto \\
+R-10 & Código o texto generado con IA que el equipo no entiende o no
+revisó & Media & Alto & Mitigar: declarar el uso en 2.6, revisión de
+cada PR por otro integrante y pruebas automatizadas como evidencia;
+responsable: SM & Abierto \\
+R-11 & Diferencias entre SQLite (pruebas) y PostgreSQL (staging) ocultan
+defectos & Media & Medio & Mitigar: la CI carga db/schema.sql en
+PostgreSQL 16; agregar pruebas de integración contra PostgreSQL en S4;
+responsable: QA Lead & Abierto \\
+R-12 & Sin ambiente de pruebas no se puede mostrar el flujo núcleo al
+cliente & Media & Alto & Mitigar: decidir ADR-004 antes del Sprint 4;
+responsable: Developers & Abierto \\
 \end{longtable}
 }
 
@@ -278,6 +309,14 @@ partir del anteproyecto, la entrevista del 19/10/2026 y el diagrama de
 clases v4. & Revisión del Product Owner contra las fuentes; falta la
 revisión de otro integrante antes de la entrega. & Abdías Daniel Chávez
 Cruz \\
+Claude (Anthropic), mediante Claude Code & Migración del documento a
+LaTeX; backend FastAPI (\texttt{backend/app}); 35 pruebas automatizadas;
+CI; secciones 5, 6, 7, 9 y 10.1; actualizaciones de 1, 2 y 4; fuentes
+PlantUML de estados y actividades; Avances.txt. & Generar código,
+pruebas y borradores a partir del SRS, las reglas de negocio, el
+diagrama de clases v4 y db/schema.sql. & Las 35 pruebas pasan en local
+y en CI; el documento compila. \pendiente{revisión del código y del
+texto por cada rol antes de la entrega}. & Abdías Daniel Chávez Cruz \\
 Por declarar & Secciones redactadas antes de la v0.1 y Propuesta de
 Solución Tecnológica & Cada autor declara la herramienta que usó o que
 no usó IA. & --- & Cada integrante \\
