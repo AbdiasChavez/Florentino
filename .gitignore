@@ -40,3 +40,6 @@ docs/propuesta/*.pdf
 
 # Word: archivos temporales
 ~$*
+
+# graphify: temporales
+graphify-out/cache/*.tmp
