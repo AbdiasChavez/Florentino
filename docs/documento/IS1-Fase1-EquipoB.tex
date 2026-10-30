@@ -1,0 +1,53 @@
+% Documento de Ingeniería del Proyecto – Fase 1 · Equipo B
+% Compilar desde docs/documento/:
+%   pdflatex -interaction=nonstopmode IS1-Fase1-EquipoB.tex   (dos veces, por el índice)
+% Cada sección vive en secciones/ para que cada rol la edite en su rama sin conflictos.
+\newcommand{\versiondoc}{0.1}
+\newcommand{\fechadoc}{29/10/2026}
+\input{preambulo}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+{\large Universidad del Istmo · Campus Ixtepec\par}
+Ingeniería en Desarrollo de Software y Sistemas Inteligentes\par
+Ingeniería de Software I (IDSSI-27) · Quinto semestre\par
+\vspace{3cm}
+{\LARGE\bfseries Documento de Ingeniería del Proyecto -- Fase 1\par}
+\vspace{1cm}
+{\Large Sistema de Órdenes de Servicio y Citas\par}
+\vspace{0.5cm}
+Servicio Automotriz Hermanos Ruiz, S.A. de C.V.\par
+\vfill
+\begin{tabular}{rl}
+\textbf{Equipo:} & B (5 integrantes)\\
+\textbf{Cliente:} & Servicio Automotriz Hermanos Ruiz\\
+\textbf{Producto:} & Sistema de Órdenes de Servicio y Citas\\
+\textbf{Versión del documento:} & v\versiondoc\\
+\textbf{Fecha:} & \fechadoc\\
+\end{tabular}
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+\input{secciones/00-como-usar}
+\input{secciones/00-portada}
+\input{secciones/01-informacion-general}
+\input{secciones/02-gestion-scrum}
+\input{secciones/03-vision-viabilidad}
+\input{secciones/04-srs}
+\input{secciones/05-pruebas-trazabilidad}
+\input{secciones/06-modelos-analisis}
+\input{secciones/07-arquitectura-diseno}
+\input{secciones/08-interfaz-usuario}
+\input{secciones/09-implementacion}
+\input{secciones/10-reporte-pruebas}
+\input{secciones/11-transferencia}
+\input{secciones/12-retrospectiva}
+\input{secciones/13-referencias}
+\input{secciones/14-anexos}
+\input{secciones/15-lista-verificacion}
+
+\end{document}

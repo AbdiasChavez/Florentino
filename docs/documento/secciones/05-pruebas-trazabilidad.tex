@@ -1,0 +1,120 @@
+\section{5. Plan de pruebas y
+trazabilidad}\label{plan-de-pruebas-y-trazabilidad}
+
+\subsection{5.1 Plan de pruebas}\label{plan-de-pruebas}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Estructura adaptada de ISO/IEC/IEEE
+29119-3:2021.}
+\end{quote}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Apartado}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Contenido}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Alcance & {[}Qué se prueba y qué no en la Fase 1{]} \\
+Niveles de prueba & {[}Unitarias, integración, sistema, aceptación{]} \\
+Enfoque & {[}Manual / automatizado; herramientas{]} \\
+Entornos & {[}Local, CI, staging; datos ficticios{]} \\
+Criterios de entrada & \\
+Criterios de salida & {[}Por ejemplo: 0 defectos S1/S2 abiertos{]} \\
+Roles & {[}QA Lead, developers, equipo contrario, cliente{]} \\
+Riesgos de las pruebas & \\
+Calendario & {[}Por sprint{]} \\
+\end{longtable}
+}
+
+\subsection{5.2 Casos de prueba de
+aceptación}\label{casos-de-prueba-de-aceptaciuxf3n}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Mínimo \textbf{25 casos (Equipo A)} o
+\textbf{20 (Equipo B)}, cada uno vinculado a una historia o caso de uso.
+Incluyan casos de flujos alternos, valores límite y control de acceso
+por rol. La columna de resultado se llena al ejecutarlos (sección 10).}
+\end{quote}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0963}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1282}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1816}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2308}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2136}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1496}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{ID}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Historia / CU}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Precondiciones}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Pasos}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Resultado esperado}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Resultado (Pasa / Falla / Bloqueado)}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+CPA-01 & HU-\ldots{} & & 1. \ldots{}
+
+2. \ldots{} & & \\
+& & & & & \\
+& & & & & \\
+\end{longtable}
+}
+
+\subsection{5.3 Matriz de trazabilidad}\label{matriz-de-trazabilidad}
+
+\begin{quote}
+\emph{\textbf{Instrucción:} Ningún requisito Must puede quedar sin
+historia ni caso de prueba. Se actualiza en cada versión y en el Sprint
+6 incluye el resultado de las pruebas.}
+\end{quote}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1390}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1708}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1389}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1923}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2094}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1496}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Requisito}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Historias}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Caso de uso}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Casos de prueba}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Componente / módulo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Resultado}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+RF-01 & HU-01, HU-02 & CU-01 & CPA-01, CPA-02 & {[}Paquete o clase{]} &
+{[}Pasa{]} \\
+& & & & & \\
+& & & & & \\
+\end{longtable}
+}
