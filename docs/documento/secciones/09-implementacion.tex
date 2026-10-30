@@ -3,64 +3,85 @@ v0.1.0}\label{implementaciuxf3n-del-release-v0.1.0}
 
 \subsection{9.1 Pila tecnológica}\label{pila-tecnoluxf3gica}
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2990}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4060}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2950}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Capa}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Tecnología y versión}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{ADR que la justifica}
-\end{minipage} \\
-\midrule\noalign{}
+{\small
+\begin{longtable}{@{}L{0.27\linewidth}L{0.47\linewidth}L{0.2\linewidth}@{}}
+\toprule
+\textbf{Capa} & \textbf{Tecnología y versión} & \textbf{ADR que la justifica} \\
+\midrule
 \endhead
-\bottomrule\noalign{}
+\bottomrule
 \endlastfoot
-Interfaz & & \\
-Lógica de negocio / API & & \\
-Base de datos & & \\
-Hospedaje del ambiente de pruebas & & \\
-Integración continua & & \\
+Interfaz & \pendiente{PWA por definir en el Sprint 3}. Hoy: documentación interactiva OpenAPI de FastAPI
+(\texttt{/docs}) & ADR-001, ADR-002 \\
+Lógica de negocio / API & Python 3.12, FastAPI 0.115+, Pydantic 2, SQLAlchemy 2.0, Uvicorn & ADR-002 \\
+Base de datos & PostgreSQL 16 (esquema \texttt{db/schema.sql}); SQLite para desarrollo y pruebas & ADR-003 \\
+Hospedaje del ambiente de pruebas & \pendiente{por decidir} & ADR-004 \\
+Integración continua & GitHub Actions (\texttt{.github/workflows/ci.yml}) & --- \\
 \end{longtable}
 }
 
 \subsection{9.2 Instrucciones de instalación y
 ejecución}\label{instrucciones-de-instalaciuxf3n-y-ejecuciuxf3n}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Pasos para que una persona ajena al equipo
-instale y ejecute el sistema localmente siguiendo el README. Incluyan
-cómo cargar los datos de prueba ficticios.}
-\end{quote}
+Los mismos pasos están en el \texttt{README.md} del repositorio. Requisitos: Python 3.12 o superior y Git.
 
-{[}Escriba aquí o indique la sección del README.{]}
+\begin{enumerate}
+\tightlist
+\item Clonar el repositorio y entrar a \texttt{backend/}.
+\item Crear un entorno virtual e instalar dependencias:\\
+\texttt{python -m venv .venv} y \texttt{pip install -r requirements.txt}.
+\item Copiar \texttt{.env.example} como \texttt{.env}. Sin cambios usa SQLite local; para PostgreSQL,
+crear la base con \texttt{psql -d taller -f db/schema.sql} y poner su \texttt{DATABASE\_URL}. El
+\texttt{.env} nunca se sube al repositorio.
+\item Cargar los datos ficticios: \texttt{python -m app.semilla -{}-demo}. Crea las 4 bahías, un usuario por
+rol (correos \texttt{@taller.test}), un cliente particular y una flotilla con crédito. La contraseña se
+toma de \texttt{SEED\_PASSWORD} o se genera e imprime una sola vez.
+\item Ejecutar: \texttt{uvicorn app.main:app -{}-reload} y abrir \texttt{http://localhost:8000/docs}.
+\item Pruebas: \texttt{python -m pytest}.
+\end{enumerate}
 
 \subsection{9.3 Integración continua y flujo de
 trabajo}\label{integraciuxf3n-continua-y-flujo-de-trabajo}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Qué ejecuta el pipeline (compilación,
-linter, pruebas), reglas de protección de main y estadísticas del
-repositorio: número de pull requests fusionados y revisados.}
-\end{quote}
+El pipeline de GitHub Actions se ejecuta en cada push a \texttt{main} o a una rama \texttt{rol/*} y en cada
+Pull Request, con tres trabajos:
 
-{[}Escriba aquí y agregue una captura de pantalla de una ejecución
-exitosa.{]}
+\begin{enumerate}
+\tightlist
+\item \textbf{Pruebas del backend:} instala dependencias y ejecuta las 35 pruebas de pytest.
+\item \textbf{Esquema en PostgreSQL:} levanta PostgreSQL 16 y carga \texttt{db/schema.sql} con
+\texttt{ON\_ERROR\_STOP}, para detectar errores del esquema real.
+\item \textbf{Documento de Ingeniería:} compila este documento LaTeX y publica el PDF como artefacto.
+\end{enumerate}
+
+\textbf{Flujo de trabajo:} cada rol trabaja en su rama (\texttt{rol/product-owner}, \texttt{rol/scrum-master},
+\texttt{rol/qa-lead}, \texttt{rol/developers}); los commits llevan el formato «Rol: mensaje» y se integran
+a \texttt{main} con un merge sin fast-forward, para que quede visible qué integró cada rol.
+\pendiente{activar la protección de main (Pull Request con al menos una revisión y CI aprobada) y
+registrar aquí las estadísticas de Pull Requests revisados.}
+
+\figurapendiente{9.1}{Ejecución exitosa del pipeline de integración continua}{captura de la pestaña
+Actions de GitHub con los tres trabajos (Pruebas del backend, Esquema en PostgreSQL, Documento de
+Ingeniería) en verde para el último commit de main.}{.github/workflows/ci.yml}
 
 \subsection{9.4 Evidencia del flujo
 núcleo}\label{evidencia-del-flujo-nuxfacleo}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Capturas paso a paso del flujo del núcleo
-funcionando en el \textbf{ambiente de pruebas} (no en local), con datos
-ficticios. Equipo A: registro de pedido, cálculo del total por tipo de
-cliente y consulta de la producción requerida. Equipo B: apertura de
-orden con checklist, diagnóstico, cotización con autorización registrada
-y lista de órdenes abiertas.}
-\end{quote}
+\textcolor{red}{Pendiente hasta tener el ambiente de pruebas (Sprint 4) y la interfaz web (Sprint 5).
+Mientras tanto, el flujo completo está cubierto por las pruebas automatizadas CPA-01, CPA-13, CPA-22 y
+CPA-35.}
 
-{[}Figuras 9.x.{]}
+\figurapendiente{9.2}{Apertura de orden con checklist y fotografías}{pantalla de recepción en el
+ambiente de pruebas con datos ficticios: kilometraje, combustible, checklist completo, las 4 fotografías
+y el folio generado.}{docs/09-implementacion/evidencia/01-recepcion.png}
+
+\figurapendiente{9.3}{Diagnóstico registrado}{pantalla de la tableta del jefe de mecánicos con la
+bahía y el responsable asignados, el diagnóstico guardado y la orden en estado
+Diagnosticada.}{docs/09-implementacion/evidencia/02-diagnostico.png}
+
+\figurapendiente{9.4}{Cotización con autorización registrada}{portal del cliente en un celular: la
+cotización desglosada, la selección de opcionales, la captura del código de 6 dígitos y la confirmación
+con fecha y hora.}{docs/09-implementacion/evidencia/03-autorizacion.png}
+
+\figurapendiente{9.5}{Lista de órdenes abiertas}{pantalla con las órdenes abiertas, su estado, bahía,
+responsable y días de estancia.}{docs/09-implementacion/evidencia/04-ordenes-abiertas.png}

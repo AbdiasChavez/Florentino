@@ -1,0 +1,31 @@
+@startuml orden-servicio
+' Figura 6.7. Máquina de estados de OrdenServicio.
+' Coincide con TRANSICIONES en backend/app/servicios/ordenes.py.
+title Estados de la Orden de servicio
+hide empty description
+
+[*] --> Abierta : registrarRecepcion\n[vehículo sin orden abierta]\n/ Recepcionista
+Abierta --> EnEsperaDeBahia : sinBahiaLibre\n[4 bahías ocupadas y < 5 en espera]\n/ Recepcionista
+EnEsperaDeBahia --> Abierta : asignarBahia\n[bahía libre, responsable mecánico]\n/ JefeMecanicos
+Abierta --> Diagnosticada : registrarDiagnostico\n[checklist completo, 4 fotos (RN-12),\nbahía y responsable asignados]\n/ JefeMecanicos
+Diagnosticada --> Autorizada : confirmarCodigo2FA\n[cotización vigente (RN-11),\ncódigo válido ≤ 5 min (RN-02)]\n/ Cliente o Recepcionista
+Diagnosticada --> Cancelada : rechazarCotizacion\n/ Cliente
+Autorizada --> ListaParaEntrega : terminarTrabajo\n[sin re-cotización pendiente (RN-04)]\n/ JefeMecanicos
+ListaParaEntrega --> Cerrada : registrarEntrega\n[saldo = 0 o crédito autorizado (RN-10)]\n/ Recepcionista
+Abierta --> Cancelada : cancelar / Gerente
+EnEsperaDeBahia --> Cancelada : cancelar / Gerente
+Diagnosticada --> Cancelada : cancelar / Gerente
+Cerrada --> [*]
+Cancelada --> [*]
+
+note right of Autorizada
+  Una re-cotización > 10 % queda Pendiente
+  y bloquea terminarTrabajo hasta que el
+  cliente la autoriza (RN-04).
+end note
+note right of Cerrada
+  Al cerrar: garantía de 30 días (RN-13),
+  bahía libre y enlace del cliente expirado
+  si no hay saldo (RN-01).
+end note
+@enduml
