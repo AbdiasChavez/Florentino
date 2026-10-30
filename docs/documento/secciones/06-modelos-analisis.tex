@@ -1,129 +1,185 @@
 \section{6. Modelos de análisis}\label{modelos-de-anuxe1lisis}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Todos los modelos deben ser consistentes con
-el glosario y el SRS. Notación UML 2.5.1. Cada figura debe tener número,
-título y ruta de su archivo fuente.}
-\end{quote}
+Los modelos usan los nombres del glosario (4.2) y del SRS, y coinciden con el esquema
+\texttt{db/schema.sql} y con el código de \texttt{backend/app/}. Notación UML 2.5.1.
 
 \subsection{6.1 Diagramas de flujo de
 datos}\label{diagramas-de-flujo-de-datos}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Nivel de contexto, nivel 0 y nivel 1 de un
-proceso principal. Los flujos deben estar equilibrados entre niveles.}
-\end{quote}
+\figurapendiente{6.1}{Diagrama de flujo de datos de contexto}{el sistema como un único proceso
+«Sistema de Órdenes de Servicio y Citas» y sus entidades externas: Cliente (envía solicitud de cita,
+selección de conceptos, código 2FA, pago; recibe enlace seguro, cotización, código y estado), Recepcionista
+(datos de recepción, checklist, fotografías, pagos, entrega), Jefe de Mecánicos (asignación, diagnóstico,
+cotización, fin de trabajo), Gerente (alta de personal, crédito a flotillas; recibe panel) y Servicio de
+correo/SMS (recibe mensajes salientes).}{docs/06-analisis/dfd/contexto.drawio}
 
-{[}Figuras 6.1 a 6.3.{]}
+\figurapendiente{6.2}{Diagrama de flujo de datos de nivel 0}{los procesos 1.0 Gestionar citas, 2.0
+Recibir vehículo, 3.0 Asignar y diagnosticar, 4.0 Cotizar y autorizar, 5.0 Cobrar y entregar y 6.0
+Consultar estado/panel; y los almacenes D1 Clientes y vehículos, D2 Citas, D3 Órdenes e historial, D4
+Cotizaciones y autorizaciones, D5 Pagos y garantías, D6 Tokens de acceso. Los flujos con las entidades
+externas deben ser los mismos que en la Figura 6.1 (balanceo).}{docs/06-analisis/dfd/nivel-0.drawio}
+
+\figurapendiente{6.3}{Diagrama de flujo de datos de nivel 1 del proceso 4.0 Cotizar y
+autorizar}{subprocesos 4.1 Generar cotización (lee D3, escribe D4), 4.2 Enviar enlace (escribe D6, envía
+al servicio de correo), 4.3 Seleccionar conceptos opcionales, 4.4 Emitir código 2FA, 4.5 Validar código y
+registrar autorización (escribe D4 y el historial en D3), 4.6 Rechazar cotización. Entradas y salidas
+balanceadas con el proceso 4.0 de la Figura 6.2.}{docs/06-analisis/dfd/nivel-1-cotizar.drawio}
 
 \subsection{6.2 Modelo de datos}\label{modelo-de-datos}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Diagrama entidad-relación normalizado al
-menos a 3FN, y diccionario de datos.}
-\end{quote}
+El modelo relacional está en 3FN: cada tabla describe una sola entidad, los atributos derivados del
+diagrama de clases (/total, /saldoPendiente, /fechaVencimiento, /fechaFin) no se almacenan sino que se
+calculan en vistas o columnas generadas, y la especialización \{disjoint, complete\} de Cliente usa una
+tabla por subclase. El esquema completo, con sus restricciones y disparadores, está en
+\texttt{db/schema.sql} y se valida en PostgreSQL 16 en cada ejecución de la integración continua.
 
-{[}Figura 6.4. Modelo entidad-relación.{]}
+\figurapendiente{6.4}{Modelo entidad-relación}{las 26 tablas de \texttt{db/schema.sql} con sus llaves
+primarias y foráneas y la cardinalidad de cada relación; resaltar el núcleo cliente --- vehículo ---
+orden\_servicio --- recepcion\_vehicular (checklist, fotografías) --- cotizacion (detalles,
+autorizaciones, pagos) --- token\_acceso. Puede generarse con DBeaver o pgAdmin a partir del
+esquema.}{db/schema.sql (exportar a docs/06-analisis/er/modelo-er.png)}
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1604}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1601}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1282}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0856}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2520}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2137}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Entidad}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Atributo}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Tipo}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Nulo}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Restricciones (PK, FK, único, rango)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Descripción}
-\end{minipage} \\
-\midrule\noalign{}
+\textbf{Diccionario de datos} de las tablas del flujo núcleo (las demás se documentan en los
+comentarios de \texttt{db/schema.sql}):
+
+{\footnotesize
+\begin{longtable}{@{}L{0.15\linewidth}L{0.17\linewidth}L{0.13\linewidth}L{0.06\linewidth}L{0.2\linewidth}L{0.21\linewidth}@{}}
+\toprule
+\textbf{Entidad} & \textbf{Atributo} & \textbf{Tipo} & \textbf{Nulo} & \textbf{Restricciones} & \textbf{Descripción} \\
+\midrule
 \endhead
-\bottomrule\noalign{}
+\bottomrule
 \endlastfoot
-& & & & & \\
-& & & & & \\
-& & & & & \\
+cliente & id\_cliente & INTEGER & No & PK, identidad & Identificador del cliente \\
+ & tipo\_cliente & VARCHAR(10) & No & Particular o Flotilla & Subclase del cliente \\
+ & telefono & VARCHAR(20) & No & & Contacto (dato personal) \\
+ & correo & VARCHAR(160) & No & & Recibe enlace y códigos 2FA \\
+vehiculo & id\_vehiculo & INTEGER & No & PK & Identificador \\
+ & id\_cliente & INTEGER & No & FK cliente & Propietario \\
+ & placas & VARCHAR(15) & No & Único & Placas en mayúsculas \\
+ & vin & VARCHAR(17) & Sí & Único & Número de serie (opcional) \\
+ & tipo & tipo\_vehiculo & No & Automovil, Motocicleta, Camioneta & Solo vehículos ligeros (RN-07) \\
+orden\_servicio & folio & VARCHAR(20) & No & PK, formato OS-AAAA-NNNN & Folio de la orden \\
+ & estado & estado\_orden & No & 7 valores (6.5) & Estado actual \\
+ & numero\_bahia & SMALLINT & Sí & FK bahia; único entre órdenes activas & Bahía asignada (RN-05) \\
+ & id\_usuario\_responsable & INTEGER & Sí & FK usuario & Mecánico responsable (RN-09) \\
+ & entrega\_a\_credito & BOOLEAN & No & Requiere gerente y flotilla & Excepción de RN-10 \\
+ & fecha\_entrega & TIMESTAMPTZ & Sí & $\geq$ fecha\_apertura & Momento de la entrega \\
+recepcion\_vehicular & kilometraje & INTEGER & No & $\geq 0$ & Lectura del odómetro \\
+ & nivel\_combustible & nivel\_combustible & No & 5 niveles & Combustible al ingreso \\
+ & id\_cita & INTEGER & Sí & FK cita, único; solo cita Confirmada & Cita de origen \\
+fotografia & posicion & posicion\_foto & No & Una por posición salvo «Otra» & Frente, Trasera, Izquierda, Derecha (RN-12) \\
+ & archivo & VARCHAR(255) & No & & Ruta en el almacenamiento \\
+cotizacion & version & INTEGER & No & $\geq 1$; único con folio & Versión de la cotización \\
+ & fecha\_emision & DATE & No & & Inicio de vigencia \\
+ & vigencia\_dias & INTEGER & No & $> 0$, por omisión 5 & RN-11 \\
+ & estado & estado\_cotizacion & No & Pendiente, Autorizada, Rechazada, Vencida & Estado (6.5) \\
+detalle\_cotizacion & tipo & tipo\_concepto & No & ManoDeObra, Refaccion, Insumo & Clase de concepto \\
+ & precio\_unitario & NUMERIC(10,2) & No & $\geq 0$ & Precio en pesos \\
+ & opcional / seleccionado & BOOLEAN & No & Solo un opcional puede deseleccionarse & RN-03 \\
+autorizacion & medio & medio\_autorizacion & No & Remoto exige IP y token & Canal de la autorización \\
+ & tipo & tipo\_autorizacion & No & Inicial o IncrementoMayor10 & RN-04 \\
+ & monto\_aceptado & NUMERIC(10,2) & No & $\geq 0$ & Monto que el cliente aceptó \\
+ & codigo\_verificacion\_hash & VARCHAR(255) & No & PBKDF2; nunca en claro & Código 2FA (RN-02) \\
+ & huella\_sha256 & CHAR(64) & Sí & Obligatoria si Confirmada & Detecta alteraciones (RNF-04) \\
+token\_acceso & token\_hash & CHAR(64) & No & PK; SHA-256 del token & El token en claro solo viaja en el enlace \\
+ & fecha\_expiracion & TIMESTAMPTZ & Sí & & Se fija al entregar y saldar (RN-01) \\
+pago & monto & NUMERIC(10,2) & No & $> 0$; solo sobre cotización Autorizada & Abono del cliente \\
 \end{longtable}
 }
 
 \subsection{6.3 Diagrama de clases del
 dominio}\label{diagrama-de-clases-del-dominio}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Mínimo \textbf{14 clases (Equipo A)} o
-\textbf{12 (Equipo B)}, con atributos, asociaciones y multiplicidades.
-Sin métodos de implementación ni clases técnicas (como controladores o
-repositorios).}
-\end{quote}
+El diagrama de clases v4 tiene 26 clases del dominio (mínimo del Equipo B: 12), con atributos,
+asociaciones, multiplicidades, composiciones, una generalización \{disjoint, complete\} (Cliente →
+ClienteParticular | Flotilla), 15 enumeraciones y las restricciones de negocio como notas OCL
+informales. Las clases marcadas «OfflineSync» (RecepcionVehicular, ChecklistInspeccion, Diagnostico) se
+capturan sin conexión (RNF-08). Se divide en dos láminas por legibilidad; OrdenServicio, Usuario y
+TokenAcceso aparecen en ambas como vista parcial.
 
-{[}Figura 6.5.{]}
+\figura{../06-analisis/clases/diagrama-clases-v4-1.png}{angle=90,width=\linewidth,height=0.8\textheight}{6.5a}{Diagrama
+de clases del dominio (1/2): clientes, citas, recepción y orden}{docs/06-analisis/clases/diagrama-clases-v4-1.png}
+
+\figura{../06-analisis/clases/diagrama-clases-v4-2.png}{angle=90,width=\linewidth,height=0.8\textheight}{6.5b}{Diagrama
+de clases del dominio (2/2): cotización, compras, pagos y garantía}{docs/06-analisis/clases/diagrama-clases-v4-2.png}
+
+\pendiente{subir al repositorio el archivo fuente editable del diagrama de clases (draw.io, PlantUML o
+StarUML) junto a las imágenes, como pide el machote.}
 
 \subsection{6.4 Diagrama de objetos}\label{diagrama-de-objetos}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Instantánea con datos ficticios realistas
-que valide un escenario del flujo núcleo.}
-\end{quote}
-
-{[}Figura 6.6.{]}
+\figurapendiente{6.6}{Diagrama de objetos: orden autorizada por el cliente}{instantánea con datos
+ficticios del caso CPA-13: \texttt{c1:ClienteParticular} (nombre = «Cliente Ficticio»), \texttt{v1:Vehiculo}
+(placas = «PRB-001», Nissan Versa 2019), \texttt{os1:OrdenServicio} (folio = «OS-2026-0001», estado =
+Autorizada, bahía 1), \texttt{r1:RecepcionVehicular} (kilometraje = 45210, combustible = Mitad) con su
+\texttt{ch1:ChecklistInspeccion} (completo = true) y 4 \texttt{Fotografia}; \texttt{d1:Diagnostico};
+\texttt{cot1:Cotizacion} (versión 1, estado = Autorizada, total = 1750.00) con 3 \texttt{DetalleCotizacion};
+\texttt{a1:Autorizacion} (medio = Remoto, estado = Confirmada, monto = 1750.00) ligada a
+\texttt{t1:TokenAcceso}; \texttt{m1:Usuario} (rol = Mecanico) como responsable.}{docs/06-analisis/objetos/orden-autorizada.puml}
 
 \subsection{6.5 Diagramas de estados}\label{diagramas-de-estados}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Equipo A: como mínimo \textbf{Pedido} y
-\textbf{Entrega}. Equipo B: como mínimo \textbf{Orden de servicio} y
-\textbf{Cotización}. Cada transición indica un evento, una condición y
-un rol autorizado.}
-\end{quote}
+Las transiciones de la orden están programadas en una sola tabla (\texttt{TRANSICIONES} en
+\texttt{backend/app/servicios/ordenes.py}); cualquier transición que no aparezca aquí es rechazada por
+el sistema y toda transición válida queda en HistorialEstado.
 
-{[}Figuras 6.7 y 6.8.{]}
+\figurapendiente{6.7}{Máquina de estados de la Orden de servicio}{los 7 estados (Abierta,
+EnEsperaDeBahia, Diagnosticada, Autorizada, ListaParaEntrega, Cerrada, Cancelada) con las transiciones de
+la tabla siguiente, cada una con evento, [condición] y / rol. Renderizar el archivo fuente con
+PlantUML.}{docs/06-analisis/estados/orden-servicio.puml}
 
-{\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2030}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2030}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2137}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2029}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1775}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Estado origen}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Evento}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Condición}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Estado destino}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\textbf{Rol autorizado}
-\end{minipage} \\
-\midrule\noalign{}
+{\footnotesize
+\begin{longtable}{@{}L{0.15\linewidth}L{0.19\linewidth}L{0.31\linewidth}L{0.14\linewidth}L{0.15\linewidth}@{}}
+\toprule
+\textbf{Estado origen} & \textbf{Evento} & \textbf{Condición} & \textbf{Estado destino} & \textbf{Rol autorizado} \\
+\midrule
 \endhead
-\bottomrule\noalign{}
+\bottomrule
 \endlastfoot
-& & & & \\
-& & & & \\
-& & & & \\
+(inicio) & Registrar recepción & El vehículo no tiene otra orden abierta; si no hay bahía, hay lugar en el estacionamiento (RN-05) & Abierta & Recepcionista \\
+Abierta & Recepción sin bahía libre & Las 4 bahías están ocupadas & EnEsperaDeBahia & Recepcionista \\
+EnEsperaDeBahia & Asignar bahía & Bahía libre; responsable es mecánico activo (RN-09) & Abierta & Jefe de Mecánicos \\
+Abierta & Registrar diagnóstico & Checklist completo y 4 fotografías (RN-12); bahía y responsable asignados & Diagnosticada & Jefe de Mecánicos \\
+Diagnosticada & Confirmar código 2FA & Cotización vigente (RN-11); código correcto, de un solo uso y con menos de 5 minutos (RN-02) & Autorizada & Cliente (remoto) o Recepcionista (presencial) \\
+Diagnosticada & Rechazar cotización & Cotización vigente & Cancelada & Cliente \\
+Autorizada & Terminar trabajo & No hay re-cotización pendiente mayor al 10\,\% (RN-04) & ListaParaEntrega & Jefe de Mecánicos \\
+ListaParaEntrega & Registrar entrega & Saldo pendiente igual a 0, o entrega a crédito autorizada (RN-10) & Cerrada & Recepcionista \\
+Abierta, EnEsperaDeBahia, Diagnosticada & Cancelar & --- & Cancelada & Gerente \\
+\end{longtable}
+}
+
+\figurapendiente{6.8}{Máquina de estados de la Cotización}{los estados Pendiente, Autorizada,
+Rechazada y Vencida, con las transiciones de la tabla siguiente.}{docs/06-analisis/estados/cotizacion.puml}
+
+{\footnotesize
+\begin{longtable}{@{}L{0.15\linewidth}L{0.19\linewidth}L{0.31\linewidth}L{0.14\linewidth}L{0.15\linewidth}@{}}
+\toprule
+\textbf{Estado origen} & \textbf{Evento} & \textbf{Condición} & \textbf{Estado destino} & \textbf{Rol autorizado} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+(inicio) & Generar cotización & Orden Diagnosticada (inicial) o Autorizada (re-cotización); al menos un concepto; sin otra cotización pendiente vigente & Pendiente & Recepcionista o Jefe de Mecánicos \\
+(inicio) & Re-cotizar & Orden Autorizada y nuevo total $\leq$ total inicial autorizado $\times$ 1.10 (RN-04) & Autorizada & Recepcionista o Jefe de Mecánicos \\
+Pendiente & Cambiar selección & Solo conceptos opcionales (RN-03); invalida códigos ya emitidos & Pendiente & Cliente o Recepcionista \\
+Pendiente & Confirmar código 2FA & Vigente y código válido (RN-02) & Autorizada & Cliente o Recepcionista \\
+Pendiente & Rechazar & Vigente & Rechazada & Cliente \\
+Pendiente & Pasa la fecha de vencimiento & Hoy $>$ fecha de emisión + 5 días (RN-11) & Vencida & Sistema \\
 \end{longtable}
 }
 
 \subsection{6.6 Diagramas de actividades
 (to-be)}\label{diagramas-de-actividades-to-be}
 
-\begin{quote}
-\emph{\textbf{Instrucción:} Al menos dos procesos clave cómo funcionarán
-con el sistema, con carriles por rol.}
-\end{quote}
+\figurapendiente{6.9}{Actividad to-be: recepción y diagnóstico}{carriles Cliente, Recepcionista,
+Sistema y Jefe de mecánicos: búsqueda o registro del cliente con aviso de privacidad, captura de
+kilometraje, combustible, checklist y 4 fotografías, apertura de la orden, decisión «¿hay bahía libre?»
+(EnEsperaDeBahia con alerta), asignación de bahía y responsable, registro del diagnóstico y validación de
+RN-12.}{docs/06-analisis/actividades/recepcion-diagnostico.puml}
 
-{[}Figuras 6.9 y 6.10.{]}
+\figurapendiente{6.10}{Actividad to-be: cotización y autorización con código 2FA}{carriles Jefe de
+mecánicos, Sistema y Cliente: generación de la cotización con vigencia de 5 días, envío del enlace seguro,
+selección de opcionales, decisión aceptar/rechazar, emisión y validación del código de 6 dígitos, registro
+de la autorización con huella SHA-256, ejecución del trabajo y re-cotización bloqueante si el adicional
+supera el 10\,\%.}{docs/06-analisis/actividades/cotizacion-autorizacion.puml}
