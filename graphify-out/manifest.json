@@ -1,0 +1,62 @@
+{
+  "README.md": {
+    "mtime": 1793316765.2909698,
+    "seen": 1793316789.2065594,
+    "ast_hash": "d2d02e702a85dfd028269340b7f93f91",
+    "semantic_hash": ""
+  },
+  "informacion/contexto.md": {
+    "mtime": 1793314861.494123,
+    "seen": 1793315491.8358428,
+    "ast_hash": "3599dfe4368cd814217af1dd9e6c8cef",
+    "semantic_hash": ""
+  },
+  "informacion/Diagrama_Clases_Taller_v4_e1.png": {
+    "mtime": 1792561699.5960333,
+    "seen": 1793315491.8358443,
+    "ast_hash": "d6a1581a9c622fedcf48c0c19c75d2e6",
+    "semantic_hash": ""
+  },
+  "informacion/Diagrama_Clases_Taller_v4_e2.png": {
+    "mtime": 1792561701.956093,
+    "seen": 1793315491.8358455,
+    "ast_hash": "6c2f976d998063d598c79a1f7da3c4ed",
+    "semantic_hash": ""
+  },
+  ".claude/settings.json": {
+    "mtime": 1793315554.83201,
+    "seen": 1793316789.2065408,
+    "ast_hash": "c92fdb099b6078fc3c03f64329f1c7a9",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1793315554.8254945,
+    "seen": 1793316789.2065504,
+    "ast_hash": "67d88e9d0760c3ba54c75dfd9551c1c5",
+    "semantic_hash": ""
+  },
+  "CONTRIBUTING.md": {
+    "mtime": 1793316757.5523584,
+    "seen": 1793316789.206555,
+    "ast_hash": "097307caf4391a5cbe06e6808cecc62f",
+    "semantic_hash": ""
+  },
+  "graphify-out/converted/IS1-Fase1-EquipoB-v0.1_95255212.md": {
+    "mtime": 1793316775.3899407,
+    "seen": 1793316789.2065625,
+    "ast_hash": "1e67d58b1cc4f290ce0a60b2befe39ee",
+    "semantic_hash": ""
+  },
+  "graphify-out/converted/Propuesta de Soluci\u00f3n Tecnol\u00f3gica_890774e7.md": {
+    "mtime": 1793316774.641846,
+    "seen": 1793316789.206566,
+    "ast_hash": "f14732064d7d5f41ced6053d723c52c8",
+    "semantic_hash": ""
+  },
+  "docs/entregas/IS1-Fase1-EquipoB-v0.1.pdf": {
+    "mtime": 1793316733.809275,
+    "seen": 1793316789.2069035,
+    "ast_hash": "493cd5b98772a647ddc2ac3a32b18e19",
+    "semantic_hash": ""
+  }
+}
