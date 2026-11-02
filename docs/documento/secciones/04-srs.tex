@@ -1722,8 +1722,143 @@ con el cliente & RF-04 \\
 RN-13 & Garantía de mano de obra: Los trabajos tienen garantía de 30
 días naturales sobre la mano de obra, contados desde la entrega del
 vehículo. & RF-03.2; confirmar la fuente con el cliente & RF-03.2 \\
+RN-14 & Medidor de combustible descompuesto: Si el indicador de combustible
+del tablero no funciona, el nivel no se deja en blanco ni se adivina: se
+registra como «No verificable», junto con el nivel que declara el cliente,
+el método de estimación usado (4.7.1) y la aceptación del cliente. El
+taller no responde por diferencias de combustible en una recepción
+marcada como «No verificable», salvo lo que él mismo haya medido. &
+Propuesta del equipo; \textcolor{red}{validar con el cliente} & RF-04,
+HU-01 \\
+RN-15 & Operación de contingencia en papel: Si la falta de luz o de
+internet dura más que la autonomía de los equipos (RNF-08), la operación
+continúa en la Bitácora de Contingencia impresa (4.7.1) con folios
+provisionales. Todo lo registrado en papel se captura en el sistema a más
+tardar 24 horas después de restablecerse el servicio y conserva la hoja
+física escaneada como evidencia. & Propuesta del equipo; amplía HU-25;
+\textcolor{red}{validar con el cliente} & RNF-08, RNF-09, RF-04, RF-06,
+RF-10 \\
 \end{longtable}
 }
+
+\subsubsection{4.7.1 Procedimientos de
+contingencia}\label{procedimientos-de-contingencia}
+
+Estos procedimientos detallan RN-14 y RN-15. Son operativos: indican qué
+hace el personal cuando falla el vehículo del cliente o la infraestructura
+del taller, y qué tendrá que soportar el sistema para que esos casos queden
+registrados.
+
+\paragraph{A. Vehículo con gasolina pero con el medidor descompuesto
+(RN-14).}
+
+El nivel de combustible al ingreso protege a ambas partes ante reclamos
+(«dejé medio tanque y me lo entregaron en reserva»). Cuando el indicador
+del tablero no funciona, la recepcionista aplica, en este orden, el primer
+método que esté disponible y anota cuál usó:
+
+\begin{enumerate}
+\tightlist
+\item \textbf{Lectura por OBD-II.} Muchas veces solo falla la aguja o el
+tablero, pero el sensor (flotador) del tanque sigue funcionando. Con el
+escáner OBD-II del taller se lee el parámetro «Fuel Tank Level Input» (PID
+\texttt{0x2F}), que da el porcentaje del tanque, y se convierte al selector
+de 5 niveles (0--12\,\% Reserva, 13--37\,\% 1/4, 38--62\,\% 1/2,
+63--87\,\% 3/4, 88--100\,\% Lleno). Se fotografía la pantalla del escáner.
+\item \textbf{Computadora de viaje.} Si el vehículo muestra la autonomía
+restante (km), se fotografía y se registra como referencia, aclarando que
+es una estimación del propio vehículo.
+\item \textbf{Medición física, solo si el trabajo lo requiere.} Si la
+reparación implica bajar o vaciar el tanque (bomba de gasolina, sensor de
+nivel, fugas), el combustible se extrae con la bomba de trasvase a bidones
+graduados aprobados para combustible y se registran los \textbf{litros}
+medidos, con fotografía del bidón. Al terminar, ese mismo volumen se
+regresa al tanque. No se abre el sistema de combustible solo para medir:
+es un riesgo de incendio y no forma parte del servicio autorizado.
+\item \textbf{Declaración del cliente.} Si nada de lo anterior es posible,
+se registra el nivel que dice el cliente con la leyenda «Declarado por el
+cliente, no verificable».
+\end{enumerate}
+
+En todos los casos se fotografía el tablero encendido (evidencia de que el
+indicador no funciona), se agrega al checklist el hallazgo «Indicador de
+combustible inoperante» y se le ofrece al cliente diagnosticarlo como
+servicio adicional. El cliente acepta lo registrado con su firma en la
+recepción. Al entregar, el nivel se vuelve a medir con el mismo método para
+que la comparación sea justa. La conversión del porcentaje OBD-II a los 5
+niveles es una de las decisiones candidatas a modelarse en DMN (7.9).
+
+\emph{Impacto en el sistema:} el selector de combustible del wireframe W-01
+gana la opción «No verificable», que obliga a capturar el método de
+estimación (OBD-II, computadora de viaje, medición en litros o declaración
+del cliente), el valor obtenido y una fotografía del tablero.
+\pendiente{agregar los campos \texttt{metodo\_combustible} y
+\texttt{litros\_medidos} a RecepcionVehicular (6.2) y su caso de prueba en
+la sección 5.}
+
+\paragraph{B. Cortes prolongados de luz o de internet (RN-15).}
+
+La operación sin conexión de la PWA (HU-25, RNF-08) cubre los cortes
+cortos. Para los largos se definen tres niveles:
+
+{\small
+\begin{longtable}{@{}L{0.17\linewidth}L{0.33\linewidth}L{0.44\linewidth}@{}}
+\toprule
+\textbf{Nivel} & \textbf{Situación} & \textbf{Cómo se opera} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+1. Sin internet & Hay luz, pero no hay conexión. & La PWA trabaja con
+IndexedDB y sincroniza al volver la conexión (RNF-09). El cliente no
+recibe enlace ni puede autorizar en línea; se le avisa por teléfono. \\
+2. Sin luz & Los equipos funcionan con batería. & Igual que el nivel 1. Se
+apagan los equipos que no se usen y se reservan las baterías para
+recepción y diagnóstico. \\
+3. Contingencia en papel & El corte supera 4 horas o la batería de los
+equipos baja del 20\,\%. & El Gerente declara la contingencia y anota la
+hora de inicio en la Bitácora. Todo se registra en papel, como se describe
+abajo. \\
+\end{longtable}
+}
+
+La \textbf{Bitácora de Contingencia} es una libreta o carpeta con formatos
+impresos y numerados de antemano, que se guarda en recepción. Contiene:
+
+\begin{itemize}
+\tightlist
+\item \textbf{Hoja de recepción}: folio provisional \texttt{C-AAAAMMDD-NN}
+(consecutivo del día, escrito a mano), datos del cliente y del vehículo,
+kilometraje, nivel de combustible (con la opción «No verificable» de la
+parte A), checklist de carrocería e interiores y firma del cliente. Las 4
+fotografías obligatorias (RN-12) se toman con el celular del taller y se
+nombran con el folio provisional.
+\item \textbf{Hoja de diagnóstico y cotización}, con el desglose de mano de
+obra y refacciones.
+\item \textbf{Hoja de autorización}: como no es posible enviar el código
+2FA por correo (RN-02), la única autorización válida en contingencia es la
+\textbf{firma autógrafa del cliente en presencia del personal}, con fecha y
+hora. No se aceptan autorizaciones por teléfono.
+\item \textbf{Recibo provisional} numerado para los pagos (solo efectivo,
+porque la terminal bancaria tampoco funciona). Sigue vigente RN-10: no se
+entrega un vehículo con saldo pendiente.
+\item \textbf{Registro de movimientos}: cambios de estado y de bahía, con
+hora y nombre de quien los hizo.
+\end{itemize}
+
+\textbf{Al restablecerse el servicio}, el Gerente anota la hora de fin en
+la Bitácora. En las 24 horas siguientes, la recepcionista captura cada hoja
+en el sistema: la orden recibe su folio definitivo OS-AAAA-NNNN y conserva
+el folio provisional como referencia, se adjuntan las fotografías y la hoja
+escaneada, y las autorizaciones quedan registradas con medio «Firma en
+papel». El Gerente revisa que no falte ningún folio provisional del
+consecutivo y firma la Bitácora como conciliada. Las hojas físicas se
+resguardan con el mismo cuidado que los datos personales del sistema (4.8).
+
+\pendiente{agregar al modelo el medio de autorización «Firma en papel» y el
+campo \texttt{folio\_provisional}; diseñar e imprimir los formatos de la
+Bitácora; validar con el cliente el umbral de 4 horas y el plazo de 24
+horas.}
 
 \subsection{4.8 Requisitos de protección de datos
 personales}\label{requisitos-de-protecciuxf3n-de-datos-personales}
