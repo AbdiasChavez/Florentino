@@ -147,6 +147,27 @@ el correo para autorizar. \textbf{--} Si el cliente pierde el enlace, el taller 
 Los archivos locales se pierden si el hospedaje gratuito reinicia el disco: \pendiente{confirmar con
 ADR-004 y, de ser necesario, pasar a almacenamiento de objetos.} \\
 RNF relacionados & RNF-04, RNF-05, RNF-01 \\
+\midrule
+ID y título & \textbf{ADR-006 Reglas de negocio como tablas de decisión DMN con Camunda} \\
+Fecha y estado & 02/11/2026 · \textcolor{red}{Propuesto (diseño teórico; no implementado)} \\
+Contexto & Las reglas RN-xx viven hoy como código Python en \texttt{app/servicios/}. Varias son
+\emph{decisiones} con umbrales que el cliente puede querer cambiar (10\,\% de re-cotización, 5 días de
+vigencia, tipos de vehículo admitidos, crédito a flotillas, conversión del nivel de combustible de RN-14).
+Cada cambio de umbral exige hoy modificar código, probar y desplegar. \\
+Alternativas evaluadas & 1. Mantener las reglas en Python (situación actual). 2. Tablas de decisión
+DMN 1.3 modeladas en Camunda Modeler y evaluadas por el motor de decisiones de Camunda (DMN Engine) a
+través de su API REST. 3. Tablas de decisión DMN evaluadas dentro del mismo proceso Python con una
+biblioteca DMN. \\
+Decisión & Opción 2 como diseño objetivo (detallado en 7.9): las decisiones se modelan en DMN con Camunda
+Modeler, se versionan en \texttt{docs/07-arquitectura/dmn/} y la capa de servicios las consulta mediante
+un adaptador \texttt{servicios/decisiones.py}. Los procesos (BPMN) siguen en el código; Camunda solo se
+usa para \emph{decisiones}. \\
+Consecuencias & \textbf{+} Las reglas quedan como tablas legibles que el Gerente puede revisar y validar
+sin leer código. \textbf{+} Cada evaluación devuelve la regla que se cumplió, lo que sirve como evidencia
+de auditoría (RNF-04). \textbf{--} Agrega un servicio más que desplegar y mantener. \textbf{--} El
+motor no está disponible sin conexión: el adaptador debe tener un respaldo local (7.9). \textbf{--}
+Hay que confirmar la licencia de la edición de Camunda que se use contra RNF-07 \pendiente{registrarlo como riesgo en 2.4}. \\
+RNF relacionados & RNF-04, RNF-07, RNF-08 \\
 \end{longtable}
 }
 
@@ -213,3 +234,101 @@ comunicación}\label{diagrama-de-comunicaciuxf3n}
 \texttt{:ServicioOrdenes}, \texttt{os:OrdenServicio}, \texttt{b:Bahia}, \texttt{m:Usuario} y
 \texttt{:HistorialEstado}, con los mensajes numerados 1 asignar, 1.1 obtener bahía, 1.2 validar
 responsable, 1.3 ocupar bahía, 1.4 cambiarEstado(Abierta) si estaba en espera.}{docs/07-arquitectura/comunicacion-asignacion.puml}
+
+\subsection{7.9 Modelado de decisiones con DMN y
+Camunda}\label{modelado-de-decisiones-con-dmn-y-camunda}
+
+\pendiente{esta sección describe el diseño propuesto en ADR-006. Camunda todavía no forma parte del
+código ni del despliegue; las reglas siguen implementadas en Python en \texttt{app/servicios/}.}
+
+\paragraph{Qué es DMN y para qué se usa aquí.} DMN (\emph{Decision Model and Notation}, estándar del
+OMG, versión 1.3) describe decisiones de negocio como \textbf{tablas de decisión}: columnas de entrada,
+columnas de salida y una fila por regla, con una \emph{política de acierto} (\emph{hit policy}) que dice qué
+hacer si se cumplen varias filas. Las expresiones de cada celda se escriben en FEEL (\emph{Friendly
+Enough Expression Language}), por ejemplo \texttt{> 10}, \texttt{[13..37]} o
+\texttt{"Flotilla"}. \textbf{Camunda} aporta dos piezas: Camunda Modeler (aplicación de escritorio
+gratuita para dibujar las tablas y guardarlas como archivos \texttt{.dmn}) y el motor de decisiones que
+recibe los datos de entrada y devuelve el resultado.
+
+En este proyecto Camunda se usa \textbf{solo para decisiones (DMN)}, no para orquestar procesos (BPMN): el
+flujo de la orden (estados de 6.5) sigue controlado por \texttt{servicios/ordenes.py}, y únicamente le
+pregunta al motor «¿qué dice la regla?» en los puntos donde hoy hay un \texttt{if} con umbrales de negocio.
+
+\paragraph{Tablas de decisión propuestas.}
+
+{\small
+\begin{longtable}{@{}L{0.2\linewidth}L{0.14\linewidth}L{0.22\linewidth}L{0.18\linewidth}L{0.17\linewidth}@{}}
+\toprule
+\textbf{Decisión (clave)} & \textbf{Regla} & \textbf{Entradas} & \textbf{Salidas} & \textbf{Hit policy} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+\texttt{requiere\_recotizacion} & RN-04 & total inicial, total nuevo & requiere autorización (sí/no),
+motivo & UNIQUE \\
+\texttt{vigencia\_cotizacion} & RN-11 & días desde la emisión & vigente (sí/no) & UNIQUE \\
+\texttt{vehiculo\_admitido} & RN-07 & tipo de vehículo, peso (t) & admitido (sí/no), motivo & FIRST \\
+\texttt{permite\_entrega} & RN-10 & saldo pendiente, tipo de cliente, crédito autorizado por el Gerente &
+entregar (sí/no), motivo & FIRST \\
+\texttt{nivel\_combustible} & RN-14 & método de medición, porcentaje OBD-II & nivel (Reserva, 1/4, 1/2,
+3/4, Lleno o No verificable) & UNIQUE \\
+\texttt{nivel\_contingencia} & RN-15 & hay luz, hay internet, horas de corte, batería (\%) & nivel de
+operación (1, 2 o 3) & FIRST \\
+\end{longtable}
+}
+
+Como ejemplo, la tabla \texttt{permite\_entrega} (RN-10) queda así; se lee de arriba hacia abajo y gana la
+primera fila que se cumpla (FIRST):
+
+{\small
+\begin{longtable}{@{}L{0.05\linewidth}L{0.17\linewidth}L{0.17\linewidth}L{0.2\linewidth}L{0.1\linewidth}L{0.21\linewidth}@{}}
+\toprule
+\textbf{\#} & \textbf{saldo} & \textbf{tipoCliente} & \textbf{creditoAutorizado} & \textbf{entregar} &
+\textbf{motivo} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+1 & \texttt{<= 0} & \texttt{-} & \texttt{-} & \texttt{true} & \texttt{"Saldo cubierto"} \\
+2 & \texttt{> 0} & \texttt{"Flotilla"} & \texttt{true} & \texttt{true} & \texttt{"Crédito a flotilla"} \\
+3 & \texttt{> 0} & \texttt{-} & \texttt{-} & \texttt{false} & \texttt{"Saldo pendiente (RN-10)"} \\
+\end{longtable}
+}
+
+\paragraph{Cómo se integra con el backend.}
+
+\begin{enumerate}
+\tightlist
+\item \textbf{Modelado y versionado.} Cada tabla se dibuja en Camunda Modeler y se guarda en
+\texttt{docs/07-arquitectura/dmn/<clave>.dmn}, en git, con revisión por Pull Request como el resto del
+código. El Gerente valida la tabla impresa antes de publicarla.
+\item \textbf{Despliegue.} Los archivos \texttt{.dmn} se despliegan al motor de Camunda, que corre como un
+contenedor aparte junto a la API (un nodo más en el diagrama de despliegue de 7.4).
+\item \textbf{Evaluación.} Un nuevo módulo \texttt{app/servicios/decisiones.py} expone una función
+\texttt{evaluar(clave, datos)} que llama a la API REST del motor con las variables de entrada y devuelve
+las salidas. Los demás servicios solo dependen de esa función; por ejemplo, \texttt{cobro.entregar} llama
+a \texttt{evaluar("permite\_entrega", \{...\})} en lugar de comparar el saldo por su cuenta. Así se respeta
+la regla de 7.1: la lógica de negocio sigue fuera de las rutas.
+\item \textbf{Respaldo sin conexión.} Si el motor no responde (corte de internet, RNF-08, o contingencia
+de RN-15), el adaptador evalúa una copia local de las mismas tablas con una biblioteca DMN de Python, o, en
+su defecto, la implementación actual en Python. La PWA sin conexión no consulta al motor: las decisiones
+que dependen de él se vuelven a evaluar al sincronizar (RNF-09).
+\item \textbf{Auditoría.} Cada evaluación guarda en el historial de la orden la clave de la decisión, su
+versión y la fila que se cumplió, como evidencia de por qué se permitió o bloqueó una operación
+(RNF-04).
+\item \textbf{Pruebas.} Cada fila de cada tabla tiene su caso en \texttt{backend/tests/}
+(\texttt{test\_dmn\_<clave>.py}); los casos CPA existentes de RN-04, RN-07, RN-10 y RN-11 deben seguir
+pasando sin cambios, lo que prueba que la migración no alteró el comportamiento.
+\end{enumerate}
+
+\paragraph{Plan de adopción.} Se migraría una decisión a la vez, empezando por \texttt{requiere\_recotizacion}
+(RN-04), que es la más simple y la que el cliente tiene más probabilidad de ajustar. Antes de iniciar hay
+que confirmar con el equipo y el docente: (1) la edición y versión de Camunda y que su licencia cumpla
+RNF-07 para el uso que se le dará; (2) dónde se hospeda el motor (ADR-004); y (3) si el beneficio justifica
+un servicio adicional en un taller de 4 bahías o si conviene la opción 3 de ADR-006 (DMN evaluado dentro de
+la misma API).
+
+\figurapendiente{7.13}{Diagrama de requisitos de decisión (DRD)}{las seis decisiones de la tabla de 7.9
+como rectángulos de decisión, sus datos de entrada (orden, cotización, cliente, vehículo, recepción, estado
+de la infraestructura) como óvalos y la fuente de conocimiento «Reglas de negocio 4.7» enlazada a cada
+decisión; exportado de Camunda Modeler.}{docs/07-arquitectura/dmn/drd.dmn}
