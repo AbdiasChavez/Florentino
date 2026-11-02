@@ -1,13 +1,13 @@
 {
   "README.md": {
-    "mtime": 1793322138.4795964,
-    "seen": 1793322214.740025,
-    "ast_hash": "8afe758cb8d830f3513f2515de0e9a52",
+    "mtime": 1793599875.7691123,
+    "seen": 1793599985.7249727,
+    "ast_hash": "f5422569c1d4da2e2519889895321736",
     "semantic_hash": ""
   },
   "CONTRIBUTING.md": {
-    "mtime": 1793322150.1807377,
-    "seen": 1793322214.7400222,
+    "mtime": 1793599875.7691123,
+    "seen": 1793599985.724967,
     "ast_hash": "c560cdab6eed7003fb484737d458bf6f",
     "semantic_hash": ""
   },
@@ -186,9 +186,9 @@
     "semantic_hash": ""
   },
   "Avances.txt": {
-    "mtime": 1793322201.8839297,
-    "seen": 1793322214.7400196,
-    "ast_hash": "89c5364ac310347d249bc1a6b1c2cbc9",
+    "mtime": 1793599875.7691123,
+    "seen": 1793599985.7249606,
+    "ast_hash": "3b8c0e7a185327d03e28aeb9c92deb64",
     "semantic_hash": ""
   },
   "backend/requirements.txt": {
@@ -198,8 +198,8 @@
     "semantic_hash": ""
   },
   "docs/entregas/IS1-Fase1-EquipoB-v1.1.pdf": {
-    "mtime": 1793322125.195377,
-    "seen": 1793322214.7400284,
+    "mtime": 1793599875.804056,
+    "seen": 1793599985.7252195,
     "ast_hash": "eb2f72aa6427de540c268f7eab25ffcd",
     "semantic_hash": ""
   },
